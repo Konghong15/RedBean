@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{00e41df7-f1e3-4d03-b6a2-089e12726e7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EntryPoint">
+      <UniqueIdentifier>{bab6d1d8-7401-410c-8c02-047673328a3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DirectXWrapper">
+      <UniqueIdentifier>{7b083ae9-18b5-4f38-a998-454fbb35cc71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{b1d8b4df-39e9-4584-85d6-6adc5f8af318}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{9cbec012-f8cf-4d07-9da8-ae2cef19e4b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="InterfaceClass">
+      <UniqueIdentifier>{af9f098d-8c53-4a1d-b582-36a4e999bfe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Terrain">
+      <UniqueIdentifier>{0c296308-1259-463e-918a-c34d84eac3f1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>EntryPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Processor.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="MathHelper.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Sample.cpp">
+      <Filter>EntryPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>DirectXWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>DirectXWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>DirectXWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexType.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderProgram.cpp">
+      <Filter>DirectXWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderStates.cpp">
+      <Filter>DirectXWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>DirectXWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderContext.cpp" />
+    <ClCompile Include="IBindable.cpp">
+      <Filter>InterfaceClass</Filter>
+    </ClCompile>
+    <ClCompile Include="LightHelper.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp" />
+    <ClCompile Include="Camera.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Sample.h">
+      <Filter>EntryPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Processor.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>DirectXWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>DirectXWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>DirectXWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexType.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderProgram.h">
+      <Filter>DirectXWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderStates.h">
+      <Filter>DirectXWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>DirectXWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderContext.h" />
+    <ClInclude Include="IBindable.h">
+      <Filter>InterfaceClass</Filter>
+    </ClInclude>
+    <ClInclude Include="LightHelper.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h" />
+    <ClInclude Include="Camera.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="TestVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="TestPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="TerrainVS.hlsl">
+      <Filter>Shader\Terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="TerrainHS.hlsl">
+      <Filter>Shader\Terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="TerrainPS.hlsl">
+      <Filter>Shader\Terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="TerrainDS.hlsl">
+      <Filter>Shader\Terrain</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Terrain.hlsli">
+      <Filter>Shader\Terrain</Filter>
+    </None>
+    <None Include="LightHelper.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+  </ItemGroup>
+</Project>

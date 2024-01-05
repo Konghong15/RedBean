@@ -1,0 +1,71 @@
+#pragma once
+
+#define WIN32_LEAN_AND_MEAN
+#define _HAS_STD_BYTE 0
+
+// STL
+#include <array>
+#include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <list>
+#include <memory>
+#include <map>
+#include <set>
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
+using namespace std;
+
+// WIN
+#include <windows.h>
+#include <optional>
+
+// DirectX 
+#include <DirectXMath.h>
+#include "directxtk/SimpleMath.h"
+#include <d3dcompiler.h>
+#include <d3d11shader.h>
+#include <d3d11.h>
+#include <wrl.h>
+#include <dxgi.h>
+#include <directxtk/DDSTextureLoader.h>
+#include <directxtk/WICTextureLoader.h>
+#include <DirectXTex.h>
+#include <DirectXTex.inl>
+
+using namespace DirectX;
+using namespace Microsoft::WRL;
+using Vector2 = DirectX::SimpleMath::Vector2;
+using Vector3 = DirectX::SimpleMath::Vector3;
+using Vector4 = DirectX::SimpleMath::Vector4;
+using Matrix = DirectX::SimpleMath::Matrix;
+using Quaternion = DirectX::SimpleMath::Quaternion;
+
+// Assimp
+#include <Assimp/Importer.hpp>
+#include <Assimp/scene.h>
+#include <Assimp/postprocess.h>
+
+// ImGUI
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
+
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d3dcompiler.lib")
+
+#ifdef _DEBUG
+#pragma comment(lib, "DirectXTex_debug.lib")
+#pragma comment(lib, "assimp-vc143-mtd.lib")
+#else
+#pragma comment(lib, "DirectXTex.lib")
+#pragma comment(lib, "assimp-vc143-mt.lib")
+#endif
+
+// common
+#include "Util.h"
+#include "MathHelper.h"
+#include "VertexType.h"
+#include "LightHelper.h"
+#include "Camera.h"
