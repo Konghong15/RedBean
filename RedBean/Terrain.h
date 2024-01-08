@@ -101,7 +101,7 @@ namespace terrain
 		// 생성한 셰이더를 다 바인딩할 거라 귀찮았다.
 		directXWrapper::ShaderProgram mShaderProgram;
 		directXWrapper::IndexBuffer mIndexBuffer;
-		directXWrapper::VertexBuffer<Vertex> mVertexBuffer;
+		directXWrapper::VertexBuffer mVertexBuffer;
 
 		// 문자열 하나 전달하면 알아서 생성되도록
 		directXWrapper::Texture mTileArraySRV;

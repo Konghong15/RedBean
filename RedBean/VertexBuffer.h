@@ -1,18 +1,16 @@
 #pragma once
 
-#include "IBindable.h"
-
 namespace directXWrapper
 {
-	template <typename T>
 	class VertexBuffer
 	{
 	public:
 		VertexBuffer() = default;
 		~VertexBuffer() = default;
 
+		template <typename T>
 		bool Init(ID3D11Device* device, const vector<T>& vertices, unsigned int slot = 0, bool cpuWrite = false, bool gpuWrite = false);
-		void Bind(ID3D11DeviceContext* context);
+		inline void Bind(ID3D11DeviceContext* context);
 
 		ComPtr<ID3D11Buffer> GetComPtr() { return mBuffer; }
 		UINT GetStride() { return mStride; }
@@ -30,7 +28,7 @@ namespace directXWrapper
 	};
 
 	template <typename T>
-	bool VertexBuffer<T>::Init(ID3D11Device* device, const vector<T>& vertices, unsigned int slot, bool cpuWrite, bool gpuWrite)
+	bool VertexBuffer::Init(ID3D11Device* device, const vector<T>& vertices, unsigned int slot, bool cpuWrite, bool gpuWrite)
 	{
 		mStride = sizeof(T);
 		mCount = static_cast<unsigned int>(vertices.size());
@@ -70,8 +68,7 @@ namespace directXWrapper
 		return true;
 	}
 
-	template <typename T>
-	void VertexBuffer<T>::Bind(ID3D11DeviceContext* context)
+	void VertexBuffer::Bind(ID3D11DeviceContext* context)
 	{
 		context->IASetVertexBuffers(mSlot, 1, mBuffer.GetAddressOf(), &mStride, &mOffset);
 	}

@@ -6,6 +6,8 @@ namespace directXWrapper
 {
 	bool Texture::Init(ID3D11Device* device, const wstring& path)
 	{
+		mPath = path;
+
 		DirectX::TexMetadata md;
 		HR(LoadFromWICFile(path.c_str(), WIC_FLAGS_NONE, &md, mScratchImage));
 		HR(CreateShaderResourceView(device, mScratchImage.GetImages(), mScratchImage.GetImageCount(), md, mSRV.GetAddressOf()));

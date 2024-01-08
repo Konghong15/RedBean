@@ -21,7 +21,7 @@ namespace entryPoint
 		void Render() override;
 
 	private:
-		VertexBuffer<VertexData> mVertexBuffer;
+		VertexBuffer mVertexBuffer;
 		IndexBuffer mIndexBuffer;
 		ShaderProgram mShaderProgram;
 	};

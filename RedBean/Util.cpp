@@ -92,6 +92,7 @@ namespace common
 				return hr;
 			}
 		}
+
 		return S_OK;
 	}
 

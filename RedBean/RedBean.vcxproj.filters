@@ -22,6 +22,9 @@
     <Filter Include="Shader\Terrain">
       <UniqueIdentifier>{0c296308-1259-463e-918a-c34d84eac3f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="todo">
+      <UniqueIdentifier>{a0fe2ad9-c403-4b59-9635-46923721b836}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -69,17 +72,37 @@
     <ClCompile Include="Texture.cpp">
       <Filter>DirectXWrapper</Filter>
     </ClCompile>
-    <ClCompile Include="RenderContext.cpp" />
-    <ClCompile Include="IBindable.cpp">
-      <Filter>InterfaceClass</Filter>
-    </ClCompile>
     <ClCompile Include="LightHelper.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Camera.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>todo</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderContext.cpp">
+      <Filter>todo</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderManager.cpp">
+      <Filter>todo</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>todo</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>todo</Filter>
+    </ClCompile>
+    <ClCompile Include="Ssao.cpp">
+      <Filter>todo</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>todo</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGeometry.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="SkinnedModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sample.h">
@@ -124,17 +147,37 @@
     <ClInclude Include="Texture.h">
       <Filter>DirectXWrapper</Filter>
     </ClInclude>
-    <ClInclude Include="RenderContext.h" />
-    <ClInclude Include="IBindable.h">
-      <Filter>InterfaceClass</Filter>
-    </ClInclude>
     <ClInclude Include="LightHelper.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Terrain.h" />
     <ClInclude Include="Camera.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>todo</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderContext.h">
+      <Filter>todo</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderManager.h">
+      <Filter>todo</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>todo</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>todo</Filter>
+    </ClInclude>
+    <ClInclude Include="Ssao.h">
+      <Filter>todo</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>todo</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGeometry.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="SkinnedModel.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="TestVS.hlsl">
