@@ -7,8 +7,10 @@ namespace directXWrapper
 	bool RenderStates::mbIsInit = false;
 
 	// SamplerState
-	ComPtr<ID3D11SamplerState> RenderStates::LinearSS;
-	ComPtr<ID3D11SamplerState> RenderStates::PointSS;
+	ComPtr<ID3D11SamplerState> RenderStates::LinearWrapSS;
+	ComPtr<ID3D11SamplerState> RenderStates::PointClampSS;
+	ComPtr<ID3D11SamplerState> RenderStates::PointBoaderSS;
+	ComPtr<ID3D11SamplerState> RenderStates::PointWrapSS;
 
 	// RasterizerState
 	ComPtr<ID3D11RasterizerState> RenderStates::WireFrameRS;
@@ -40,6 +42,61 @@ namespace directXWrapper
 
 		mbIsInit = true;
 
+		initSamplerState(device);
+		initRasterizerState(device);
+		initBlendState(device);
+		initDepthStencilState(device);
+	}
+
+	void RenderStates::initSamplerState(ID3D11Device* device)
+	{
+		D3D11_SAMPLER_DESC sampleDesc = {};
+		sampleDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		sampleDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampleDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampleDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampleDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
+		sampleDesc.MinLOD = 0;
+		sampleDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		HR(device->CreateSamplerState(&sampleDesc, LinearWrapSS.GetAddressOf()));
+
+		sampleDesc = {};
+		sampleDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+		sampleDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+		sampleDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+		sampleDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		sampleDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
+		sampleDesc.MinLOD = 0;
+		sampleDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		HR(device->CreateSamplerState(&sampleDesc, PointClampSS.GetAddressOf()));
+
+		sampleDesc = {};
+		sampleDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+		sampleDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+		sampleDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+		sampleDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+		sampleDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
+		sampleDesc.BorderColor[0] = { 0.f };
+		sampleDesc.BorderColor[1] = { 0.f };
+		sampleDesc.BorderColor[2] = { 0.f };
+		sampleDesc.BorderColor[3] = { 1e5f };
+		sampleDesc.MinLOD = 0;
+		sampleDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		HR(device->CreateSamplerState(&sampleDesc, PointBoaderSS.GetAddressOf()));
+
+		sampleDesc = {};
+		sampleDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+		sampleDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampleDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampleDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampleDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
+		sampleDesc.MinLOD = 0;
+		sampleDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		HR(device->CreateSamplerState(&sampleDesc, PointWrapSS.GetAddressOf()));
+	}
+
+	void RenderStates::initRasterizerState(ID3D11Device* device)
+	{
 		// WireFrameRS
 		D3D11_RASTERIZER_DESC wireframeDesc;
 		ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
@@ -77,6 +134,10 @@ namespace directXWrapper
 		depthDesc.SlopeScaledDepthBias = 1.f;
 		HR(device->CreateRasterizerState(&depthDesc, DepthRS.GetAddressOf()));
 
+	}
+
+	void RenderStates::initBlendState(ID3D11Device* device)
+	{
 		// AlphaToCoverageBS
 		D3D11_BLEND_DESC alphaToCoverageDesc = { 0, };
 		alphaToCoverageDesc.AlphaToCoverageEnable = true; // 다중샘플링 시에 알파 포괄도 변환 여부
@@ -113,7 +174,7 @@ namespace directXWrapper
 		noRenderTargetWritesDesc.RenderTarget[0].RenderTargetWriteMask = 0; // 렌더 대상에 아무것도 쓰지 않겠다.!
 		HR(device->CreateBlendState(&noRenderTargetWritesDesc, NoRenderTargetWritesBS.GetAddressOf()));
 
-		//AdditiveBlending
+		//AdditiveBlendingBS
 		D3D11_BLEND_DESC additiveBlendingDesc = { 0, };
 		additiveBlendingDesc.AlphaToCoverageEnable = false;
 		additiveBlendingDesc.IndependentBlendEnable = false;
@@ -127,6 +188,10 @@ namespace directXWrapper
 		additiveBlendingDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
 		HR(device->CreateBlendState(&additiveBlendingDesc, AdditiveBlending.GetAddressOf()));
 
+	}
+
+	void RenderStates::initDepthStencilState(ID3D11Device* device)
+	{
 		// MarkMirrorDSS
 		D3D11_DEPTH_STENCIL_DESC mirrorDesc;
 		mirrorDesc.DepthEnable = true; // 깊이 판정 활성화

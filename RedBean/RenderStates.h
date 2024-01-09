@@ -9,10 +9,18 @@ namespace directXWrapper
 	public:
 		static void Init(ID3D11Device* device);
 
+	private:
+		static void initSamplerState(ID3D11Device* device);
+		static void initRasterizerState(ID3D11Device* device);
+		static void initBlendState(ID3D11Device* device);
+		static void initDepthStencilState(ID3D11Device* device);
+
 	public:
 		// SamplerState
-		static ComPtr<ID3D11SamplerState> LinearSS;
-		static ComPtr<ID3D11SamplerState> PointSS;
+		static ComPtr<ID3D11SamplerState> LinearWrapSS;
+		static ComPtr<ID3D11SamplerState> PointClampSS;
+		static ComPtr<ID3D11SamplerState> PointBoaderSS;
+		static ComPtr<ID3D11SamplerState> PointWrapSS;
 
 		// RasterizerState
 		static ComPtr<ID3D11RasterizerState> WireFrameRS; // 와이어프레임으로 렌더링

@@ -6,44 +6,44 @@ namespace common
 {
 	struct VertexData
 	{
-		Vector3 position = { 0, 0, 0 };
+		Vector3 Position = { 0, 0, 0 };
 	};
 
 	struct VertexTextureData
 	{
-		Vector3 position = { 0, 0, 0 };
-		Vector2 uv = { 0, 0 };
+		Vector3 Position = { 0, 0, 0 };
+		Vector2 UV = { 0, 0 };
 	};
 
 	struct VertexColorData
 	{
-		Vector3 position = { 0, 0, 0 };
+		Vector3 Position = { 0, 0, 0 };
 		SimpleMath::Color color = { 0, 0, 0, 0 };
 	};
 
 	struct VertexTextureNormalData
 	{
-		Vector3 position = { 0, 0, 0 };
-		Vector2 uv = { 0, 0 };
-		Vector3 normal = { 0, 0, 0 };
+		Vector3 Position = { 0, 0, 0 };
+		Vector2 UV = { 0, 0 };
+		Vector3 Normal = { 0, 0, 0 };
 	};
 
 	struct VertexTextureNormalTangentData
 	{
-		Vector3 position = { 0, 0, 0 };
-		Vector2 uv = { 0, 0 };
-		Vector3 normal = { 0, 0, 0 };
-		Vector3 tangent = { 0, 0, 0 };
+		Vector3 Position = { 0, 0, 0 };
+		Vector2 UV = { 0, 0 };
+		Vector3 Normal = { 0, 0, 0 };
+		Vector3 Tangent = { 0, 0, 0 };
 	};
 
 	struct VertexTextureNormalTangentBlendData
 	{
-		Vector3 position = { 0, 0, 0 };
-		Vector2 uv = { 0, 0 };
-		Vector3 normal = { 0, 0, 0 };
-		Vector3 tangent = { 0, 0, 0 };
-		Vector4 blendIndices = { 0, 0, 0, 0 };
-		Vector4 blendWeights = { 0, 0, 0, 0 };
+		Vector3 Position = { 0, 0, 0 };
+		Vector2 UV = { 0, 0 };
+		Vector3 Normal = { 0, 0, 0 };
+		Vector3 Tangent = { 0, 0, 0 };
+		Vector4 BlendIndices = { 0, 0, 0, 0 };
+		Vector4 BlendWeights = { 0, 0, 0, 0 };
 	};
 
 	using ModelVertexType = VertexTextureNormalTangentBlendData;

@@ -20,6 +20,7 @@ namespace directXWrapper
 		ShaderDesc PSDesc = { nullptr, "main", "ps_5_0" };
 	};
 
+	// 게임 시작 시에 이 넘을 빌드하고 하나로 쓸 수 있게 둔다.
 	class ShaderProgram
 	{
 	public:

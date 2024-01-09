@@ -10,7 +10,7 @@ class Material
 {
 #pragma region struct
 public:
-	enum class TexutreType
+	enum class eTexutreType
 	{
 		Diffuse,
 		Specular,
@@ -20,7 +20,7 @@ public:
 	struct Subset
 	{
 		string Name;
-		map<TexutreType, shared_ptr<directXWraper::Texture>> SRV;
+		map<eTexutreType, shared_ptr<directXWraper::Texture>> SRV;
 	};
 #pragma endregion
 

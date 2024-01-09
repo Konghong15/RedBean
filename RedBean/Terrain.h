@@ -77,8 +77,6 @@ namespace terrain
 		inline Matrix GetWorld()const;
 
 	private:
-		void buildTerrain(ID3D11Device* device);
-
 		void loadHeightmap();
 		void smooth();
 		bool inBounds(int i, int j);
@@ -92,18 +90,15 @@ namespace terrain
 	private:
 		static const int CellsPerPatch = 64;
 
-		// 상수 버퍼 만드는 게 귀찮았다.
 		PerFrame mPerFrame;
 		PerObject mPerObject;
 		directXWrapper::ConstantBuffer<PerFrame> mPerFrameCB;
 		directXWrapper::ConstantBuffer<PerObject> mPerObjectCB;
 
-		// 생성한 셰이더를 다 바인딩할 거라 귀찮았다.
 		directXWrapper::ShaderProgram mShaderProgram;
 		directXWrapper::IndexBuffer mIndexBuffer;
 		directXWrapper::VertexBuffer mVertexBuffer;
 
-		// 문자열 하나 전달하면 알아서 생성되도록
 		directXWrapper::Texture mTileArraySRV;
 		directXWrapper::Texture mBlendMapSRV;
 		ComPtr<ID3D11ShaderResourceView> mHeightMapSRV;
