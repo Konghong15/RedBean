@@ -2,8 +2,9 @@
 
 // todo : 구조체 이름 수정
 
-namespace common
+namespace builtIn
 {
+#pragma region Struct
 	struct VertexData
 	{
 		Vector3 Position = { 0, 0, 0 };
@@ -42,11 +43,12 @@ namespace common
 		Vector2 UV = { 0, 0 };
 		Vector3 Normal = { 0, 0, 0 };
 		Vector3 Tangent = { 0, 0, 0 };
-		Vector4 BlendIndices = { 0, 0, 0, 0 };
-		Vector4 BlendWeights = { 0, 0, 0, 0 };
+		Vector4 Indices = { 0, 0, 0, 0 };
+		Vector4 Weights = { 0, 0, 0, 0 };
 	};
 
 	using ModelVertexType = VertexTextureNormalTangentBlendData;
+#pragma endregion
 
 	class InputLayoutDesc
 	{
@@ -57,5 +59,16 @@ namespace common
 		static const vector<D3D11_INPUT_ELEMENT_DESC> VertexTextureNormalData;
 		static const vector<D3D11_INPUT_ELEMENT_DESC> VertexTextureNormalTangentData;
 		static const vector<D3D11_INPUT_ELEMENT_DESC> VertexTextureNormalTangentBlendData;
+	};
+
+	class InputLayouts
+	{
+	public:
+		static void InitAll(ID3D11Device* device);
+		static void DestroyAll();
+
+		static ID3D11InputLayout* Pos;
+		static ID3D11InputLayout* Basic32;
+		static ID3D11InputLayout* PosNormalTexTan;
 	};
 }

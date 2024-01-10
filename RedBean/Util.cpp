@@ -96,7 +96,7 @@ namespace common
 		return S_OK;
 	}
 
-	HRESULT D3DHelper::CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
+	HRESULT D3DHelper::CompileShaderFromFile(const WCHAR* szFileName, LPCSTR EntryPoint, LPCSTR ShaderModel, ID3DBlob** ppBlobOut)
 	{
 		HRESULT hr = S_OK;
 
@@ -113,7 +113,7 @@ namespace common
 #endif
 
 		ID3DBlob* pErrorBlob = nullptr;
-		hr = D3DCompileFromFile(szFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, szEntryPoint, szShaderModel,
+		hr = D3DCompileFromFile(szFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, EntryPoint, ShaderModel,
 			dwShaderFlags, 0, ppBlobOut, &pErrorBlob);
 		if (FAILED(hr))
 		{

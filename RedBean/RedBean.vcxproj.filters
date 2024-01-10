@@ -13,12 +13,6 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{b1d8b4df-39e9-4584-85d6-6adc5f8af318}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manager">
-      <UniqueIdentifier>{9cbec012-f8cf-4d07-9da8-ae2cef19e4b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="InterfaceClass">
-      <UniqueIdentifier>{af9f098d-8c53-4a1d-b582-36a4e999bfe1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shader\Terrain">
       <UniqueIdentifier>{0c296308-1259-463e-918a-c34d84eac3f1}</UniqueIdentifier>
     </Filter>
@@ -37,11 +31,14 @@
     <Filter Include="Shader\PostProcessing">
       <UniqueIdentifier>{2e0821d6-0b8d-411b-8c83-c1194a495eec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Model">
+    <Filter Include="RenderObject">
       <UniqueIdentifier>{b1cf14b7-27f9-4d32-95e1-a27f61cb8ab3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render">
+    <Filter Include="RenderSystem">
       <UniqueIdentifier>{9e14388e-e535-43c8-9435-60b1926da196}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{9cbec012-f8cf-4d07-9da8-ae2cef19e4b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -103,34 +100,34 @@
       <Filter>Manager</Filter>
     </ClCompile>
     <ClCompile Include="Material.cpp">
-      <Filter>Model</Filter>
+      <Filter>RenderObject</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
-      <Filter>Model</Filter>
+      <Filter>RenderObject</Filter>
     </ClCompile>
     <ClCompile Include="MeshGeometry.cpp">
-      <Filter>Model</Filter>
+      <Filter>RenderObject</Filter>
     </ClCompile>
     <ClCompile Include="SkinnedModel.cpp">
-      <Filter>Model</Filter>
+      <Filter>RenderObject</Filter>
     </ClCompile>
     <ClCompile Include="ParticleSystem.cpp">
-      <Filter>Render</Filter>
+      <Filter>RenderSystem</Filter>
     </ClCompile>
     <ClCompile Include="ShadowMap.cpp">
-      <Filter>Render</Filter>
+      <Filter>RenderSystem</Filter>
     </ClCompile>
     <ClCompile Include="SkinnedData.cpp">
-      <Filter>Render</Filter>
+      <Filter>RenderSystem</Filter>
     </ClCompile>
     <ClCompile Include="Sky.cpp">
-      <Filter>Render</Filter>
+      <Filter>RenderSystem</Filter>
     </ClCompile>
     <ClCompile Include="Ssao.cpp">
-      <Filter>Render</Filter>
+      <Filter>RenderSystem</Filter>
     </ClCompile>
     <ClCompile Include="Terrain.cpp">
-      <Filter>Render</Filter>
+      <Filter>RenderSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -189,34 +186,34 @@
       <Filter>Manager</Filter>
     </ClInclude>
     <ClInclude Include="Material.h">
-      <Filter>Model</Filter>
+      <Filter>RenderObject</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
-      <Filter>Model</Filter>
+      <Filter>RenderObject</Filter>
     </ClInclude>
     <ClInclude Include="MeshGeometry.h">
-      <Filter>Model</Filter>
+      <Filter>RenderObject</Filter>
     </ClInclude>
     <ClInclude Include="SkinnedModel.h">
-      <Filter>Model</Filter>
+      <Filter>RenderObject</Filter>
     </ClInclude>
     <ClInclude Include="ParticleSystem.h">
-      <Filter>Render</Filter>
+      <Filter>RenderSystem</Filter>
     </ClInclude>
     <ClInclude Include="ShadowMap.h">
-      <Filter>Render</Filter>
+      <Filter>RenderSystem</Filter>
     </ClInclude>
     <ClInclude Include="SkinnedData.h">
-      <Filter>Render</Filter>
+      <Filter>RenderSystem</Filter>
     </ClInclude>
     <ClInclude Include="Sky.h">
-      <Filter>Render</Filter>
+      <Filter>RenderSystem</Filter>
     </ClInclude>
     <ClInclude Include="Ssao.h">
-      <Filter>Render</Filter>
+      <Filter>RenderSystem</Filter>
     </ClInclude>
     <ClInclude Include="Terrain.h">
-      <Filter>Render</Filter>
+      <Filter>RenderSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

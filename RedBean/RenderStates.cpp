@@ -2,7 +2,7 @@
 
 #include "RenderStates.h"
 
-namespace directXWrapper
+namespace builtIn
 {
 	bool RenderStates::mbIsInit = false;
 
@@ -33,7 +33,7 @@ namespace directXWrapper
 	ComPtr<ID3D11DepthStencilState> RenderStates::NoDepthWrites;
 	ComPtr<ID3D11DepthStencilState> RenderStates::EqualsDSS;
 
-	void RenderStates::Init(ID3D11Device* device)
+	void RenderStates::InitAll(ID3D11Device* device)
 	{
 		if (mbIsInit)
 		{
@@ -46,6 +46,10 @@ namespace directXWrapper
 		initRasterizerState(device);
 		initBlendState(device);
 		initDepthStencilState(device);
+	}
+
+	void RenderStates::DestroyAll()
+	{
 	}
 
 	void RenderStates::initSamplerState(ID3D11Device* device)

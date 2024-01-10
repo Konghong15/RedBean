@@ -1,8 +1,8 @@
 #include "pch.h"
 
-#include "ShaderProgram.h"
+#include "ShaderPrograms.h"
 
-namespace directXWrapper
+namespace builtIn
 {
 	bool ShaderProgram::Init(ID3D11Device* device, const ShaderProgramDesc& shaderProgramDesc)
 	{
@@ -11,13 +11,13 @@ namespace directXWrapper
 		ComPtr<ID3DBlob> vsBytecode;
 
 		// Create VertexShader
-		if (shaderProgramDesc.VSDesc.szFileNameOrNull != nullptr)
+		if (shaderProgramDesc.VSDesc.FilePathOrNull != nullptr)
 		{
 			const auto& vsDesc = shaderProgramDesc.VSDesc;
 
-			HR(common::D3DHelper::CompileShaderFromFile(vsDesc.szFileNameOrNull,
-				vsDesc.szEntryPoint,
-				vsDesc.szShaderModel,
+			HR(common::D3DHelper::CompileShaderFromFile(vsDesc.FilePathOrNull,
+				vsDesc.EntryPoint,
+				vsDesc.ShaderModel,
 				vsBytecode.GetAddressOf()));
 
 			HR(device->CreateVertexShader(vsBytecode->GetBufferPointer(),
@@ -40,17 +40,16 @@ namespace directXWrapper
 				mInputLayout.GetAddressOf()));
 		}
 
-
 		// Create Hull Shader
-		if (shaderProgramDesc.HSDesc.szFileNameOrNull != nullptr)
+		if (shaderProgramDesc.HSDesc.FilePathOrNull != nullptr)
 		{
 			const auto& hsDesc = shaderProgramDesc.HSDesc;
 
 			ComPtr<ID3DBlob> hsBytecode;
 
-			HR(common::D3DHelper::CompileShaderFromFile(hsDesc.szFileNameOrNull,
-				hsDesc.szEntryPoint,
-				hsDesc.szShaderModel,
+			HR(common::D3DHelper::CompileShaderFromFile(hsDesc.FilePathOrNull,
+				hsDesc.EntryPoint,
+				hsDesc.ShaderModel,
 				hsBytecode.GetAddressOf()));
 
 			HR(device->CreateHullShader(hsBytecode->GetBufferPointer(),
@@ -60,15 +59,15 @@ namespace directXWrapper
 		}
 
 		// Create Domain Shader
-		if (shaderProgramDesc.DSDesc.szFileNameOrNull != nullptr)
+		if (shaderProgramDesc.DSDesc.FilePathOrNull != nullptr)
 		{
 			const auto& dsDesc = shaderProgramDesc.DSDesc;
 
 			ComPtr<ID3DBlob> dsBytecode;
 
-			HR(common::D3DHelper::CompileShaderFromFile(dsDesc.szFileNameOrNull,
-				dsDesc.szEntryPoint,
-				dsDesc.szShaderModel,
+			HR(common::D3DHelper::CompileShaderFromFile(dsDesc.FilePathOrNull,
+				dsDesc.EntryPoint,
+				dsDesc.ShaderModel,
 				dsBytecode.GetAddressOf()));
 
 			HR(device->CreateDomainShader(dsBytecode->GetBufferPointer(),
@@ -78,15 +77,15 @@ namespace directXWrapper
 		}
 
 		// Create Geometry Shader
-		if (shaderProgramDesc.GSDesc.szFileNameOrNull != nullptr)
+		if (shaderProgramDesc.GSDesc.FilePathOrNull != nullptr)
 		{
 			const auto& gsDesc = shaderProgramDesc.GSDesc;
 
 			ComPtr<ID3DBlob> gsBytecode;
 
-			HR(common::D3DHelper::CompileShaderFromFile(gsDesc.szFileNameOrNull,
-				gsDesc.szEntryPoint,
-				gsDesc.szShaderModel,
+			HR(common::D3DHelper::CompileShaderFromFile(gsDesc.FilePathOrNull,
+				gsDesc.EntryPoint,
+				gsDesc.ShaderModel,
 				gsBytecode.GetAddressOf()));
 
 			HR(device->CreateGeometryShader(gsBytecode->GetBufferPointer(),
@@ -96,15 +95,15 @@ namespace directXWrapper
 		}
 
 		// Create Pixel Shader
-		if (shaderProgramDesc.PSDesc.szFileNameOrNull != nullptr)
+		if (shaderProgramDesc.PSDesc.FilePathOrNull != nullptr)
 		{
 			const auto& psDesc = shaderProgramDesc.PSDesc;
 
 			ComPtr<ID3DBlob> psBytecode;
 
-			HR(common::D3DHelper::CompileShaderFromFile(psDesc.szFileNameOrNull,
-				psDesc.szEntryPoint,
-				psDesc.szShaderModel,
+			HR(common::D3DHelper::CompileShaderFromFile(psDesc.FilePathOrNull,
+				psDesc.EntryPoint,
+				psDesc.ShaderModel,
 				psBytecode.GetAddressOf()));
 
 			HR(device->CreatePixelShader(psBytecode->GetBufferPointer(),
@@ -116,23 +115,30 @@ namespace directXWrapper
 		return true;
 	}
 
-	void ShaderProgram::Bind(ID3D11DeviceContext* context)
+	BasicModel ShaderProgrames::BasicModelProgram;
+	SkinnedModel ShaderProgrames::SkinnedModelProgram;
+
+	void ShaderProgrames::InitAll(ID3D11Device* device)
 	{
-		context->IASetPrimitiveTopology(mTopology);
-
-		if (mInputLayout.Get() != nullptr)
+		// basic
 		{
-			context->IASetInputLayout(mInputLayout.Get());
+			ShaderProgramDesc basicDesc;
+			basicDesc.VSDesc.FilePathOrNull = L"BasicModelVS.hlsl";
+			basicDesc.PSDesc.FilePathOrNull = L"ModelPS.hlsl";
+			BasicModelProgram.Init(device, basicDesc);
 		}
 
-		if (mVertexShader.Get() != nullptr)
+		// skinned
 		{
-			context->VSSetShader(mVertexShader.Get(), nullptr, 0);
+			ShaderProgramDesc skinnedDesc;
+			skinnedDesc.VSDesc.FilePathOrNull = L"SkinnedModelVS.hlsl";
+			skinnedDesc.PSDesc.FilePathOrNull = L"ModelPS.hlsl";
+			SkinnedModelProgram.Init(device, skinnedDesc);
 		}
+	}
 
-		if (mPixelShader.Get() != nullptr)
-		{
-			context->PSSetShader(mPixelShader.Get(), nullptr, 0);
-		}
+	void ShaderProgrames::DestroyAll()
+	{
+
 	}
 }

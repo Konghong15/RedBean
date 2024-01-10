@@ -24,16 +24,16 @@ Ssao::Ssao(ID3D11Device* device, ID3D11DeviceContext* dc, int width, int height,
 	BuildRandomVectorTexture();
 
 	directXWrapper::ShaderProgramDesc shaderDesc;
-	shaderDesc.VSDesc.szFileNameOrNull = L"NormalMapVS.hlsl";
-	shaderDesc.PSDesc.szFileNameOrNull = L"NormalMapPS.hlsl";
+	shaderDesc.VSDesc.FilePathOrNull = L"NormalMapVS.hlsl";
+	shaderDesc.PSDesc.FilePathOrNull = L"NormalMapPS.hlsl";
 	mNormalSP.Init(device, shaderDesc);
 
-	shaderDesc.VSDesc.szFileNameOrNull = L"SsaoBlurVS.hlsl";
-	shaderDesc.PSDesc.szFileNameOrNull = L"SsaoBlurPS.hlsl";
+	shaderDesc.VSDesc.FilePathOrNull = L"SsaoBlurVS.hlsl";
+	shaderDesc.PSDesc.FilePathOrNull = L"SsaoBlurPS.hlsl";
 	mSsaoBlurSP.Init(device, shaderDesc);
 
-	shaderDesc.VSDesc.szFileNameOrNull = L"SsaoVS.hlsl";
-	shaderDesc.PSDesc.szFileNameOrNull = L"SsaoPS.hlsl";
+	shaderDesc.VSDesc.FilePathOrNull = L"SsaoVS.hlsl";
+	shaderDesc.PSDesc.FilePathOrNull = L"SsaoPS.hlsl";
 	mSsaoSP.Init(device, shaderDesc);
 }
 

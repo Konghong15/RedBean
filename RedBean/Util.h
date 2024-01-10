@@ -36,7 +36,7 @@ namespace common
 	public:
 		static ID3D11ShaderResourceView* CreateTexture2DArraySRV(ID3D11Device* device, ID3D11DeviceContext* context, const std::vector<std::wstring>& filenames);
 		static HRESULT CreateTextureFromFile(ID3D11Device* d3dDevice, const wchar_t* szFileName, ID3D11ShaderResourceView** textureView);
-		static HRESULT CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
+		static HRESULT CompileShaderFromFile(const WCHAR* szFileName, LPCSTR EntryPoint, LPCSTR ShaderModel, ID3DBlob** ppBlobOut);
 		static ID3D11SamplerState* CreateSamplerState(ID3D11Device* d3dDevice, D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode);
 		static ID3D11Buffer* CreateConstantBuffer(ID3D11Device* d3dDevice, const void* data, UINT size);
 		template<typename T>

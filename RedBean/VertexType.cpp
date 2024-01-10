@@ -2,7 +2,7 @@
 
 #include "VertexType.h"
 
-namespace common
+namespace builtIn
 {
 	const vector<D3D11_INPUT_ELEMENT_DESC> InputLayoutDesc::VertexData =
 	{

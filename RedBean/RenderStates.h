@@ -1,13 +1,12 @@
 #pragma once
 
-namespace directXWrapper
+namespace builtIn
 {
-	// 고민 : 싱글톤으로 만드는 게 나으려나
-
 	class RenderStates
 	{
 	public:
-		static void Init(ID3D11Device* device);
+		static void InitAll(ID3D11Device* device);
+		static void DestroyAll(); // 명시적 리소스 해제를 처리해줘야 할까 고민되네
 
 	private:
 		static void initSamplerState(ID3D11Device* device);

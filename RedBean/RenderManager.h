@@ -20,6 +20,23 @@ class RenderManager
 {
 public:
 
+	// 
+	// 기능을 뺴자 => 기능이 안 나왔는데 최적화하고 조건부 컴파일하고, 의미가 있나?
+	//
+
+	void Render()
+	{
+		
+		// 니가 디퍼드용 텍스처 어떻게 만들지
+		// 디퍼드 텍스처를 다 그린다.
+
+		// 랜더 패스
+
+		// 후처리 
+	}
+
+
+
 	void RegisterRednerInfo(RenderInfo renderInfo) { mRenderQueue.push(renderInfo); }
 	void DrawAll()
 	{

@@ -50,10 +50,10 @@ namespace terrain
 		// 쉐이더 프로그램
 		directXWrapper::ShaderProgramDesc shaderProgramDesc;
 		shaderProgramDesc.InputLayoutDescOrNull = &inputLayoutDesc;
-		shaderProgramDesc.VSDesc.szFileNameOrNull = L"TerrainVS.hlsl";
-		shaderProgramDesc.HSDesc.szFileNameOrNull = L"TerrainHS.hlsl";
-		shaderProgramDesc.DSDesc.szFileNameOrNull = L"TerrainDS.hlsl";
-		shaderProgramDesc.PSDesc.szFileNameOrNull = L"TerrainPS.hlsl";
+		shaderProgramDesc.VSDesc.FilePathOrNull = L"TerrainVS.hlsl";
+		shaderProgramDesc.HSDesc.FilePathOrNull = L"TerrainHS.hlsl";
+		shaderProgramDesc.DSDesc.FilePathOrNull = L"TerrainDS.hlsl";
+		shaderProgramDesc.PSDesc.FilePathOrNull = L"TerrainPS.hlsl";
 		mShaderProgram.Init(device, shaderProgramDesc);
 
 		// 버퍼 생성
