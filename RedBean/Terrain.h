@@ -3,7 +3,7 @@
 #include "IndexBuffer.h"
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
-#include "ShaderProgram.h"
+#include "ShaderPrograms.h"
 #include "Texture.h"
 
 namespace terrain
@@ -90,12 +90,6 @@ namespace terrain
 	private:
 		static const int CellsPerPatch = 64;
 
-		PerFrame mPerFrame;
-		PerObject mPerObject;
-		directXWrapper::ConstantBuffer<PerFrame> mPerFrameCB;
-		directXWrapper::ConstantBuffer<PerObject> mPerObjectCB;
-
-		directXWrapper::ShaderProgram mShaderProgram;
 		directXWrapper::IndexBuffer mIndexBuffer;
 		directXWrapper::VertexBuffer mVertexBuffer;
 

@@ -14,6 +14,7 @@ class MeshGeometry
 public:
 	struct Subset
 	{
+		UINT Id;
 		string Name;
 		UINT VertexStart = 0;
 		UINT VertexCount = 0;
@@ -23,9 +24,11 @@ public:
 #pragma endregion
 
 public:
-	void Draw(ID3D11DeviceContext* context, size_t index);
+	MeshGeometry(aiScene* scene);
+	~MeshGeometry() = default;
 
-	shared_ptr<directXWrapper::VertexBuffer> VB = nullptr;
+	void Draw(ID3D11DeviceContext* context, size_t index);
+ 	shared_ptr<directXWrapper::VertexBuffer> VB = nullptr;
 	shared_ptr<directXWrapper::IndexBuffer> IB = nullptr;
 	vector<Subset> Subsets;
 };

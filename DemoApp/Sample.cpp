@@ -1,7 +1,6 @@
 #include "pch.h"
 
 #include "Sample.h"
-#include "GeometryGenerator.h"
 
 namespace entryPoint
 {
@@ -27,11 +26,5 @@ namespace entryPoint
 
 	void Sample::Render()
 	{
-		assert(md3dContext);
-		assert(mSwapChain);
-
-		float color[] = { 1.0f, 1.0f, 0.0f, 1.0f };
-
-		mSwapChain->Present(0, 0);
 	}
 }

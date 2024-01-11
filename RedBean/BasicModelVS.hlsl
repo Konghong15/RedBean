@@ -18,7 +18,8 @@ struct VS_OUTPUT
 
 cbuffer cbObject : register(b0)
 {
-	matrix WVP;
+	matrix gWVP;
+	matrix gWorldMat;
 	float4 camPosW;
 };
 
@@ -26,17 +27,17 @@ VS_OUTPUT main(VS_INPUT Input)
 { 
 	VS_OUTPUT Output;
 	
-	Output.position = mul(float4(Input.position, 1.f), WVP);
+	Output.position = mul(float4(Input.position, 1.f), gWVP);
 	Output.UV = Input.UV;
 
-	float4 worldPosition = mul(Input.position, worldMat);
+	float4 worldPosition = mul(Input.position, gWorldMat);
 	float3 viewDir = worldPosition.xyz - camPosW.xyz;
 	Output.viewDir = normalize(viewDir);
 
-	float3 worldNormal = mul(Input.normal, (float3x3)worldMat);
+	float3 worldNormal = mul(Input.normal, (float3x3)gWorldMat);
 	Output.N = normalize(worldNormal);
 	
-	float3 worldTangent = mul(Input.tangent, (float3x3)worldMat);
+	float3 worldTangent = mul(Input.tangent, (float3x3)gWorldMat);
 	Output.T = normalize(worldTangent);
 	
 	Output.B = cross(worldNormal, worldTangent);

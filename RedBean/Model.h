@@ -7,6 +7,7 @@ class MeshGeometry;
 
 struct Model
 {
+
 	shared_ptr<Material> Material = nullptr;
 	shared_ptr<MeshGeometry> MeshGeometry = nullptr;
 };

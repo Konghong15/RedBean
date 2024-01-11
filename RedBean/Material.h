@@ -6,25 +6,30 @@ namespace directXWraper
 	class ShaderProgram;
 }
 
+enum class eTexutreType
+{
+	Diffuse,
+	Specular,
+	Normal,
+	Emissive,
+	Opacity,
+	Metalness,
+	Shininess, // smoothness
+	Size,
+};
+
 class Material
 {
-#pragma region struct
 public:
-	enum class eTexutreType
-	{
-		Diffuse,
-		Specular,
+	Material(aiMaterial* material);
+	~Material() = default;
 
-	};
+	shared_ptr<directXWraper::Texture> GetTextureOrNull(eTexutreType textureType) { return mTextures[static_cast<size_t>(textureType)]; }
+	bool GetIsPBRTexture() const { return mbIsPBRTexture; }
 
-	struct Subset
-	{
-		string Name;
-		map<eTexutreType, shared_ptr<directXWraper::Texture>> SRV;
-	};
-#pragma endregion
-
-public:
-	vector<Subset> Subsets;
+private:
+	string Name;
+	bool mbIsPBRTexture;
+	std::array<shared_ptr<directXWraper::Texture>, static_cast<size_t>(eTexutreType::Size)> mTextures;
 };
 

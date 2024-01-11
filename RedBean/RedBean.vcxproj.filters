@@ -7,35 +7,11 @@
     <Filter Include="DirectXWrapper">
       <UniqueIdentifier>{7b083ae9-18b5-4f38-a998-454fbb35cc71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader">
-      <UniqueIdentifier>{b1d8b4df-39e9-4584-85d6-6adc5f8af318}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shader\Terrain">
-      <UniqueIdentifier>{0c296308-1259-463e-918a-c34d84eac3f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shader\Ssao">
-      <UniqueIdentifier>{d1b92860-110e-494a-a1ea-d3c3ef65fde0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shader\Sky">
-      <UniqueIdentifier>{72ef1cfc-5aa4-4e91-9b89-3b13d99d34ff}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shader\Shadow">
-      <UniqueIdentifier>{00a74f98-8366-42d7-9453-742ef3dc0992}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shader\Particle">
-      <UniqueIdentifier>{00ad3547-5891-4eff-a50b-176b486a5e01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shader\PostProcessing">
-      <UniqueIdentifier>{2e0821d6-0b8d-411b-8c83-c1194a495eec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="RenderObject">
       <UniqueIdentifier>{b1cf14b7-27f9-4d32-95e1-a27f61cb8ab3}</UniqueIdentifier>
     </Filter>
     <Filter Include="RenderSystem">
       <UniqueIdentifier>{9e14388e-e535-43c8-9435-60b1926da196}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager">
-      <UniqueIdentifier>{9cbec012-f8cf-4d07-9da8-ae2cef19e4b7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header">
       <UniqueIdentifier>{47748222-3d51-48ec-a203-c2c06dca6187}</UniqueIdentifier>
@@ -43,31 +19,49 @@
     <Filter Include="BuiltIn">
       <UniqueIdentifier>{789cc657-2b88-4dde-80e8-54a561c652cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader\RenderObject">
+    <Filter Include="BuiltIn\Shader">
+      <UniqueIdentifier>{b1d8b4df-39e9-4584-85d6-6adc5f8af318}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BuiltIn\Shader\Terrain">
+      <UniqueIdentifier>{0c296308-1259-463e-918a-c34d84eac3f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BuiltIn\Shader\Ssao">
+      <UniqueIdentifier>{d1b92860-110e-494a-a1ea-d3c3ef65fde0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BuiltIn\Shader\Sky">
+      <UniqueIdentifier>{72ef1cfc-5aa4-4e91-9b89-3b13d99d34ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BuiltIn\Shader\Shadow">
+      <UniqueIdentifier>{00a74f98-8366-42d7-9453-742ef3dc0992}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BuiltIn\Shader\Particle">
+      <UniqueIdentifier>{00ad3547-5891-4eff-a50b-176b486a5e01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BuiltIn\Shader\PostProcessing">
+      <UniqueIdentifier>{2e0821d6-0b8d-411b-8c83-c1194a495eec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BuiltIn\Shader\RenderObject">
       <UniqueIdentifier>{5c3befce-81ec-40f3-85fa-1eac7dae0ecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DirectXWrapper\Buffer">
+      <UniqueIdentifier>{019cfe84-92b1-4cdd-a93b-b4eebc01be1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderObject\Resource">
+      <UniqueIdentifier>{f427ee50-f815-4ab3-80f9-a559f45cba88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\MainSystem">
+      <UniqueIdentifier>{42125661-a457-41ca-abba-890258ea274f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\SubSystem">
+      <UniqueIdentifier>{86706a70-fb3b-465c-960e-9679bafe1f42}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Util.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Processor.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="MathHelper.cpp">
       <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="ConstantBuffer.cpp">
-      <Filter>DirectXWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="IndexBuffer.cpp">
-      <Filter>DirectXWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>DirectXWrapper</Filter>
     </ClCompile>
     <ClCompile Include="GeometryGenerator.cpp">
       <Filter>Common</Filter>
@@ -81,41 +75,11 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>RenderObject</Filter>
-    </ClCompile>
     <ClCompile Include="Model.cpp">
-      <Filter>RenderObject</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshGeometry.cpp">
       <Filter>RenderObject</Filter>
     </ClCompile>
     <ClCompile Include="SkinnedModel.cpp">
       <Filter>RenderObject</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticleSystem.cpp">
-      <Filter>RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="ShadowMap.cpp">
-      <Filter>RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="SkinnedData.cpp">
-      <Filter>RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Sky.cpp">
-      <Filter>RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Ssao.cpp">
-      <Filter>RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Terrain.cpp">
-      <Filter>RenderSystem</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Header</Filter>
@@ -129,28 +93,61 @@
     <ClCompile Include="VertexType.cpp">
       <Filter>BuiltIn</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>DirectXWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>DirectXWrapper\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>DirectXWrapper\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>DirectXWrapper\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>RenderObject\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGeometry.cpp">
+      <Filter>RenderObject\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedData.cpp">
+      <Filter>RenderObject\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>RenderSystem\SubSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>RenderSystem\SubSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Sky.cpp">
+      <Filter>RenderSystem\SubSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Ssao.cpp">
+      <Filter>RenderSystem\SubSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>RenderSystem\SubSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderManager.cpp">
+      <Filter>RenderSystem\MainSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>RenderSystem\MainSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphic.cpp">
+      <Filter>RenderSystem\MainSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>RenderObject\Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MathHelper.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Processor.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Util.h">
       <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="ConstantBuffer.h">
-      <Filter>DirectXWrapper</Filter>
-    </ClInclude>
-    <ClInclude Include="IndexBuffer.h">
-      <Filter>DirectXWrapper</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
-      <Filter>DirectXWrapper</Filter>
     </ClInclude>
     <ClInclude Include="GeometryGenerator.h">
       <Filter>Common</Filter>
@@ -164,41 +161,11 @@
     <ClInclude Include="Camera.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>RenderObject</Filter>
-    </ClInclude>
     <ClInclude Include="Model.h">
-      <Filter>RenderObject</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshGeometry.h">
       <Filter>RenderObject</Filter>
     </ClInclude>
     <ClInclude Include="SkinnedModel.h">
       <Filter>RenderObject</Filter>
-    </ClInclude>
-    <ClInclude Include="ParticleSystem.h">
-      <Filter>RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowMap.h">
-      <Filter>RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="SkinnedData.h">
-      <Filter>RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Sky.h">
-      <Filter>RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Ssao.h">
-      <Filter>RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Terrain.h">
-      <Filter>RenderSystem</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header</Filter>
@@ -209,90 +176,138 @@
     <ClInclude Include="ShaderPrograms.h">
       <Filter>BuiltIn</Filter>
     </ClInclude>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>DirectXWrapper</Filter>
+    </ClInclude>
     <ClInclude Include="VertexType.h">
-      <Filter>BuiltIn</Filter>
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>DirectXWrapper\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>DirectXWrapper\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>DirectXWrapper\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>RenderObject\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGeometry.h">
+      <Filter>RenderObject\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedData.h">
+      <Filter>RenderObject\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>RenderSystem\SubSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>RenderSystem\SubSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Sky.h">
+      <Filter>RenderSystem\SubSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Ssao.h">
+      <Filter>RenderSystem\SubSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>RenderSystem\SubSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>RenderSystem\MainSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderManager.h">
+      <Filter>RenderSystem\MainSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic.h">
+      <Filter>RenderSystem\MainSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>RenderObject\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="TestVS.hlsl">
-      <Filter>Shader</Filter>
+      <Filter>BuiltIn\Shader</Filter>
     </FxCompile>
     <FxCompile Include="TestPS.hlsl">
-      <Filter>Shader</Filter>
+      <Filter>BuiltIn\Shader</Filter>
     </FxCompile>
     <FxCompile Include="TerrainVS.hlsl">
-      <Filter>Shader\Terrain</Filter>
+      <Filter>BuiltIn\Shader\Terrain</Filter>
     </FxCompile>
     <FxCompile Include="TerrainHS.hlsl">
-      <Filter>Shader\Terrain</Filter>
+      <Filter>BuiltIn\Shader\Terrain</Filter>
     </FxCompile>
     <FxCompile Include="TerrainPS.hlsl">
-      <Filter>Shader\Terrain</Filter>
+      <Filter>BuiltIn\Shader\Terrain</Filter>
     </FxCompile>
     <FxCompile Include="TerrainDS.hlsl">
-      <Filter>Shader\Terrain</Filter>
+      <Filter>BuiltIn\Shader\Terrain</Filter>
     </FxCompile>
     <FxCompile Include="NormalMapVS.hlsl">
-      <Filter>Shader\Ssao</Filter>
+      <Filter>BuiltIn\Shader\Ssao</Filter>
     </FxCompile>
     <FxCompile Include="NormalMapPS.hlsl">
-      <Filter>Shader\Ssao</Filter>
+      <Filter>BuiltIn\Shader\Ssao</Filter>
     </FxCompile>
     <FxCompile Include="SsaoBlurVS.hlsl">
-      <Filter>Shader\Ssao</Filter>
+      <Filter>BuiltIn\Shader\Ssao</Filter>
     </FxCompile>
     <FxCompile Include="SsaoBlurPS.hlsl">
-      <Filter>Shader\Ssao</Filter>
+      <Filter>BuiltIn\Shader\Ssao</Filter>
     </FxCompile>
     <FxCompile Include="SsaoVS.hlsl">
-      <Filter>Shader\Ssao</Filter>
+      <Filter>BuiltIn\Shader\Ssao</Filter>
     </FxCompile>
     <FxCompile Include="SsaoPS.hlsl">
-      <Filter>Shader\Ssao</Filter>
+      <Filter>BuiltIn\Shader\Ssao</Filter>
     </FxCompile>
     <FxCompile Include="ShadowMapVS.hlsl">
-      <Filter>Shader\Shadow</Filter>
+      <Filter>BuiltIn\Shader\Shadow</Filter>
     </FxCompile>
     <FxCompile Include="ShadowMapPS.hlsl">
-      <Filter>Shader\Shadow</Filter>
+      <Filter>BuiltIn\Shader\Shadow</Filter>
     </FxCompile>
     <FxCompile Include="SkyPS.hlsl">
-      <Filter>Shader\Sky</Filter>
+      <Filter>BuiltIn\Shader\Sky</Filter>
     </FxCompile>
     <FxCompile Include="SkyVS.hlsl">
-      <Filter>Shader\Sky</Filter>
+      <Filter>BuiltIn\Shader\Sky</Filter>
     </FxCompile>
     <FxCompile Include="ParticleStreamOutVS.hlsl">
-      <Filter>Shader\Particle</Filter>
+      <Filter>BuiltIn\Shader\Particle</Filter>
     </FxCompile>
     <FxCompile Include="ParticleStreamOutGS.hlsl">
-      <Filter>Shader\Particle</Filter>
+      <Filter>BuiltIn\Shader\Particle</Filter>
     </FxCompile>
     <FxCompile Include="ParticleDrawVS.hlsl">
-      <Filter>Shader\Particle</Filter>
+      <Filter>BuiltIn\Shader\Particle</Filter>
     </FxCompile>
     <FxCompile Include="ParticleDrawGS.hlsl">
-      <Filter>Shader\Particle</Filter>
+      <Filter>BuiltIn\Shader\Particle</Filter>
     </FxCompile>
     <FxCompile Include="ParticleDrawPS.hlsl">
-      <Filter>Shader\Particle</Filter>
+      <Filter>BuiltIn\Shader\Particle</Filter>
     </FxCompile>
     <FxCompile Include="BasicModelVS.hlsl">
-      <Filter>Shader\RenderObject</Filter>
+      <Filter>BuiltIn\Shader\RenderObject</Filter>
     </FxCompile>
     <FxCompile Include="ModelPS.hlsl">
-      <Filter>Shader\RenderObject</Filter>
+      <Filter>BuiltIn\Shader\RenderObject</Filter>
     </FxCompile>
     <FxCompile Include="SkinnedModelVS.hlsl">
-      <Filter>Shader\RenderObject</Filter>
+      <Filter>BuiltIn\Shader\RenderObject</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Terrain.hlsli">
-      <Filter>Shader\Terrain</Filter>
+      <Filter>BuiltIn\Shader\Terrain</Filter>
     </None>
     <None Include="LightHelper.hlsli">
-      <Filter>Shader</Filter>
+      <Filter>BuiltIn\Shader</Filter>
     </None>
   </ItemGroup>
 </Project>

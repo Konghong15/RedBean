@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ShaderProgram.h"
+#include "ShaderPrograms.h"
 #include "ConstantBuffer.h"
 
 class Ssao
@@ -65,14 +65,6 @@ private:
 	ComPtr<ID3D11ShaderResourceView> mAmbientSRV0;
 	ComPtr<ID3D11RenderTargetView> mAmbientRTV1;
 	ComPtr<ID3D11ShaderResourceView> mAmbientSRV1;
-
-	// shader Program
-	// constant buffer
-	directXWrapper::ShaderProgram mNormalSP;
-	directXWrapper::ShaderProgram mSsaoBlurSP;
-	directXWrapper::ShaderProgram mSsaoSP;
-	directXWrapper::ConstantBuffer<SsaoPerFrame> mSsaoPerFrameCB;
-	directXWrapper::ConstantBuffer<SsaoBlurPerFrame> mSsaoBlurPerFrameCB;
 
 	UINT mRenderTargetWidth;
 	UINT mRenderTargetHeight;

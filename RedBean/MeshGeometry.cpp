@@ -4,6 +4,10 @@
 #include "IndexBuffer.h"
 #include "VertexBuffer.h"
 
+MeshGeometry::MeshGeometry(aiScene* scene)
+{
+}
+
 void MeshGeometry::Draw(ID3D11DeviceContext* context, size_t index)
 {
 	assert(index < Subsets.size());

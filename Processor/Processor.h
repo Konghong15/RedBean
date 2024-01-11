@@ -16,7 +16,6 @@ namespace common
 		virtual void Update(float deltaTime) = 0;
 		virtual void Render() = 0;
 
-		virtual void OnResize();
 		virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 		virtual void OnMouseDown(WPARAM btnState, int x, int y) { }
@@ -40,20 +39,10 @@ namespace common
 		bool mbMinimized;
 		bool mbMaximized;
 		bool mbResizing;
-		UINT m4xMsaaQuality;
 
 		Timer mTimer;
 
-		ID3D11Device* md3dDevice;
-		ID3D11DeviceContext* md3dContext;
-		IDXGISwapChain* mSwapChain;
-		ID3D11Texture2D* mDepthStencilBuffer;
-		ID3D11RenderTargetView* mRenderTargetView;
-		ID3D11DepthStencilView* mDepthStencilView;
-		D3D11_VIEWPORT mScreenViewport;
-
 		std::wstring mTitle;
-		D3D_DRIVER_TYPE md3dDriverType;
 		UINT mWidth;
 		UINT mHeight;
 		bool mEnable4xMsaa;

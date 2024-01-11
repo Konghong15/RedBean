@@ -147,7 +147,7 @@ namespace builtIn
 
 	};
 
-	class ShaderProgrames
+	class ShaderPrograms
 	{
 	public:
 		static void InitAll(ID3D11Device* device);

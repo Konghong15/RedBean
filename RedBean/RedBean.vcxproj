@@ -105,6 +105,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -128,9 +130,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
+    <ClCompile Include="Graphic.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="LightHelper.cpp" />
     <ClCompile Include="Material.cpp" />
@@ -139,9 +143,9 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Processor.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="RenderStates.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="ShaderPrograms.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
@@ -151,15 +155,16 @@
     <ClCompile Include="Ssao.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexType.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="GeometryGenerator.h" />
+    <ClInclude Include="Graphic.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="LightHelper.h" />
     <ClInclude Include="Material.h" />
@@ -168,9 +173,9 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Processor.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="RenderStates.h" />
+    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ShaderPrograms.h" />
     <ClInclude Include="ShadowMap.h" />
@@ -180,7 +185,6 @@
     <ClInclude Include="Ssao.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="Timer.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexType.h" />
@@ -269,6 +273,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="SkyPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
