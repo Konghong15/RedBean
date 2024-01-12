@@ -1,19 +1,35 @@
 #pragma once
 
-// 이 모델이란 클래스는 이 사람이 하나의 로딩 단위로 사용할 뿐 나한테 큰 의미가 있나? 흠
+struct Node
+{
+	std::string Name;
+	size_t Index;
+	size_t ParentIndex;
 
+	Matrix ToParentMatrix = Matrix::Identity;
+	Matrix ToRootMatrix = Matrix::Identity;
+
+	Node* Parent;
+	vector<Node*> Children;
+
+	vector<pair<Mesh*, Material*>> MeshMaterial;
+};
+
+class Mesh;
 class Material;
-class MeshGeometry;
+class AnimationClip;
 
-struct Model
+class Model
 {
+public:
+	Model(const aiScene* aiScene);
+	~Model() = default;
 
-	shared_ptr<Material> Material = nullptr;
-	shared_ptr<MeshGeometry> MeshGeometry = nullptr;
+	void UpdateBoneNodeIndex();
+
+private:
+	Node* mRoot;
+	vector<Node*> mNodes;
+	std::map<string, AnimationClip*> mAnimationClips;
 };
 
-struct ModelInstance
-{
-	shared_ptr<Model> Model;
-	Matrix World;
-};

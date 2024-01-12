@@ -75,12 +75,6 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>RenderObject</Filter>
-    </ClCompile>
-    <ClCompile Include="SkinnedModel.cpp">
-      <Filter>RenderObject</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Header</Filter>
     </ClCompile>
@@ -104,15 +98,6 @@
     </ClCompile>
     <ClCompile Include="IndexBuffer.cpp">
       <Filter>DirectXWrapper\Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>RenderObject\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshGeometry.cpp">
-      <Filter>RenderObject\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="SkinnedData.cpp">
-      <Filter>RenderObject\Resource</Filter>
     </ClCompile>
     <ClCompile Include="ParticleSystem.cpp">
       <Filter>RenderSystem\SubSystem</Filter>
@@ -141,6 +126,18 @@
     <ClCompile Include="Animation.cpp">
       <Filter>RenderObject\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>RenderObject\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedData.cpp">
+      <Filter>RenderObject\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>RenderObject\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>RenderObject\Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MathHelper.h">
@@ -161,12 +158,6 @@
     <ClInclude Include="Camera.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>RenderObject</Filter>
-    </ClInclude>
-    <ClInclude Include="SkinnedModel.h">
-      <Filter>RenderObject</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header</Filter>
     </ClInclude>
@@ -179,9 +170,6 @@
     <ClInclude Include="RenderTarget.h">
       <Filter>DirectXWrapper</Filter>
     </ClInclude>
-    <ClInclude Include="VertexType.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="VertexBuffer.h">
       <Filter>DirectXWrapper\Buffer</Filter>
     </ClInclude>
@@ -190,15 +178,6 @@
     </ClInclude>
     <ClInclude Include="IndexBuffer.h">
       <Filter>DirectXWrapper\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>RenderObject\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshGeometry.h">
-      <Filter>RenderObject\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="SkinnedData.h">
-      <Filter>RenderObject\Resource</Filter>
     </ClInclude>
     <ClInclude Include="ParticleSystem.h">
       <Filter>RenderSystem\SubSystem</Filter>
@@ -225,6 +204,21 @@
       <Filter>RenderSystem\MainSystem</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
+      <Filter>RenderObject\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>RenderObject\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedData.h">
+      <Filter>RenderObject\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexType.h">
+      <Filter>BuiltIn</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>RenderObject\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
       <Filter>RenderObject\Resource</Filter>
     </ClInclude>
   </ItemGroup>

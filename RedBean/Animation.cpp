@@ -1,57 +1,75 @@
 #include "pch.h"
 #include "Animation.h"
 
+Keyframes::Keyframes(const string& name, const vector<Keyframe>& keyframes)
+	: mName(name)
+	, mKeyframes(keyframes)
+{
+}
+
+Matrix Keyframes::Interpolate(float timePos) const
+{
+	Vector3 position = mKeyframes[0].Translation;
+	Quaternion rotation = mKeyframes[0].Rotation;
+	Vector3 scaling = mKeyframes[0].Scale;
+
+	for (auto iter = mKeyframes.begin(); iter != mKeyframes.end(); ++iter)
+	{
+		if (iter->TimePos > timePos)
+		{
+			auto begin = iter - 1;
+			float delta = timePos - begin->TimePos;
+			float deltaRatio = delta / (iter->TimePos - begin->TimePos);
+
+			position = Vector3::Lerp(begin->Translation, iter->Translation, deltaRatio);
+			rotation = Quaternion::Slerp(begin->Rotation, iter->Rotation, deltaRatio);
+			scaling = Vector3::Lerp(begin->Scale, iter->Scale, deltaRatio);
+
+			break;
+		}
+	}
+
+	return Matrix::CreateScale(scaling)
+		* Matrix::CreateFromQuaternion(rotation)
+		* Matrix::CreateTranslation(position);
+}
+
 AnimationClip::AnimationClip(aiAnimation* animation)
 {
-	auto& currentAnimation = animation;
+	double totalFrame = animation->mDuration;
+	double framePerSeconds = 1 / (animation->mTicksPerSecond);
 
-	double totalFrame = currentAnimation->mDuration;
-	double framePerSeconds = 1 / (currentAnimation->mTicksPerSecond);
-	Duration = totalFrame * framePerSeconds;
-	Name = currentAnimation->mName.C_Str();
+	mDuration = totalFrame * framePerSeconds;
+	mName = animation->mName.C_Str();
 
-	for (unsigned int j = 0; j < currentAnimation->mNumChannels; ++j)
+	for (unsigned int j = 0; j < animation->mNumChannels; ++j)
 	{
-		auto& currentChennel = currentAnimation->mChannels[j];
+		auto& currentChennel = animation->mChannels[j];
 
-		BoneAnimation animationNode;
-		animationNode.Name = currentChennel->mNodeName.C_Str();
+		vector<Keyframe> keyframes;
+		keyframes.reserve(currentChennel->mNumPositionKeys);
 
 		for (unsigned int k = 0; k < currentChennel->mNumPositionKeys; ++k)
 		{
-			Keyframe keyAnimation;
+			Keyframe keyframe;
+			keyframe.TimePos = static_cast<float>(currentChennel->mPositionKeys[k].mTime * framePerSeconds);
 
-			keyAnimation.TimePos = static_cast<float>(currentChennel->mPositionKeys[k].mTime * framePerSeconds);
+			keyframe.Translation.x = currentChennel->mPositionKeys[k].mValue.x;
+			keyframe.Translation.y = currentChennel->mPositionKeys[k].mValue.y;
+			keyframe.Translation.z = currentChennel->mPositionKeys[k].mValue.z;
 
-			keyAnimation.Translation.x = currentChennel->mPositionKeys[k].mValue.x;
-			keyAnimation.Translation.y = currentChennel->mPositionKeys[k].mValue.y;
-			keyAnimation.Translation.z = currentChennel->mPositionKeys[k].mValue.z;
+			keyframe.Rotation.x = currentChennel->mRotationKeys[k].mValue.x;
+			keyframe.Rotation.y = currentChennel->mRotationKeys[k].mValue.y;
+			keyframe.Rotation.z = currentChennel->mRotationKeys[k].mValue.z;
+			keyframe.Rotation.w = currentChennel->mRotationKeys[k].mValue.w;
 
-			keyAnimation.Rotation.x = currentChennel->mRotationKeys[k].mValue.x;
-			keyAnimation.Rotation.y = currentChennel->mRotationKeys[k].mValue.y;
-			keyAnimation.Rotation.z = currentChennel->mRotationKeys[k].mValue.z;
-			keyAnimation.Rotation.w = currentChennel->mRotationKeys[k].mValue.w;
+			keyframe.Scale.x = currentChennel->mScalingKeys[k].mValue.x;
+			keyframe.Scale.y = currentChennel->mScalingKeys[k].mValue.y;
+			keyframe.Scale.z = currentChennel->mScalingKeys[k].mValue.z;
 
-			keyAnimation.Scale.x = currentChennel->mScalingKeys[k].mValue.x;
-			keyAnimation.Scale.y = currentChennel->mScalingKeys[k].mValue.y;
-			keyAnimation.Scale.z = currentChennel->mScalingKeys[k].mValue.z;
-
-			animationNode.Keyframes.push_back(keyAnimation);
+			keyframes.push_back(keyframe);
 		}
 
-		BoneAnimations.push_back(animationNode);
-	}
-}
-
-AnimationClips::AnimationClips(aiScene* scene)
-{
-	assert(scene->HasAnimations());
-
-	for (unsigned int i = 0; scene->mNumAnimations; ++i)
-	{
-		aiAnimation* curAnim = scene->mAnimations[i];
-
-		assert(Animations.find(curAnim->mName.C_Str()) == Animations.end());
-		Animations.emplace(curAnim->mName.C_Str(), curAnim);
+		mAnimationNodes.emplace(currentChennel->mNodeName.C_Str(), keyframes);
 	}
 }

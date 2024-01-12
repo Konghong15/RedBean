@@ -5,60 +5,62 @@
 namespace builtIn
 {
 #pragma region Struct
-	struct VertexData
+	namespace vertex
 	{
-		Vector3 Position = { 0, 0, 0 };
-	};
+		struct Pos
+		{
+			Vector3 Position = { 0, 0, 0 };
+		};
 
-	struct VertexTextureData
-	{
-		Vector3 Position = { 0, 0, 0 };
-		Vector2 UV = { 0, 0 };
-	};
+		struct PosTex
+		{
+			Vector3 Position = { 0, 0, 0 };
+			Vector2 UV = { 0, 0 };
+		};
 
-	struct VertexColorData
-	{
-		Vector3 Position = { 0, 0, 0 };
-		SimpleMath::Color color = { 0, 0, 0, 0 };
-	};
+		struct PosColor
+		{
+			Vector3 Position = { 0, 0, 0 };
+			SimpleMath::Color color = { 0, 0, 0, 0 };
+		};
 
-	struct VertexTextureNormalData
-	{
-		Vector3 Position = { 0, 0, 0 };
-		Vector2 UV = { 0, 0 };
-		Vector3 Normal = { 0, 0, 0 };
-	};
+		struct PosTexNormal
+		{
+			Vector3 Position = { 0, 0, 0 };
+			Vector2 UV = { 0, 0 };
+			Vector3 Normal = { 0, 0, 0 };
+		};
 
-	struct VertexTextureNormalTangentData
-	{
-		Vector3 Position = { 0, 0, 0 };
-		Vector2 UV = { 0, 0 };
-		Vector3 Normal = { 0, 0, 0 };
-		Vector3 Tangent = { 0, 0, 0 };
-	};
+		struct PosTexNormalTan
+		{
+			Vector3 Position = { 0, 0, 0 };
+			Vector2 UV = { 0, 0 };
+			Vector3 Normal = { 0, 0, 0 };
+			Vector3 Tangent = { 0, 0, 0 };
+		};
 
-	struct VertexTextureNormalTangentBlendData
-	{
-		Vector3 Position = { 0, 0, 0 };
-		Vector2 UV = { 0, 0 };
-		Vector3 Normal = { 0, 0, 0 };
-		Vector3 Tangent = { 0, 0, 0 };
-		Vector4 Indices = { 0, 0, 0, 0 };
-		Vector4 Weights = { 0, 0, 0, 0 };
-	};
+		struct PosTexNormalTanSkinned
+		{
+			Vector3 Position = { 0, 0, 0 };
+			Vector2 UV = { 0, 0 };
+			Vector3 Normal = { 0, 0, 0 };
+			Vector3 Tangent = { 0, 0, 0 };
+			Vector4 Indices = { 0, 0, 0, 0 };
+			Vector4 Weights = { 0, 0, 0, 0 };
+		};
+	}
 
-	using ModelVertexType = VertexTextureNormalTangentBlendData;
 #pragma endregion
 
 	class InputLayoutDesc
 	{
 	public:
 		static const vector<D3D11_INPUT_ELEMENT_DESC> VertexData;
-		static const vector<D3D11_INPUT_ELEMENT_DESC> VertexTextureData;
-		static const vector<D3D11_INPUT_ELEMENT_DESC> VertexColorData;
-		static const vector<D3D11_INPUT_ELEMENT_DESC> VertexTextureNormalData;
-		static const vector<D3D11_INPUT_ELEMENT_DESC> VertexTextureNormalTangentData;
-		static const vector<D3D11_INPUT_ELEMENT_DESC> VertexTextureNormalTangentBlendData;
+		static const vector<D3D11_INPUT_ELEMENT_DESC> PosTex;
+		static const vector<D3D11_INPUT_ELEMENT_DESC> PosColor;
+		static const vector<D3D11_INPUT_ELEMENT_DESC> PosTexNormal;
+		static const vector<D3D11_INPUT_ELEMENT_DESC> PosTexNormalTan;
+		static const vector<D3D11_INPUT_ELEMENT_DESC> PosTexNormalTanSkinned;
 	};
 
 	class InputLayouts

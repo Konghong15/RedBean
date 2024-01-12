@@ -8,14 +8,21 @@ struct Keyframe
 	Quaternion Rotation;
 };
 
-struct BoneAnimation
+class Keyframes
 {
-	float GetStartTime() const { return Keyframes.front().TimePos; }
-	float GetEndTime() const { return Keyframes.back().TimePos; }
-	void Interpolate(float t, Matrix* outMatrix) const;
+public:
+	Keyframes(const string& name, const vector<Keyframe>& keyframes);
+	Keyframes() = default;
 
-	string Name;
-	vector<Keyframe> Keyframes;
+	Matrix Interpolate(float timePos) const;
+
+	const string& GetName() { return mName; }
+	float GetStartTime() const { return mKeyframes.front().TimePos; }
+	float GetEndTime() const { return mKeyframes.back().TimePos; }
+
+private:
+	string mName;
+	vector<Keyframe> mKeyframes;
 };
 
 struct AnimationClip
@@ -23,21 +30,12 @@ struct AnimationClip
 	AnimationClip(aiAnimation* animation);
 	~AnimationClip() = default;
 
-	float GetClipStartTime() const;
-	float GetClipEndTime() const;
-	void Interpolate(float t, std::vector<Matrix>* outBoneTransforms) const;
+	const string& GetName() { return mName; }
+	float GetDuration() { return mDuration; }
+	const map<string, Keyframes>& GetAnimationNodes() { return mAnimationNodes; }
 
-	string Name;
-	float Duration;
-	vector<BoneAnimation> BoneAnimations;
+private:
+	string mName;
+	float mDuration;
+	map<string, Keyframes> mAnimationNodes;
 };
-
-struct AnimationClips
-{
-	AnimationClips(aiScene* scene);
-	~AnimationClips() = default;
-	
-	string Name;
-	map<string, AnimationClip> Animations;
-};
-

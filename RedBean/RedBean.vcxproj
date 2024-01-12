@@ -139,7 +139,7 @@
     <ClCompile Include="LightHelper.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MathHelper.cpp" />
-    <ClCompile Include="MeshGeometry.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="pch.cpp" />
@@ -150,7 +150,6 @@
     <ClCompile Include="ShaderPrograms.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
-    <ClCompile Include="SkinnedModel.cpp" />
     <ClCompile Include="Sky.cpp" />
     <ClCompile Include="Ssao.cpp" />
     <ClCompile Include="Terrain.cpp" />
@@ -169,7 +168,7 @@
     <ClInclude Include="LightHelper.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MathHelper.h" />
-    <ClInclude Include="MeshGeometry.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="pch.h" />
@@ -180,7 +179,6 @@
     <ClInclude Include="ShaderPrograms.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="SkinnedData.h" />
-    <ClInclude Include="SkinnedModel.h" />
     <ClInclude Include="Sky.h" />
     <ClInclude Include="Ssao.h" />
     <ClInclude Include="Terrain.h" />

@@ -109,7 +109,7 @@
 //	mSsaoSP.Bind(mDC.Get());
 //
 //	// 정규화된 사각형 그리기
-//	UINT stride = sizeof(common::VertexTextureNormalData);
+//	UINT stride = sizeof(common::PosTexNormal);
 //	UINT offset = 0;
 //	mDC->IASetVertexBuffers(0, 1, mScreenQuadVB.GetAddressOf(), &stride, &offset);
 //	mDC->IASetIndexBuffer(mScreenQuadIB.Get(), DXGI_FORMAT_R16_UINT, 0);
@@ -149,7 +149,7 @@
 //	mDC->PSSetConstantBuffers(0, 1, cb.GetAddressOf());
 //
 //	// 정규화된 사각형 바인딩
-//	UINT stride = sizeof(common::VertexTextureNormalData);
+//	UINT stride = sizeof(common::PosTexNormal);
 //	UINT offset = 0;
 //	mDC->IASetVertexBuffers(0, 1, mScreenQuadVB.GetAddressOf(), &stride, &offset);
 //	mDC->IASetIndexBuffer(mScreenQuadIB.Get(), DXGI_FORMAT_R16_UINT, 0);
@@ -171,7 +171,7 @@
 //
 //void Ssao::BuildFullScreenQuad()
 //{
-//	common::VertexTextureNormalData v[4];
+//	common::PosTexNormal v[4];
 //
 //	// 화면을 감싸는 NDC 좌표로 사각형 생성
 //	v[0].Position = { -1.0f, -1.0f, 0.0f };
@@ -191,7 +191,7 @@
 //
 //	D3D11_BUFFER_DESC vbd;
 //	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-//	vbd.ByteWidth = sizeof(common::VertexTextureNormalData) * 4;
+//	vbd.ByteWidth = sizeof(common::PosTexNormal) * 4;
 //	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 //	vbd.CPUAccessFlags = 0;
 //	vbd.MiscFlags = 0;
