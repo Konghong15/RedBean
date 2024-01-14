@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "VertexType.h"
+#include "ShaderPrograms.h"
 
 namespace builtIn
 {
@@ -40,4 +41,14 @@ namespace builtIn
 		{"INDICES",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"WEIGHTS",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
+
+	void InputLayouts::InitAll(ID3D11Device* device)
+	{
+
+	}
+
+	void InputLayouts::DestroyAll()
+	{
+
+	}
 }

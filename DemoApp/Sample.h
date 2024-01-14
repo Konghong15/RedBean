@@ -1,6 +1,10 @@
 #pragma once
 
 #include "../Processor/Processor.h"
+#include "../RedBean/Graphic.h"
+#include "../RedBean/RenderManager.h"
+#include "../RedBean/ResourceManager.h"
+#include "../RedBean/Model.h"
 
 namespace entryPoint
 {
@@ -16,5 +20,7 @@ namespace entryPoint
 		void Render() override;
 
 	private:
+		renderSystem::Graphic mGraphic;
+		resource::SkinnedModelInstance mSkinnedModelInstance;
 	};
 }

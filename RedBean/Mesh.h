@@ -3,31 +3,74 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 
-struct Node;
-
-struct Bone
+namespace resource
 {
-	string Name;
-	size_t Index;
-	Matrix OffsetMatrix;
+	class Mesh
+	{
+	public:
+		Mesh(ID3D11Device* device, aiMesh* mesh);
+		~Mesh() = default;
 
-	Node* NodeRef;
-};
+	private:
+		string mName;
+		vector<builtIn::vertex::PosTexNormalTan> mVertices;
+		vector<UINT> mIndices;
+		directXWrapper::VertexBuffer mVB;
+		directXWrapper::IndexBuffer mIB;
+	};
 
-enum class eMeshType
-{
-	Static,
-	Skinned
-};
+	class MeshResource
+	{
+	public:
+		MeshResource() = default;
+		~MeshResource() = default;
 
-class Mesh
-{
-public:
-	Mesh(aiMesh* mesh, eMeshType meshType);
-	~Mesh() = default;
+		bool Init(ID3D11Device* device, string filename);
 
-private:
-	directXWrapper::VertexBuffer mVB;
-	directXWrapper::IndexBuffer mIB;
-	std::vector<Bone> Bones;
-};
+		const string& GetFileName() const { return mFileName; }
+		const vector<Mesh>& GetMeshes() const { return mMeshes; }
+
+	private:
+		string mFileName;
+		vector<Mesh> mMeshes;
+	};
+
+	struct Node;
+
+	struct Bone
+	{
+		size_t Index;
+		string Name;
+		Matrix OffsetMatrix;
+	};
+
+	class SkinnedMesh
+	{
+	public:
+		SkinnedMesh(ID3D11Device* device, aiMesh* mesh);
+		~SkinnedMesh() = default;
+
+		string mName;
+		vector<builtIn::vertex::PosTexNormalTanSkinned> mVertices;
+		vector<UINT> mIndices;
+		directXWrapper::VertexBuffer mVB;
+		directXWrapper::IndexBuffer mIB;
+		vector<Bone> mBones;
+	};
+
+	class SkinnedMeshResource
+	{
+	public:
+		SkinnedMeshResource() = default;
+		~SkinnedMeshResource() = default;
+
+		bool Init(ID3D11Device* device, string filename);
+
+		const string& GetFileName() const { return mFileName; }
+		const vector<SkinnedMesh>& GetSkinnedMeshes() const { return mSkinnedMeshes; }
+
+	private:
+		string mFileName;
+		vector<SkinnedMesh> mSkinnedMeshes;
+	};
+}

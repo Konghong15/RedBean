@@ -3,6 +3,8 @@
 #define WIN32_LEAN_AND_MEAN
 #define _HAS_STD_BYTE 0
 
+#include "Define.h"
+
 // STL
 #include <array>
 #include <algorithm>
@@ -57,7 +59,7 @@ using Quaternion = DirectX::SimpleMath::Quaternion;
 #pragma comment(lib, "d3dcompiler.lib")
 
 #ifdef _DEBUG
-#pragma comment(lib, "DirectXTex_debug.lib")
+#pragma comment(lib, "DirectXTex.lib")
 #pragma comment(lib, "assimp-vc143-mtd.lib")
 #else
 #pragma comment(lib, "DirectXTex.lib")
@@ -70,3 +72,8 @@ using Quaternion = DirectX::SimpleMath::Quaternion;
 #include "VertexType.h"
 #include "LightHelper.h"
 #include "Camera.h"
+
+// builtIn
+#include "VertexType.h"
+#include "ShaderPrograms.h"
+#include "RenderStates.h"

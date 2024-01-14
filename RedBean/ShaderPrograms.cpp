@@ -115,29 +115,29 @@ namespace builtIn
 		return true;
 	}
 
-	BasicModel ShaderProgrames::BasicModelProgram;
-	SkinnedModel ShaderProgrames::SkinnedModelProgram;
+	BasicModel ShaderPrograms::BasicModelProgram;
+	SkinnedModel ShaderPrograms::SkinnedModelProgram;
 
-	void ShaderProgrames::InitAll(ID3D11Device* device)
+	void ShaderPrograms::InitAll(ID3D11Device* device)
 	{
 		// basic
 		{
 			ShaderProgramDesc basicDesc;
-			basicDesc.VSDesc.FilePathOrNull = L"BasicModelVS.hlsl";
-			basicDesc.PSDesc.FilePathOrNull = L"ModelPS.hlsl";
+			basicDesc.VSDesc.FilePathOrNull = L"../RedBean/BasicModelVS.hlsl";
+			basicDesc.PSDesc.FilePathOrNull = L"../RedBean/ModelPS.hlsl";
 			BasicModelProgram.Init(device, basicDesc);
 		}
 
 		// skinned
 		{
 			ShaderProgramDesc skinnedDesc;
-			skinnedDesc.VSDesc.FilePathOrNull = L"SkinnedModelVS.hlsl";
-			skinnedDesc.PSDesc.FilePathOrNull = L"ModelPS.hlsl";
+			skinnedDesc.VSDesc.FilePathOrNull = L"../RedBean/SkinnedModelVS.hlsl";
+			skinnedDesc.PSDesc.FilePathOrNull = L"../RedBean/ModelPS.hlsl";
 			SkinnedModelProgram.Init(device, skinnedDesc);
 		}
 	}
 
-	void ShaderProgrames::DestroyAll()
+	void ShaderPrograms::DestroyAll()
 	{
 
 	}

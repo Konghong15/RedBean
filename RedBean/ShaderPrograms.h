@@ -75,8 +75,8 @@ namespace builtIn
 
 	private:
 		directXWrapper::ConstantBuffer<PerObject> mPerObjectCB;
-		directXWrapper::ConstantBuffer<PerLight> mPerObjectCB;
-		directXWrapper::ConstantBuffer<PerTexture> mPerObjectCB;
+		directXWrapper::ConstantBuffer<PerLight> mPerLightCB;
+		directXWrapper::ConstantBuffer<PerTexture> mPerTextureCB;
 	};
 
 	class SkinnedModel : public ShaderProgram
@@ -107,15 +107,15 @@ namespace builtIn
 			int bUseAlpha;
 		};
 	public:
-		void Bind(ID3D11DeviceContext* context);
-		void UpdateSubresource(ID3D11DeviceContext* context, PerObject perFrame);
-		void UpdateSubresource(ID3D11DeviceContext* context, BonePalette perFrame);
-		void UpdateSubresource(ID3D11DeviceContext* context, PerLight perFrame);
+		void Bind(ID3D11DeviceContext* context) {}
+		void UpdateSubresource(ID3D11DeviceContext* context, PerObject perFrame) {}
+		void UpdateSubresource(ID3D11DeviceContext* context, BonePalette perFrame) {}
+		void UpdateSubresource(ID3D11DeviceContext* context, PerLight perFrame) {}
 
 	private:
 		directXWrapper::ConstantBuffer<PerObject> mPerObjectCB;
-		directXWrapper::ConstantBuffer<PerLight> mPerObjectCB;
-		directXWrapper::ConstantBuffer<PerTexture> mPerObjectCB;
+		directXWrapper::ConstantBuffer<PerLight> mPerLightCB;
+		directXWrapper::ConstantBuffer<PerTexture> mPerTextureCB;
 	};
 
 	class ParticleStreamOut : public ShaderProgram

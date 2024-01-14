@@ -70,7 +70,6 @@ float4 main(PS_INPUT Input) : SV_TARGET
 		specular *= specularIntensity.xyz;
 	}
 
-
 	if (gUseAlpha)
 	{
 		albedo.a = txAlpha.Sample(samLinear, Input.UV).x; 

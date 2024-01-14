@@ -28,6 +28,8 @@ namespace directXWrapper
 		createRenderTargetView();
 		createShaderResourceView();
 		createDepthStencilView();
+	
+		return true;
 	}
 	bool RenderTarget::Destroy()
 	{
@@ -36,6 +38,8 @@ namespace directXWrapper
 		mTextureSRV.Reset();
 		mDepthStencilBuffer.Reset();
 		mDepthStencilDSV.Reset();
+
+		return true;
 	}
 
 	void RenderTarget::Resize(const Desc& desc)
@@ -53,14 +57,9 @@ namespace directXWrapper
 		createDepthStencilView();
 	}
 
-	void RenderTarget::BindRenderTarget(bool bIsClear = false, float r, float g, float b, float a)
+	void RenderTarget::BindRenderTarget()
 	{
 		md3dContext->OMSetRenderTargets(1, mTextureRTV.GetAddressOf(), mDepthStencilDSV.Get());
-
-		if (bIsClear)
-		{
-			ClearRenderTarget(r, g, b, a);
-		}
 	}
 
 	void RenderTarget::ClearRenderTarget(const DirectX::SimpleMath::Color& color)
@@ -73,8 +72,7 @@ namespace directXWrapper
 	{
 		ClearRenderTarget({ r,g,b,a });
 	}
-	void RenderTarget::ClearDepthStencil(bool depthClear = true, float depthValue = 1.0f, bool stencilClear = true, unsigned char stencilValue =
-		0)
+	void RenderTarget::ClearDepthStencil(bool depthClear, float depthValue, bool stencilClear, unsigned char stencilValue)
 	{
 		// 참이면 플래그 추가
 		UINT flag = depthClear ? D3D11_CLEAR_DEPTH : 0  

@@ -1,35 +1,69 @@
 #pragma once
 
-struct Node
+#include "IRenderable.h"
+
+namespace resource
 {
-	std::string Name;
-	size_t Index;
-	size_t ParentIndex;
+	class NodeResource;
+	class MeshResource;
+	class MaterialResource;
 
-	Matrix ToParentMatrix = Matrix::Identity;
-	Matrix ToRootMatrix = Matrix::Identity;
+	class Model
+	{
+	public:
+		Model() = default;
+		~Model() = default;
 
-	Node* Parent;
-	vector<Node*> Children;
+		bool Init(NodeResource* nodeResource, MeshResource* meshResource, MaterialResource* materialResource);
 
-	vector<pair<Mesh*, Material*>> MeshMaterial;
-};
+	private:
+		NodeResource* mNodeResource;
+		MeshResource* mMeshResource;
+		MaterialResource* mMaterialResource;
+	};
 
-class Mesh;
-class Material;
-class AnimationClip;
+	struct ModelInstance : public interfaceClass::IRenderable
+	{
+		void Render(ID3D11DeviceContext* context) override;
 
-class Model
-{
-public:
-	Model(const aiScene* aiScene);
-	~Model() = default;
+		Model* ModelRef;
+		Matrix WorldMatrix;
+	};
 
-	void UpdateBoneNodeIndex();
+	class SkinnedMeshResource;
+	class AnimationResource;
 
-private:
-	Node* mRoot;
-	vector<Node*> mNodes;
-	std::map<string, AnimationClip*> mAnimationClips;
-};
+	class SkinnedModel
+	{
+	public:
+		SkinnedModel() = default;
+		~SkinnedModel() = default;
 
+		bool Init(NodeResource* nodeResource, SkinnedMeshResource* meshResource, MaterialResource* materialResource, AnimationResource* animationResource);
+		void Render(ID3D11DeviceContext* context, const string clipName, float timePos, const Matrix& worldMat);
+
+		NodeResource* GetNodeResource() const { return mNodeResource; }
+		SkinnedMeshResource* GetSkinnedMeshResource() const { return mSkinnedMeshResource; }
+		MaterialResource* GetMaterialResource() const { return mMaterialResource; }
+		AnimationResource* GetAnimationResource() const { return mAnimationResource; }
+		const vector<vector<int>>& GetBoneHierachy() const { return mBoneHierachy; }
+
+	private:
+		NodeResource* mNodeResource;
+		SkinnedMeshResource* mSkinnedMeshResource;
+		MaterialResource* mMaterialResource;
+		AnimationResource* mAnimationResource;
+
+		vector<vector<int>> mBoneHierachy; // Bone Parent index
+	};
+
+	struct SkinnedModelInstance : public interfaceClass::IRenderable
+	{
+		void Render(ID3D11DeviceContext* context) override;
+
+		SkinnedModel* ModelRef;
+		string AnimationName;
+		float TimePos;
+		Matrix WorldMatrix;
+	};
+}

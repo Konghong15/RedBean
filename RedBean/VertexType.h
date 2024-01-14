@@ -41,12 +41,14 @@ namespace builtIn
 
 		struct PosTexNormalTanSkinned
 		{
+			enum { INVALID_INDEX = -1 };
+
 			Vector3 Position = { 0, 0, 0 };
 			Vector2 UV = { 0, 0 };
 			Vector3 Normal = { 0, 0, 0 };
 			Vector3 Tangent = { 0, 0, 0 };
-			Vector4 Indices = { 0, 0, 0, 0 };
-			Vector4 Weights = { 0, 0, 0, 0 };
+			int Indices[4] = { INVALID_INDEX, INVALID_INDEX, INVALID_INDEX, INVALID_INDEX };
+			float Weights[4] = { 0.f };
 		};
 	}
 

@@ -29,7 +29,7 @@ namespace directXWrapper
 
 		void Resize(const Desc& desc);
 
-		void BindRenderTarget(bool bIsClear = false, float r, float g, float b, float a);
+		void BindRenderTarget();
 		void ClearRenderTarget(const DirectX::SimpleMath::Color& color);
 		void ClearRenderTarget(float r, float g, float b, float a);
 		void ClearDepthStencil(bool depthClear = true, float depthValue = 1.0f, bool stencilClear = true, unsigned char stencilValue = 0);

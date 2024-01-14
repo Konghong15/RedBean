@@ -9,7 +9,7 @@ namespace directXWrapper
 		ConstantBuffer() = default;
 		~ConstantBuffer() = default;
 
-		bool Init(ID3D11Device* device);
+		bool Init(ID3D11Device* device, bool cpuWrite = false, bool gpuWrite = true);
 
 		ComPtr<ID3D11Buffer> GetComPtr() { return mBuffer; }
 
@@ -18,16 +18,33 @@ namespace directXWrapper
 	};
 
 	template <typename T>
-	bool ConstantBuffer<T>::Init(ID3D11Device* device)
+	bool ConstantBuffer<T>::Init(ID3D11Device* device, bool cpuWrite, bool gpuWrite)
 	{
-		static_assert(sizeof(T) % 16 == 0, "constant buffer must be align 16 byte");
+		static_assert(sizeof(T) % 16 == 0, "constant buffer must be aligned by 16 bytes");
 
 		D3D11_BUFFER_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
-		desc.Usage = D3D11_USAGE_DYNAMIC; // CPU_Write + GPU_Read
 		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		desc.ByteWidth = sizeof(T);
-		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		if (cpuWrite == false && gpuWrite == false)
+		{
+			desc.Usage = D3D11_USAGE_IMMUTABLE; // CPU Read, GPU Read
+		}
+		else if (cpuWrite == true && gpuWrite == false)
+		{
+			desc.Usage = D3D11_USAGE_DYNAMIC; // CPU Write, GPU Read
+			desc.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
+		}
+		else if (cpuWrite == false && gpuWrite == true) // CPU Read, GPU Write
+		{
+			desc.Usage = D3D11_USAGE_DEFAULT;
+		}
+		else
+		{
+			desc.Usage = D3D11_USAGE_STAGING;
+			desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE;
+		}
 
 		HR(device->CreateBuffer(&desc, nullptr, mBuffer.GetAddressOf()));
 

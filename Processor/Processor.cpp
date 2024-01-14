@@ -141,44 +141,7 @@ namespace common
 		case WM_SIZE:
 			mWidth = LOWORD(lParam);
 			mHeight = HIWORD(lParam);
-			if (md3dDevice)
-			{
-				if (wParam == SIZE_MINIMIZED)
-				{
-					mbPaused = true;
-					mbMinimized = true;
-					mbMaximized = false;
-				}
-				else if (wParam == SIZE_MAXIMIZED)
-				{
-					mbPaused = false;
-					mbMinimized = false;
-					mbMaximized = true;
-					OnResize();
-				}
-				else if (wParam == SIZE_RESTORED)
-				{
-					if (mbMinimized)
-					{
-						mbPaused = false;
-						mbMinimized = false;
-						OnResize();
-					}
-					else if (mbMaximized)
-					{
-						mbPaused = false;
-						mbMaximized = false;
-						OnResize();
-					}
-					else if (mbResizing)
-					{
-					}
-					else
-					{
-						OnResize();
-					}
-				}
-			}
+			
 			return 0;
 
 		case WM_ENTERSIZEMOVE:
@@ -190,7 +153,6 @@ namespace common
 			mbPaused = false;
 			mbResizing = false;
 			mTimer.Start();
-			OnResize();
 			return 0;
 		case WM_DESTROY:
 			PostQuitMessage(0);
