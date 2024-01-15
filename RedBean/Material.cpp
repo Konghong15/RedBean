@@ -24,7 +24,7 @@ namespace resource
 		};
 
 		addTexture(aiTextureType_DIFFUSE, eTexutreType::Diffuse);
-		addTexture(aiTextureType_SPECULAR, eTexutreType::Diffuse);
+		addTexture(aiTextureType_SPECULAR, eTexutreType::Specular);
 		addTexture(aiTextureType_NORMALS, eTexutreType::Normal);
 		addTexture(aiTextureType_EMISSIVE, eTexutreType::Emissive);
 		addTexture(aiTextureType_OPACITY, eTexutreType::Opacity);

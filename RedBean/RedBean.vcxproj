@@ -159,7 +159,6 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="ConstantBuffers.h" />
-    <ClInclude Include="Define.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="Graphic.h" />
     <ClInclude Include="IndexBuffer.h" />

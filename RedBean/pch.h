@@ -3,8 +3,6 @@
 #define WIN32_LEAN_AND_MEAN
 #define _HAS_STD_BYTE 0
 
-#include "Define.h"
-
 // STL
 #include <array>
 #include <algorithm>

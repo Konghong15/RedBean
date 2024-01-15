@@ -74,7 +74,7 @@ namespace builtIn
 			{
 				RenderStates::LinearWrapSS.Get()
 			};
-			context->PSSetSamplers(0, 1, psSamplers);
+			context->PSSetSamplers(0, ARRAYSIZE(psSamplers), psSamplers);
 		}
 	};
 
@@ -108,7 +108,7 @@ namespace builtIn
 				RenderStates::AnisotropicWrapSS.Get(),
 				RenderStates::LinearClampSS.Get(),
 			};
-			context->PSSetSamplers(0, 1, psSamplers);
+			context->PSSetSamplers(0, ARRAYSIZE(psSamplers), psSamplers);
 		}
 	};
 
@@ -142,7 +142,7 @@ namespace builtIn
 			{
 				RenderStates::LinearWrapSS.Get()
 			};
-			context->PSSetSamplers(0, 1, psSamplers);
+			context->PSSetSamplers(0, ARRAYSIZE(psSamplers), psSamplers);
 		}
 	};
 
@@ -177,7 +177,7 @@ namespace builtIn
 				RenderStates::AnisotropicWrapSS.Get(),
 				RenderStates::LinearClampSS.Get(),
 			};
-			context->PSSetSamplers(0, 1, psSamplers);
+			context->PSSetSamplers(0, ARRAYSIZE(psSamplers), psSamplers);
 		}
 	};
 

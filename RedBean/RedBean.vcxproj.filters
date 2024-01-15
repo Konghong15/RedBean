@@ -191,9 +191,6 @@
     <ClInclude Include="Model.h">
       <Filter>RenderObject\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Define.h">
-      <Filter>Header</Filter>
-    </ClInclude>
     <ClInclude Include="IRenderable.h">
       <Filter>InterfaceClass</Filter>
     </ClInclude>

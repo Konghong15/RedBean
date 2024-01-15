@@ -30,11 +30,11 @@ namespace entryPoint
 		mModelInstance.ModelRef = model;
 		mModelInstance.WorldMatrix = Matrix::CreateTranslation({ 0, 10, 10 });
 
-		renderSystem::RenderManager::GetInstance()->Register(&mSkinnedModelInstance);
+		// renderSystem::RenderManager::GetInstance()->Register(&mSkinnedModelInstance);
 		renderSystem::RenderManager::GetInstance()->Register(&mModelInstance);
 
 		renderSystem::RenderManager::GetInstance()->GetCamera().SetLens(0.25f * MathHelper::Pi, GetAspectRatio(), 1.0f, 10000.0f);
-		renderSystem::RenderManager::GetInstance()->GetCamera().SetPosition({ 0, 0, -500 });
+		renderSystem::RenderManager::GetInstance()->GetCamera().SetPosition({ 0, 100, -500 });
 
 		return true;
 	}
