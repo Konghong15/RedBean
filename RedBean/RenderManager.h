@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Model.h"
+#include "ConstantBuffers.h"
 
 namespace interfaceClass
 {
@@ -35,5 +36,7 @@ namespace renderSystem
 
 		set<interfaceClass::IRenderable*> mRenderables;
 		common::Camera mCamera;
+
+		builtIn::ConstantBuffers::Frame mFrameInfo;
 	};
 }

@@ -9,6 +9,8 @@ namespace directXWrapper
 		mPath = path;
 
 		DirectX::TexMetadata md;
+
+		HRESULT hr = LoadFromWICFile(path.c_str(), WIC_FLAGS_NONE, &md, mScratchImage);
 		HR(LoadFromWICFile(path.c_str(), WIC_FLAGS_NONE, &md, mScratchImage));
 		HR(CreateShaderResourceView(device, mScratchImage.GetImages(), mScratchImage.GetImageCount(), md, mSRV.GetAddressOf()));
 		mSize = { (float)md.width, (float)md.height };

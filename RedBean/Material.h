@@ -1,6 +1,5 @@
 #pragma once
 
-
 namespace directXWrapper
 {
 	class Texture;
@@ -14,8 +13,8 @@ namespace resource
 		Diffuse,
 		Specular,
 		Normal,
-		Emissive,
 		Opacity,
+		Emissive,
 		Metalness,
 		Shininess, // smoothness
 		Size,

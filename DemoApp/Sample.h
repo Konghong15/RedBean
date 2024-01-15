@@ -22,5 +22,6 @@ namespace entryPoint
 	private:
 		renderSystem::Graphic mGraphic;
 		resource::SkinnedModelInstance mSkinnedModelInstance;
+		resource::ModelInstance mModelInstance;
 	};
 }

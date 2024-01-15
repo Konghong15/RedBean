@@ -10,13 +10,13 @@ namespace directXWrapper
 
 		template <typename T>
 		bool Init(ID3D11Device* device, const vector<T>& vertices, unsigned int slot = 0, bool cpuWrite = false, bool gpuWrite = false);
-		inline void Bind(ID3D11DeviceContext* context);
+		inline void Bind(ID3D11DeviceContext* context) const;
 
-		ComPtr<ID3D11Buffer> GetComPtr() { return mBuffer; }
-		UINT GetStride() { return mStride; }
-		UINT GetOffset() { return mOffset; }
-		UINT GetCount() { return mCount; }
-		UINT GetSlot() { return mSlot; }
+		ComPtr<ID3D11Buffer> GetComPtr() const { return mBuffer; }
+		UINT GetStride() const { return mStride; }
+		UINT GetOffset() const { return mOffset; }
+		UINT GetCount() const { return mCount; }
+		UINT GetSlot() const { return mSlot; }
 
 	private:
 		ComPtr<ID3D11Buffer> mBuffer;
@@ -68,7 +68,7 @@ namespace directXWrapper
 		return true;
 	}
 
-	void VertexBuffer::Bind(ID3D11DeviceContext* context)
+	void VertexBuffer::Bind(ID3D11DeviceContext* context) const
 	{
 		context->IASetVertexBuffers(mSlot, 1, mBuffer.GetAddressOf(), &mStride, &mOffset);
 	}

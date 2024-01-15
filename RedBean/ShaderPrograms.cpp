@@ -6,10 +6,6 @@ namespace builtIn
 {
 	bool ShaderProgram::Init(ID3D11Device* device, const ShaderProgramDesc& shaderProgramDesc)
 	{
-		mTopology = shaderProgramDesc.Topology;
-
-		ComPtr<ID3DBlob> vsBytecode;
-
 		// Create VertexShader
 		if (shaderProgramDesc.VSDesc.FilePathOrNull != nullptr)
 		{
@@ -18,26 +14,12 @@ namespace builtIn
 			HR(common::D3DHelper::CompileShaderFromFile(vsDesc.FilePathOrNull,
 				vsDesc.EntryPoint,
 				vsDesc.ShaderModel,
-				vsBytecode.GetAddressOf()));
+				mVSBytecode.GetAddressOf()));
 
-			HR(device->CreateVertexShader(vsBytecode->GetBufferPointer(),
-				vsBytecode->GetBufferSize(),
+			HR(device->CreateVertexShader(mVSBytecode->GetBufferPointer(),
+				mVSBytecode->GetBufferSize(),
 				nullptr,
 				mVertexShader.GetAddressOf()));
-		}
-
-		// Create InputLayout
-		if (shaderProgramDesc.InputLayoutDescOrNull != nullptr)
-		{
-			auto* inputLayoutDesc = shaderProgramDesc.InputLayoutDescOrNull;
-
-			assert(vsBytecode.Get() != nullptr);
-
-			HR(device->CreateInputLayout(inputLayoutDesc->data(),
-				(UINT)inputLayoutDesc->size(),
-				vsBytecode->GetBufferPointer(),
-				vsBytecode->GetBufferSize(),
-				mInputLayout.GetAddressOf()));
 		}
 
 		// Create Hull Shader
@@ -116,7 +98,9 @@ namespace builtIn
 	}
 
 	BasicModel ShaderPrograms::BasicModelProgram;
+	PBRBasicModel ShaderPrograms::PBRBasicModelProgram;
 	SkinnedModel ShaderPrograms::SkinnedModelProgram;
+	PBRSkinnedModel ShaderPrograms::PBRSkinnedModelProgram;
 
 	void ShaderPrograms::InitAll(ID3D11Device* device)
 	{
@@ -124,16 +108,32 @@ namespace builtIn
 		{
 			ShaderProgramDesc basicDesc;
 			basicDesc.VSDesc.FilePathOrNull = L"../RedBean/BasicModelVS.hlsl";
-			basicDesc.PSDesc.FilePathOrNull = L"../RedBean/ModelPS.hlsl";
+			basicDesc.PSDesc.FilePathOrNull = L"../RedBean/LegacyModelPS.hlsl";
 			BasicModelProgram.Init(device, basicDesc);
+		}
+
+		// pbr basic
+		{
+			ShaderProgramDesc basicDesc;
+			basicDesc.VSDesc.FilePathOrNull = L"../RedBean/BasicModelVS.hlsl";
+			basicDesc.PSDesc.FilePathOrNull = L"../RedBean/PBRModelPS.hlsl";
+			PBRBasicModelProgram.Init(device, basicDesc);
 		}
 
 		// skinned
 		{
 			ShaderProgramDesc skinnedDesc;
 			skinnedDesc.VSDesc.FilePathOrNull = L"../RedBean/SkinnedModelVS.hlsl";
-			skinnedDesc.PSDesc.FilePathOrNull = L"../RedBean/ModelPS.hlsl";
+			skinnedDesc.PSDesc.FilePathOrNull = L"../RedBean/LegacyModelPS.hlsl";
 			SkinnedModelProgram.Init(device, skinnedDesc);
+		}
+
+		// pbr skinned 중복되는 거 관리해줄 필요가 있을듯?
+		{
+			ShaderProgramDesc pbrSkinnedDesc;
+			pbrSkinnedDesc.VSDesc.FilePathOrNull = L"../RedBean/SkinnedModelVS.hlsl";
+			pbrSkinnedDesc.PSDesc.FilePathOrNull = L"../RedBean/PBRModelPS.hlsl";
+			PBRSkinnedModelProgram.Init(device, pbrSkinnedDesc);
 		}
 	}
 

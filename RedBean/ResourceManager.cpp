@@ -3,7 +3,6 @@
 #include "ResourceManager.h"
 
 #include "Texture.h"
-#include "Node.h"
 #include "Mesh.h"
 #include "Material.h"
 #include "Animation.h"
@@ -38,35 +37,6 @@ namespace renderSystem
 	directXWrapper::Texture* ResourceManager::CreateTextureOrNull(const wstring& filename)
 	{
 		return CreateTextureOrNull(common::D3DHelper::ConvertWStrToStr(filename));
-	}
-
-	resource::NodeResource* ResourceManager::CreateNodeResourceOrNull(const string& filename)
-	{
-		using namespace directXWrapper;
-		using namespace resource;
-
-		auto find = mNodeResources.find(filename);
-
-		if (find != mNodeResources.end())
-		{
-			return find->second;
-		}
-
-		NodeResource* nodeResource = new NodeResource();
-
-		if (!nodeResource->Init(filename))
-		{
-			delete nodeResource;
-			return nullptr;
-		}
-
-		mNodeResources.insert({ filename, nodeResource });
-
-		return nodeResource;
-	}
-	resource::NodeResource* ResourceManager::CreateNodeResourceOrNull(const wstring& filename)
-	{
-		return CreateNodeResourceOrNull(common::D3DHelper::ConvertWStrToStr(filename));
 	}
 
 	resource::MeshResource* ResourceManager::CreateMeshResourceOrNull(const string& filename)
@@ -182,6 +152,7 @@ namespace renderSystem
 	{
 		return CreateAnimationResourceOrNull(common::D3DHelper::ConvertWStrToStr(filename));;
 	}
+
 	resource::Model* ResourceManager::CreateModelOrNull(const string& key, const ModelDesc& modelDesc)
 	{
 		using namespace directXWrapper;
@@ -194,12 +165,10 @@ namespace renderSystem
 			return find->second;
 		}
 
-		NodeResource* nodeResource = CreateNodeResourceOrNull(modelDesc.NodeFilePath);
 		MeshResource* meshResource = CreateMeshResourceOrNull(modelDesc.MeshFilePath);
 		MaterialResource* materialResource = CreateMaterialResourceOrNull(modelDesc.MaterialFilePath);
 
-		if (nodeResource == nullptr
-			|| meshResource == nullptr
+		if (meshResource == nullptr
 			|| materialResource == nullptr)
 		{
 			return nullptr;
@@ -207,7 +176,7 @@ namespace renderSystem
 
 		Model* model = new Model();
 
-		if (!model->Init(nodeResource, meshResource, materialResource))
+		if (!model->Init(meshResource, materialResource))
 		{
 			delete model;
 			return nullptr;
@@ -217,6 +186,11 @@ namespace renderSystem
 
 		return model;
 	}
+	resource::Model* ResourceManager::CreateModelOrNull(const string& key, const string& filename)
+	{
+		return CreateModelOrNull(key, { filename, filename });
+	}
+
 	resource::SkinnedModel* ResourceManager::CreateSkinnedModelOrNull(const string& key, const SkinnedModelDesc& skinnedModelDsec)
 	{
 		using namespace directXWrapper;
@@ -229,13 +203,11 @@ namespace renderSystem
 			return find->second;
 		}
 
-		NodeResource* nodeResource = CreateNodeResourceOrNull(skinnedModelDsec.NodeFilePath);
 		SkinnedMeshResource* meshResource = CreateSkinnedMeshResourceOrNull(skinnedModelDsec.MeshFilePath);
 		MaterialResource* materialResource = CreateMaterialResourceOrNull(skinnedModelDsec.MaterialFilePath);
 		AnimationResource* animationResource = CreateAnimationResourceOrNull(skinnedModelDsec.MaterialFilePath);
 
-		if (nodeResource == nullptr
-			|| meshResource == nullptr
+		if (meshResource == nullptr
 			|| materialResource == nullptr
 			|| animationResource == nullptr)
 		{
@@ -244,7 +216,7 @@ namespace renderSystem
 
 		SkinnedModel* skinnedModel = new SkinnedModel();
 
-		if (!skinnedModel->Init(nodeResource, meshResource, materialResource, animationResource))
+		if (!skinnedModel->Init(meshResource, materialResource, animationResource))
 		{
 			delete skinnedModel;
 			return nullptr;
@@ -253,6 +225,10 @@ namespace renderSystem
 		mSkinnedModels.insert({ key, skinnedModel });
 
 		return skinnedModel;
+	}
+	resource::SkinnedModel* ResourceManager::CreateSkinnedModelOrNull(const string& key, const string& filename)
+	{
+		return CreateSkinnedModelOrNull(key, { filename, filename, filename });
 	}
 
 	resource::Model* ResourceManager::GetModelOrNull(const string& key)

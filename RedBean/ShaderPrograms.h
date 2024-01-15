@@ -1,6 +1,8 @@
 #pragma once
 
-#include "ConstantBuffer.h"
+#include "ConstantBuffers.h"
+#include "VertexTypes.h"
+#include "RenderStates.h"
 
 namespace builtIn
 {
@@ -14,8 +16,6 @@ namespace builtIn
 
 	struct ShaderProgramDesc
 	{
-		D3D11_PRIMITIVE_TOPOLOGY Topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		const std::vector<D3D11_INPUT_ELEMENT_DESC>* InputLayoutDescOrNull = nullptr;
 		ShaderDesc VSDesc = { nullptr, "main", "vs_5_0" };
 		ShaderDesc HSDesc = { nullptr, "main", "hs_5_0" };
 		ShaderDesc DSDesc = { nullptr, "main", "ds_5_0" };
@@ -31,91 +31,154 @@ namespace builtIn
 
 		bool Init(ID3D11Device* device, const ShaderProgramDesc& shaderProgramDesc);
 
-	private:
-		D3D11_PRIMITIVE_TOPOLOGY mTopology;
-		ComPtr<ID3D11InputLayout> mInputLayout;
-		ComPtr<ID3D11VertexShader> mVertexShader;
-		ComPtr<ID3D11HullShader> mHullShader;
-		ComPtr<ID3D11DomainShader> mDomainShader;
-		ComPtr<ID3D11GeometryShader> mGeometryShader;
-		ComPtr<ID3D11PixelShader> mPixelShader;
+		ComPtr<ID3DBlob> GetVSByteCode() const { return mVSBytecode; }
+
+	protected:
+		ComPtr<ID3DBlob> mVSBytecode = nullptr;
+		ComPtr<ID3D11VertexShader> mVertexShader = nullptr;
+		ComPtr<ID3D11HullShader> mHullShader = nullptr;
+		ComPtr<ID3D11DomainShader> mDomainShader = nullptr;
+		ComPtr<ID3D11GeometryShader> mGeometryShader = nullptr;
+		ComPtr<ID3D11PixelShader> mPixelShader = nullptr;
 	};
 
 #pragma endregion
 
+#pragma region ConcreteShaderProgrmas
 	class BasicModel : public ShaderProgram
 	{
 	public:
-		struct PerObject
+		void Bind(ID3D11DeviceContext* context)
 		{
-			Matrix WVP;
-			Vector4 CameraPos;
-		};
+			context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			context->IASetInputLayout(InputLayouts::PosTexNormalTan);
 
-		struct PerLight
-		{
-			Vector4 LightDirection;
-			Vector4 LightColor;
-		};
+			context->VSSetShader(mVertexShader.Get(), 0, 0);
+			context->PSSetShader(mPixelShader.Get(), 0, 0);
 
-		struct PerTexture
-		{
-			int bUseDiffuse;
-			int bUseNormal;
-			int bUseSpecular;
-			int bUseAlpha;
-		};
+			ID3D11Buffer* vsCBs[] =
+			{
+				ConstantBuffers::TransformWCB.GetComPtr().Get(),
+				ConstantBuffers::TransformVPCB.GetComPtr().Get(),
+			};
+			context->VSSetConstantBuffers(0, ARRAYSIZE(vsCBs), vsCBs);
 
+			ID3D11Buffer* psCBs[] =
+			{
+				 ConstantBuffers::FrameCB.GetComPtr().Get(),
+				 ConstantBuffers::LegacyMaterialCB.GetComPtr().Get(),
+			};
+			context->PSSetConstantBuffers(0, ARRAYSIZE(psCBs), psCBs);
+
+			ID3D11SamplerState* psSamplers[] =
+			{
+				RenderStates::LinearWrapSS.Get()
+			};
+			context->PSSetSamplers(0, 1, psSamplers);
+		}
+	};
+
+	class PBRBasicModel : public ShaderProgram
+	{
 	public:
-		void Bind(ID3D11DeviceContext* context) {};
+		void Bind(ID3D11DeviceContext* context)
+		{
+			context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			context->IASetInputLayout(InputLayouts::PosTexNormalTan);
 
-		void UpdateSubresource(ID3D11DeviceContext* context, const PerObject& perFrame) {};
-		void UpdateSubresource(ID3D11DeviceContext* context, const PerLight& perFrame) {};
-		void UpdateSubresource(ID3D11DeviceContext* context, const PerTexture& perFrame) {};
+			context->VSSetShader(mVertexShader.Get(), 0, 0);
+			context->PSSetShader(mPixelShader.Get(), 0, 0);
 
-	private:
-		directXWrapper::ConstantBuffer<PerObject> mPerObjectCB;
-		directXWrapper::ConstantBuffer<PerLight> mPerLightCB;
-		directXWrapper::ConstantBuffer<PerTexture> mPerTextureCB;
+			ID3D11Buffer* vsCBs[] =
+			{
+				ConstantBuffers::TransformWCB.GetComPtr().Get(),
+				ConstantBuffers::TransformVPCB.GetComPtr().Get(),
+			};
+			context->VSSetConstantBuffers(0, ARRAYSIZE(vsCBs), vsCBs);
+
+			ID3D11Buffer* psCBs[] =
+			{
+				 ConstantBuffers::FrameCB.GetComPtr().Get(),
+				 ConstantBuffers::PBRMaterialCB.GetComPtr().Get(),
+			};
+			context->PSSetConstantBuffers(0, ARRAYSIZE(psCBs), psCBs);
+
+			ID3D11SamplerState* psSamplers[] =
+			{
+				RenderStates::AnisotropicWrapSS.Get(),
+				RenderStates::LinearClampSS.Get(),
+			};
+			context->PSSetSamplers(0, 1, psSamplers);
+		}
 	};
 
 	class SkinnedModel : public ShaderProgram
 	{
 	public:
-		struct PerObject
+		void Bind(ID3D11DeviceContext* context)
 		{
-			Matrix WVP;
-			Vector4 CameraPos;
-		};
+			context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			context->IASetInputLayout(InputLayouts::PosTexNormalTan);
 
-		struct BonePalette
-		{
-			Matrix BoneMat[128];
-		};
+			context->VSSetShader(mVertexShader.Get(), 0, 0);
+			context->PSSetShader(mPixelShader.Get(), 0, 0);
 
-		struct PerLight
-		{
-			Vector4 LightDirection;
-			Vector4 LightColor;
-		};
+			ID3D11Buffer* vsCBs[] =
+			{
+				ConstantBuffers::TransformWCB.GetComPtr().Get(),
+				ConstantBuffers::TransformVPCB.GetComPtr().Get(),
+				ConstantBuffers::BonePaletteCB.GetComPtr().Get(),
+			};
+			context->VSSetConstantBuffers(0, ARRAYSIZE(vsCBs), vsCBs);
 
-		struct PerTexture
-		{
-			int bUseDiffuse;
-			int bUseNormal;
-			int bUseSpecular;
-			int bUseAlpha;
-		};
+			ID3D11Buffer* psCBs[] =
+			{
+				 ConstantBuffers::FrameCB.GetComPtr().Get(),
+				 ConstantBuffers::LegacyMaterialCB.GetComPtr().Get(),
+			};
+			context->PSSetConstantBuffers(0, ARRAYSIZE(psCBs), psCBs);
+
+			ID3D11SamplerState* psSamplers[] =
+			{
+				RenderStates::LinearWrapSS.Get()
+			};
+			context->PSSetSamplers(0, 1, psSamplers);
+		}
+	};
+
+	class PBRSkinnedModel : public ShaderProgram
+	{
 	public:
-		void Bind(ID3D11DeviceContext* context) {}
-		void UpdateSubresource(ID3D11DeviceContext* context, PerObject perFrame) {}
-		void UpdateSubresource(ID3D11DeviceContext* context, BonePalette perFrame) {}
-		void UpdateSubresource(ID3D11DeviceContext* context, PerLight perFrame) {}
+		void Bind(ID3D11DeviceContext* context)
+		{
+			context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			context->IASetInputLayout(InputLayouts::PosTexNormalTan);
 
-	private:
-		directXWrapper::ConstantBuffer<PerObject> mPerObjectCB;
-		directXWrapper::ConstantBuffer<PerLight> mPerLightCB;
-		directXWrapper::ConstantBuffer<PerTexture> mPerTextureCB;
+			context->VSSetShader(mVertexShader.Get(), 0, 0);
+			context->PSSetShader(mPixelShader.Get(), 0, 0);
+
+			ID3D11Buffer* vsCBs[] =
+			{
+				ConstantBuffers::TransformWCB.GetComPtr().Get(),
+				ConstantBuffers::TransformVPCB.GetComPtr().Get(),
+				ConstantBuffers::BonePaletteCB.GetComPtr().Get(),
+			};
+			context->VSSetConstantBuffers(0, ARRAYSIZE(vsCBs), vsCBs);
+
+			ID3D11Buffer* psCBs[] =
+			{
+				 ConstantBuffers::FrameCB.GetComPtr().Get(),
+				 ConstantBuffers::PBRMaterialCB.GetComPtr().Get(),
+			};
+			context->PSSetConstantBuffers(0, ARRAYSIZE(psCBs), psCBs);
+
+			ID3D11SamplerState* psSamplers[] =
+			{
+				RenderStates::AnisotropicWrapSS.Get(),
+				RenderStates::LinearClampSS.Get(),
+			};
+			context->PSSetSamplers(0, 1, psSamplers);
+		}
 	};
 
 	class ParticleStreamOut : public ShaderProgram
@@ -146,6 +209,7 @@ namespace builtIn
 	{
 
 	};
+#pragma endregion
 
 	class ShaderPrograms
 	{
@@ -155,6 +219,8 @@ namespace builtIn
 
 	public:
 		static BasicModel BasicModelProgram;
+		static PBRBasicModel PBRBasicModelProgram;
 		static SkinnedModel SkinnedModelProgram;
+		static PBRSkinnedModel PBRSkinnedModelProgram;
 	};
 }

@@ -84,7 +84,7 @@
     <ClCompile Include="RenderStates.cpp">
       <Filter>BuiltIn</Filter>
     </ClCompile>
-    <ClCompile Include="VertexType.cpp">
+    <ClCompile Include="VertexTypes.cpp">
       <Filter>BuiltIn</Filter>
     </ClCompile>
     <ClCompile Include="RenderTarget.cpp">
@@ -120,11 +120,11 @@
     <ClCompile Include="Model.cpp">
       <Filter>RenderObject\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Node.cpp">
-      <Filter>RenderObject\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="IRenderable.cpp">
       <Filter>InterfaceClass</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffers.cpp">
+      <Filter>BuiltIn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -182,7 +182,7 @@
     <ClInclude Include="Material.h">
       <Filter>RenderObject\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="VertexType.h">
+    <ClInclude Include="VertexTypes.h">
       <Filter>BuiltIn</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
@@ -191,14 +191,14 @@
     <ClInclude Include="Model.h">
       <Filter>RenderObject\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Node.h">
-      <Filter>RenderObject\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="Define.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="IRenderable.h">
       <Filter>InterfaceClass</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffers.h">
+      <Filter>BuiltIn</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -268,10 +268,13 @@
     <FxCompile Include="BasicModelVS.hlsl">
       <Filter>BuiltIn\Shader\RenderObject</Filter>
     </FxCompile>
-    <FxCompile Include="ModelPS.hlsl">
+    <FxCompile Include="LegacyModelPS.hlsl">
       <Filter>BuiltIn\Shader\RenderObject</Filter>
     </FxCompile>
     <FxCompile Include="SkinnedModelVS.hlsl">
+      <Filter>BuiltIn\Shader\RenderObject</Filter>
+    </FxCompile>
+    <FxCompile Include="PBRModelPS.hlsl">
       <Filter>BuiltIn\Shader\RenderObject</Filter>
     </FxCompile>
   </ItemGroup>

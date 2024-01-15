@@ -8,9 +8,11 @@ namespace builtIn
 
 	// SamplerState
 	ComPtr<ID3D11SamplerState> RenderStates::LinearWrapSS;
+	ComPtr<ID3D11SamplerState> RenderStates::LinearClampSS;
 	ComPtr<ID3D11SamplerState> RenderStates::PointClampSS;
 	ComPtr<ID3D11SamplerState> RenderStates::PointBoaderSS;
 	ComPtr<ID3D11SamplerState> RenderStates::PointWrapSS;
+	ComPtr<ID3D11SamplerState> RenderStates::AnisotropicWrapSS;
 
 	// RasterizerState
 	ComPtr<ID3D11RasterizerState> RenderStates::WireFrameRS;
@@ -65,6 +67,16 @@ namespace builtIn
 		HR(device->CreateSamplerState(&sampleDesc, LinearWrapSS.GetAddressOf()));
 
 		sampleDesc = {};
+		sampleDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		sampleDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+		sampleDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+		sampleDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		sampleDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
+		sampleDesc.MinLOD = 0;
+		sampleDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		HR(device->CreateSamplerState(&sampleDesc, LinearClampSS.GetAddressOf()));
+
+		sampleDesc = {};
 		sampleDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
 		sampleDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 		sampleDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -97,6 +109,17 @@ namespace builtIn
 		sampleDesc.MinLOD = 0;
 		sampleDesc.MaxLOD = D3D11_FLOAT32_MAX;
 		HR(device->CreateSamplerState(&sampleDesc, PointWrapSS.GetAddressOf()));
+
+		sampleDesc = {};
+		sampleDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+		sampleDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampleDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampleDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampleDesc.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
+		sampleDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
+		sampleDesc.MinLOD = 0;
+		sampleDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		HR(device->CreateSamplerState(&sampleDesc, AnisotropicWrapSS.GetAddressOf()));
 	}
 
 	void RenderStates::initRasterizerState(ID3D11Device* device)

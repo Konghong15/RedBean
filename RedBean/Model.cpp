@@ -2,14 +2,19 @@
 
 #include "Model.h"
 
-#include "Node.h"
 #include "Mesh.h"
 #include "Animation.h"
 #include "Material.h"
+#include "Texture.h"
+
+#include "IndexBuffer.h"
+
+#include "ConstantBuffers.h"
+#include "ShaderPrograms.h"
 
 namespace resource
 {
-	bool Model::Init(NodeResource* nodeResource, MeshResource* meshResource, MaterialResource* materialResource)
+	bool Model::Init(MeshResource* meshResource, MaterialResource* materialResource)
 	{
 		// 매핑되는지 체크
 		if (meshResource->GetMeshes().size() != materialResource->GetMaterials().size())
@@ -17,14 +22,124 @@ namespace resource
 			return false;
 		}
 
-		mNodeResource = nodeResource;
 		mMeshResource = meshResource;
 		mMaterialResource = materialResource;
 
 		return true;
 	}
 
-	bool SkinnedModel::Init(NodeResource* nodeResource, SkinnedMeshResource* skinnedMeshResource, MaterialResource* materialResource, AnimationResource* animationResource)
+	void ModelInstance::Render(ID3D11DeviceContext* context)
+	{
+		const MeshResource* meshResource = ModelRef->GetMeshResource();
+		const vector<Node*>& nodes = meshResource->GetNodes();
+		const vector<Mesh>& meshes = meshResource->GetMeshes();
+
+		size_t currentMeshMatIndex = 0;
+
+		for (Node* node : nodes)
+		{
+			for (size_t meshIndex : node->ContainMeshesIndex)
+			{
+				const Mesh& curMesh = meshes[meshIndex];
+
+				curMesh.GetIB().Bind(context);
+				curMesh.GetVB().Bind(context);
+
+				// 상수 버퍼 갱신
+				{
+					builtIn::ConstantBuffers::TransformW transformW;
+					transformW.World = (node->ToRootMatrix * WorldMatrix).Transpose();
+					transformW.WorldInvTranspose = common::MathHelper::InverseTranspose(transformW.World).Transpose();
+
+					auto transformWCB = builtIn::ConstantBuffers::TransformWCB.GetComPtr();
+					context->UpdateSubresource(transformWCB.Get(), 0, 0, &transformW, 0, 0);
+				}
+
+				// 텍스처 바인딩
+				{
+					const MaterialResource* materialResource = ModelRef->GetMaterialResource();
+					const Material& material = materialResource->GetMaterials()[currentMeshMatIndex];
+					const auto& textures = material.GetTextures();
+
+					if (material.GetIsPBRTexture())
+					{
+						builtIn::ShaderPrograms::PBRBasicModelProgram.Bind(context);
+
+						directXWrapper::Texture* textures[] =
+						{
+							material.GetTextureOrNull(eTexutreType::Diffuse),
+							material.GetTextureOrNull(eTexutreType::Normal),
+							material.GetTextureOrNull(eTexutreType::Specular),
+							material.GetTextureOrNull(eTexutreType::Opacity),
+							material.GetTextureOrNull(eTexutreType::Metalness),
+							material.GetTextureOrNull(eTexutreType::Shininess),
+						};
+
+						builtIn::ConstantBuffers::PBRMaterial pbrMaterial;
+						int* legacyMaterialPtr = reinterpret_cast<int*>(&pbrMaterial);
+						for (auto* texture : textures)
+						{
+							*legacyMaterialPtr = texture != nullptr;
+							++legacyMaterialPtr;
+						}
+
+						ID3D11ShaderResourceView* SRVs[] =
+						{
+							textures[0] == nullptr ? nullptr : textures[0]->GetComPtr().Get(),
+							textures[1] == nullptr ? nullptr : textures[1]->GetComPtr().Get(),
+							textures[2] == nullptr ? nullptr : textures[2]->GetComPtr().Get(),
+							textures[3] == nullptr ? nullptr : textures[3]->GetComPtr().Get(),
+							textures[4] == nullptr ? nullptr : textures[4]->GetComPtr().Get(),
+							textures[5] == nullptr ? nullptr : textures[5]->GetComPtr().Get(),
+						};
+
+						context->PSSetShaderResources(0, ARRAYSIZE(SRVs), SRVs);
+
+						auto materialCB = builtIn::ConstantBuffers::PBRMaterialCB.GetComPtr();
+						context->UpdateSubresource(materialCB.Get(), 0, 0, &pbrMaterial, 0, 0);
+					}
+					else
+					{
+						builtIn::ShaderPrograms::BasicModelProgram.Bind(context);
+
+						directXWrapper::Texture* textures[] =
+						{
+							material.GetTextureOrNull(eTexutreType::Diffuse),
+							material.GetTextureOrNull(eTexutreType::Normal),
+							material.GetTextureOrNull(eTexutreType::Specular),
+							material.GetTextureOrNull(eTexutreType::Opacity),
+						};
+
+						builtIn::ConstantBuffers::LegacyMaterial legacyMaterial;
+						int* legacyMaterialPtr = reinterpret_cast<int*>(&legacyMaterial);
+						for (auto* texture : textures)
+						{
+							*legacyMaterialPtr = texture != nullptr;
+							++legacyMaterialPtr;
+						}
+
+						ID3D11ShaderResourceView* SRVs[] =
+						{
+							textures[0] == nullptr ? nullptr : textures[0]->GetComPtr().Get(),
+							textures[1] == nullptr ? nullptr : textures[1]->GetComPtr().Get(),
+							textures[2] == nullptr ? nullptr : textures[2]->GetComPtr().Get(),
+							textures[3] == nullptr ? nullptr : textures[3]->GetComPtr().Get(),
+						};
+
+						context->PSSetShaderResources(0, ARRAYSIZE(SRVs), SRVs);
+
+						auto materialCB = builtIn::ConstantBuffers::LegacyMaterialCB.GetComPtr();
+						context->UpdateSubresource(materialCB.Get(), 0, 0, &legacyMaterial, 0, 0);
+					}
+				}
+
+				context->DrawIndexed(curMesh.GetIB().GetCount(), 0, 0);
+				++currentMeshMatIndex;
+			}
+		}
+	}
+
+	bool SkinnedModel::Init(SkinnedMeshResource* skinnedMeshResource, MaterialResource* materialResource, AnimationResource* animationResource)
 	{
 		// 매핑되는지 체크
 		if (skinnedMeshResource->GetSkinnedMeshes().size() != materialResource->GetMaterials().size())
@@ -32,106 +147,158 @@ namespace resource
 			return false;
 		}
 
-		mNodeResource = nodeResource;
 		mSkinnedMeshResource = skinnedMeshResource;
 		mMaterialResource = materialResource;
 		mAnimationResource = animationResource;
 
-		// 본 계층구조의 node참조 인덱스 만들기
-		map<string, const Node*> nodeMap;
-
-		for (const Node* node : nodeResource->GetNodes())
-		{
-			nodeMap.insert({ node->Name, node });
-		}
-
-		mBoneHierachy.clear();
-		mBoneHierachy.reserve(skinnedMeshResource->GetSkinnedMeshes().size());
-
-		for (const SkinnedMesh& mesh : skinnedMeshResource->GetSkinnedMeshes())
-		{
-			mBoneHierachy.push_back(vector<int>());
-			vector<int>& curBoneHierachy = mBoneHierachy.back();
-			curBoneHierachy.resize(mesh.mBones.size());
-
-			map<string, unsigned int> boneIndexMap;
-			for (const Bone& bone : mesh.mBones)
-			{
-				boneIndexMap.insert({ bone.Name, bone.Index });
-			}
-
-			for (const Bone& bone : mesh.mBones)
-			{
-				auto node = nodeMap.find(bone.Name);
-				string& boneParentName = node->second->Parent->Name;
-				auto parentBoneIndex = boneIndexMap.find(boneParentName);
-
-				if (parentBoneIndex == boneIndexMap.end())
-				{
-					curBoneHierachy[bone.Index] = -1;
-				}
-				else
-				{
-					curBoneHierachy[bone.Index] = parentBoneIndex->second;
-				}
-			}
-		}
-
 		return true;
-	}
-
-	void SkinnedModel::Render(ID3D11DeviceContext* context, const string clipName, float timePos, const Matrix& worldMat)
-	{
-
 	}
 
 	void SkinnedModelInstance::Render(ID3D11DeviceContext* context)
 	{
-		const auto& clips = ModelRef->GetAnimationResource()->GetAnimationClips();
-		const auto& findAnimClip = clips.find(AnimationName);
-		assert(findAnimClip != clips.end());
+		const SkinnedMeshResource* meshResource = ModelRef->GetSkinnedMeshResource();
+		size_t currentMeshMatIndex = 0;
 
-		const auto& skinnedMeshes = ModelRef->GetSkinnedMeshResource()->GetSkinnedMeshes();
-		const auto& boneHierachy = ModelRef->GetBoneHierachy();
-
-		for (size_t i = 0; i < skinnedMeshes.size(); ++i)
+		for (const SkinnedMesh& skinnedMesh : meshResource->GetSkinnedMeshes())
 		{
-			const SkinnedMesh& mesh = skinnedMeshes[i];
-			const map<string, Keyframes>& animNodes = findAnimClip->second.mAnimationNodes;
-			vector<Matrix> toParentMatrix(mesh.mBones.size());
-			vector<Matrix> toRootMatrix(mesh.mBones.size());
-			vector<Matrix> finalMatrix(mesh.mBones.size());
+			const AnimationResource* animResource = ModelRef->GetAnimationResource();
+			const AnimationClip& animClip = animResource->GetAnimationClip(ClipName);
 
-			// 애니메이션 보간으로 만든 행렬은 부모변환행렬이 된다.
-			for (size_t j = 0; j < mesh.mBones.size(); ++j)
+			// 노드 로컬 행렬 갱신
+			vector<Node*>& nodes = ModelRef->GetSkinnedMeshResource()->GetNodes();
+
+			int findNodeCount = 0;
+			int total = 0;
+			for (const Bone& bone : skinnedMesh.mBones)
 			{
-				const Bone& bone = mesh.mBones[j];
-				auto findAnimNode = animNodes.find(bone.Name);
+				total++;
+				const auto& nodeAnim = animClip.mAnimationNodes.find(bone.Name);
 
-				if (findAnimNode != animNodes.end())
+				if (nodeAnim != animClip.mAnimationNodes.end())
 				{
-					toParentMatrix[bone.Index] = findAnimNode->second.Interpolate(TimePos);
+					findNodeCount++;
+					nodes[bone.NodeIndedx]->ToParentMatrix = nodeAnim->second.Interpolate(TimePos);
 				}
 			}
 
-			// 루트 변환행렬을 구해준다.
-			toRootMatrix[0] = toParentMatrix[0];
-			for (size_t j = 1; j < mesh.mBones.size(); ++j)
+			// 노드 월드 행렬 갱신
+			nodes[0]->ToRootMatrix = nodes[0]->ToParentMatrix;
+
+			for (size_t i = 1; i < nodes.size(); ++i)
 			{
-				const Bone& bone = mesh.mBones[j];
-				size_t parentIndex = boneHierachy[i][bone.Index];
-				toRootMatrix[bone.Index] = toParentMatrix[bone.Index] * toRootMatrix[parentIndex];
+				nodes[i]->ToRootMatrix = nodes[i]->ToParentMatrix * nodes[i]->Parent->ToRootMatrix;
 			}
 
-			// 최종 변환행렬은 본 오프셋 공간으로 변환된 뒤에 일어난다.
-			for (size_t j = 0; j < mesh.mBones.size(); ++j)
+			// 본 팔레트 만들기
+			vector<Matrix> finalMatrix(128);
+			auto finalMatrixIter = finalMatrix.begin();
+			for (const Bone& bone : skinnedMesh.mBones)
 			{
-				finalMatrix[j] = (mesh.mBones[j].OffsetMatrix * toRootMatrix[j]).Transpose();
+				Node* node = nodes[bone.NodeIndedx];
+				*finalMatrixIter++ = (bone.OffsetMatrix * node->ToRootMatrix).Transpose();
 			}
 
-			builtIn::ShaderPrograms::SkinnedModelProgram.Bind(context);
-			builtIn::ShaderPrograms::SkinnedModelProgram.UpdateSubresource(context);
-			// updatesubresource boneMat
+			// 렌더링 업데이트 및 바인딩
+
+			// 쉐이더, 버퍼 바인딩
+			{
+				skinnedMesh.mVB.Bind(context);
+				skinnedMesh.mIB.Bind(context);
+			}
+
+			// 상수 버퍼 갱신
+			{
+				builtIn::ConstantBuffers::TransformW transformW;
+				transformW.World = WorldMatrix.Transpose();
+				transformW.WorldInvTranspose = common::MathHelper::InverseTranspose(WorldMatrix).Transpose();
+
+				auto transformWCB = builtIn::ConstantBuffers::TransformWCB.GetComPtr();
+				context->UpdateSubresource(transformWCB.Get(), 0, 0, &transformW, 0, 0);
+
+				auto bonePaletteCB = builtIn::ConstantBuffers::BonePaletteCB.GetComPtr();
+				context->UpdateSubresource(bonePaletteCB.Get(), 0, 0, &finalMatrix[0], 0, 0);
+			}
+
+			// 텍스처 바인딩
+			{
+				const MaterialResource* materialResource = ModelRef->GetMaterialResource();
+				const Material& material = materialResource->GetMaterials()[currentMeshMatIndex];
+				const auto& textures = material.GetTextures();
+
+				if (material.GetIsPBRTexture())
+				{
+					builtIn::ShaderPrograms::PBRSkinnedModelProgram.Bind(context);
+
+					directXWrapper::Texture* textures[] =
+					{
+						material.GetTextureOrNull(eTexutreType::Diffuse),
+						material.GetTextureOrNull(eTexutreType::Normal),
+						material.GetTextureOrNull(eTexutreType::Specular),
+						material.GetTextureOrNull(eTexutreType::Opacity),
+						material.GetTextureOrNull(eTexutreType::Metalness),
+						material.GetTextureOrNull(eTexutreType::Shininess),
+					};
+
+					builtIn::ConstantBuffers::PBRMaterial pbrMaterial;
+					int* legacyMaterialPtr = reinterpret_cast<int*>(&pbrMaterial);
+					for (auto* texture : textures)
+					{
+						*legacyMaterialPtr = texture != nullptr;
+						++legacyMaterialPtr;
+					}
+
+					ID3D11ShaderResourceView* SRVs[] =
+					{
+						textures[0] == nullptr ? nullptr : textures[0]->GetComPtr().Get(),
+						textures[1] == nullptr ? nullptr : textures[1]->GetComPtr().Get(),
+						textures[2] == nullptr ? nullptr : textures[2]->GetComPtr().Get(),
+						textures[3] == nullptr ? nullptr : textures[3]->GetComPtr().Get(),
+						textures[4] == nullptr ? nullptr : textures[4]->GetComPtr().Get(),
+						textures[5] == nullptr ? nullptr : textures[5]->GetComPtr().Get(),
+					};
+
+					context->PSSetShaderResources(0, ARRAYSIZE(SRVs), SRVs);
+
+					auto materialCB = builtIn::ConstantBuffers::PBRMaterialCB.GetComPtr();
+					context->UpdateSubresource(materialCB.Get(), 0, 0, &pbrMaterial, 0, 0);
+				}
+				else
+				{
+					builtIn::ShaderPrograms::SkinnedModelProgram.Bind(context);
+
+					directXWrapper::Texture* textures[] =
+					{
+						material.GetTextureOrNull(eTexutreType::Diffuse),
+						material.GetTextureOrNull(eTexutreType::Normal),
+						material.GetTextureOrNull(eTexutreType::Specular),
+						material.GetTextureOrNull(eTexutreType::Opacity),
+					};
+
+					builtIn::ConstantBuffers::LegacyMaterial legacyMaterial;
+					int* legacyMaterialPtr = reinterpret_cast<int*>(&legacyMaterial);
+					for (auto* texture : textures)
+					{
+						*legacyMaterialPtr = texture != nullptr;
+						++legacyMaterialPtr;
+					}
+
+					ID3D11ShaderResourceView* SRVs[] =
+					{
+						textures[0] == nullptr ? nullptr : textures[0]->GetComPtr().Get(),
+						textures[1] == nullptr ? nullptr : textures[1]->GetComPtr().Get(),
+						textures[2] == nullptr ? nullptr : textures[2]->GetComPtr().Get(),
+						textures[3] == nullptr ? nullptr : textures[3]->GetComPtr().Get(),
+					};
+
+					context->PSSetShaderResources(0, ARRAYSIZE(SRVs), SRVs);
+
+					auto materialCB = builtIn::ConstantBuffers::LegacyMaterialCB.GetComPtr();
+					context->UpdateSubresource(materialCB.Get(), 0, 0, &legacyMaterial, 0, 0);
+				}
+			}
+
+			context->DrawIndexed(skinnedMesh.mIB.GetCount(), 0, 0);
+			++currentMeshMatIndex;
 		}
 	}
 }

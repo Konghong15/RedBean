@@ -10,6 +10,8 @@ namespace directXWrapper
 		~ConstantBuffer() = default;
 
 		bool Init(ID3D11Device* device, bool cpuWrite = false, bool gpuWrite = true);
+		void UpdateSubResource(ID3D11DeviceContext* context, void* data);
+		void Destroy();
 
 		ComPtr<ID3D11Buffer> GetComPtr() { return mBuffer; }
 
@@ -49,5 +51,21 @@ namespace directXWrapper
 		HR(device->CreateBuffer(&desc, nullptr, mBuffer.GetAddressOf()));
 
 		return true;
+	}
+
+	template <typename T>
+	void ConstantBuffer<T>::UpdateSubResource(ID3D11DeviceContext* context, void* data)
+	{
+		context->UpdateSubresource(mBuffer.Get(), 0, 0, data, 0, 0);
+	}
+
+	template <typename T>
+	void ConstantBuffer<T>::Destroy()
+	{
+		if (mBuffer != nullptr)
+		{
+			mBuffer->Release();
+			mBuffer = nullptr;
+		}
 	}
 }

@@ -3,8 +3,9 @@
 #include "Graphic.h"
 
 #include "RenderStates.h"
-#include "VertexType.h"
+#include "VertexTypes.h"
 #include "ShaderPrograms.h"
+#include "ConstantBuffers.h"
 
 namespace renderSystem
 {
@@ -96,6 +97,7 @@ namespace renderSystem
 		builtIn::ShaderPrograms::InitAll(md3dDevice);
 		builtIn::InputLayouts::InitAll(md3dDevice);
 		builtIn::RenderStates::InitAll(md3dDevice);
+		builtIn::ConstantBuffers::InitAll(md3dDevice);
 
 		return true;
 	}
@@ -105,6 +107,7 @@ namespace renderSystem
 		builtIn::ShaderPrograms::DestroyAll();
 		builtIn::InputLayouts::DestroyAll();
 		builtIn::RenderStates::DestroyAll();
+		builtIn::ConstantBuffers::DestroyAll();
 
 		ReleaseCOM(mRenderTargetView);
 		ReleaseCOM(mDepthStencilView);
@@ -124,7 +127,7 @@ namespace renderSystem
 		md3dContext->PSSetShaderResources(0, 1, SRVs);
 
 		md3dContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
-		md3dContext->ClearRenderTargetView(mRenderTargetView, common::color::Black);
+		md3dContext->ClearRenderTargetView(mRenderTargetView, common::color::White);
 		md3dContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		// const size_t OFFSCREEN_SIZE = static_cast<size_t>(eDefferedTexture::Size);

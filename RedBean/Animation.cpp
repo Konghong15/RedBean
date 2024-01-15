@@ -81,7 +81,7 @@ namespace resource
 	{
 		Assimp::Importer importer;
 		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);
-		unsigned int importFlags = 0;
+		unsigned int importFlags = aiProcess_ConvertToLeftHanded;
 
 		const aiScene* scene = importer.ReadFile(filename, importFlags);
 

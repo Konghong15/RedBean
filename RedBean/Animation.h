@@ -51,6 +51,7 @@ namespace resource
 
 		const string GetFileName() const { return mFilename; }
 		const map<string, AnimationClip> GetAnimationClips() const { return mAnimationClips; }
+		const AnimationClip& GetAnimationClip(string name) const { return mAnimationClips.find(name)->second; }
 
 	private:
 		string mFilename;

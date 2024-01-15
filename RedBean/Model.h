@@ -4,7 +4,6 @@
 
 namespace resource
 {
-	class NodeResource;
 	class MeshResource;
 	class MaterialResource;
 
@@ -14,10 +13,12 @@ namespace resource
 		Model() = default;
 		~Model() = default;
 
-		bool Init(NodeResource* nodeResource, MeshResource* meshResource, MaterialResource* materialResource);
+		bool Init(MeshResource* meshResource, MaterialResource* materialResource);
+
+		const MeshResource* GetMeshResource() const { return mMeshResource; }
+		const MaterialResource* GetMaterialResource() const { return mMaterialResource; }
 
 	private:
-		NodeResource* mNodeResource;
 		MeshResource* mMeshResource;
 		MaterialResource* mMaterialResource;
 	};
@@ -39,22 +40,16 @@ namespace resource
 		SkinnedModel() = default;
 		~SkinnedModel() = default;
 
-		bool Init(NodeResource* nodeResource, SkinnedMeshResource* meshResource, MaterialResource* materialResource, AnimationResource* animationResource);
-		void Render(ID3D11DeviceContext* context, const string clipName, float timePos, const Matrix& worldMat);
+		bool Init(SkinnedMeshResource* meshResource, MaterialResource* materialResource, AnimationResource* animationResource);
 
-		NodeResource* GetNodeResource() const { return mNodeResource; }
 		SkinnedMeshResource* GetSkinnedMeshResource() const { return mSkinnedMeshResource; }
 		MaterialResource* GetMaterialResource() const { return mMaterialResource; }
 		AnimationResource* GetAnimationResource() const { return mAnimationResource; }
-		const vector<vector<int>>& GetBoneHierachy() const { return mBoneHierachy; }
 
 	private:
-		NodeResource* mNodeResource;
 		SkinnedMeshResource* mSkinnedMeshResource;
 		MaterialResource* mMaterialResource;
 		AnimationResource* mAnimationResource;
-
-		vector<vector<int>> mBoneHierachy; // Bone Parent index
 	};
 
 	struct SkinnedModelInstance : public interfaceClass::IRenderable
@@ -62,7 +57,7 @@ namespace resource
 		void Render(ID3D11DeviceContext* context) override;
 
 		SkinnedModel* ModelRef;
-		string AnimationName;
+		string ClipName;
 		float TimePos;
 		Matrix WorldMatrix;
 	};

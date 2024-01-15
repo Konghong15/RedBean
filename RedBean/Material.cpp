@@ -7,6 +7,7 @@
 namespace resource
 {
 	Material::Material(aiMaterial* material, filesystem::path basePath)
+		: mTextures{ nullptr, }
 	{
 		auto addTexture = [&](aiTextureType aiTextureType, eTexutreType textureType)
 		{

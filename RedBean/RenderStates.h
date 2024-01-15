@@ -17,9 +17,11 @@ namespace builtIn
 	public:
 		// SamplerState
 		static ComPtr<ID3D11SamplerState> LinearWrapSS;
+		static ComPtr<ID3D11SamplerState> LinearClampSS;
 		static ComPtr<ID3D11SamplerState> PointClampSS;
 		static ComPtr<ID3D11SamplerState> PointBoaderSS;
 		static ComPtr<ID3D11SamplerState> PointWrapSS;
+		static ComPtr<ID3D11SamplerState> AnisotropicWrapSS;
 
 		// RasterizerState
 		static ComPtr<ID3D11RasterizerState> WireFrameRS; // 와이어프레임으로 렌더링

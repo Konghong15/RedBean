@@ -69,11 +69,5 @@ using Quaternion = DirectX::SimpleMath::Quaternion;
 // common
 #include "Util.h"
 #include "MathHelper.h"
-#include "VertexType.h"
 #include "LightHelper.h"
 #include "Camera.h"
-
-// builtIn
-#include "VertexType.h"
-#include "ShaderPrograms.h"
-#include "RenderStates.h"
