@@ -73,25 +73,14 @@ namespace resource
 			}
 
 			string name = currentChennel->mNodeName.C_Str();
-			mAnimationNodes.emplace(name, Keyframes(name, keyframes));
+			mBoneKeyframes.emplace(name, Keyframes(name, keyframes));
 		}
 	}
-
-	bool AnimationResource::Init(const string& filename)
+	
+	AnimationResource::AnimationResource(const aiScene* scene)
+		: mName(scene->mName.C_Str())
 	{
-		Assimp::Importer importer;
-		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);
-		unsigned int importFlags = aiProcess_ConvertToLeftHanded;
-
-		const aiScene* scene = importer.ReadFile(filename, importFlags);
-
-		if (scene == nullptr)
-		{
-			return false;
-		}
-
-		mFilename = filename;
-		mAnimationClips.clear();
+		assert(scene != nullptr);
 
 		for (unsigned int i = 0; i < scene->mNumAnimations; ++i)
 		{
@@ -99,7 +88,5 @@ namespace resource
 
 			mAnimationClips.emplace(curAnim->mName.C_Str(), curAnim);
 		}
-
-		importer.FreeScene();
 	}
 }

@@ -47,17 +47,15 @@ namespace resource
 	class MeshResource
 	{
 	public:
-		MeshResource() = default;
-		~MeshResource() = default;
+		MeshResource(ID3D11Device* device, const aiScene* scene);
+		~MeshResource();
 
-		bool Init(ID3D11Device* device, string filename);
-
-		const string& GetFileName() const { return mFileName; }
+		const string& GetName() const { return mName; }
 		const vector<Mesh>& GetMeshes() const { return mMeshes; }
 		const vector<Node*> GetNodes() const { return mNodes; }
 
 	private:
-		string mFileName;
+		string mName;
 		vector<Mesh> mMeshes;
 		vector<Node*> mNodes;
 	};
@@ -86,19 +84,17 @@ namespace resource
 	class SkinnedMeshResource
 	{
 	public:
-		SkinnedMeshResource() = default;
-		~SkinnedMeshResource() = default;
-
-		bool Init(ID3D11Device* device, string filename);
+		SkinnedMeshResource(ID3D11Device* device, const aiScene* scene);
+		~SkinnedMeshResource();
 
 		vector<Node*>& GetNodes() { return mNodes; }
 
-		const string& GetFileName() const { return mFileName; }
+		const string& GetFileName() const { return mName; }
 		const vector<SkinnedMesh>& GetSkinnedMeshes() const { return mSkinnedMeshes; }
 		const vector<Node*>& GetNodes() const { return mNodes; }
 
 	private:
-		string mFileName;
+		string mName;
 		vector<SkinnedMesh> mSkinnedMeshes;
 		vector<Node*> mNodes;
 	};

@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "Graphic.h"
+#include "Renderer.h"
 
 #include "RenderStates.h"
 #include "VertexTypes.h"
@@ -9,7 +9,7 @@
 
 namespace renderSystem
 {
-	bool Graphic::Init(HWND hwnd, HINSTANCE hInstance, UINT width, UINT height)
+	bool Renderer::Init(HWND hwnd, HINSTANCE hInstance, UINT width, UINT height, bool bEnable4xMsaa)
 	{
 		Release();
 
@@ -17,6 +17,7 @@ namespace renderSystem
 		mhInstance = hInstance;
 		mWidth = width;
 		mHeight = height;
+		mbEnable4xMsaa = bEnable4xMsaa;
 
 		UINT createDeviceFlags = 0;
 #if defined(DEBUG) || defined(_DEBUG)  
@@ -59,7 +60,7 @@ namespace renderSystem
 		sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 		sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
-		if (mEnable4xMsaa)
+		if (mbEnable4xMsaa)
 		{
 			sd.SampleDesc.Count = 4;
 			sd.SampleDesc.Quality = m4xMsaaQuality - 1;
@@ -102,7 +103,7 @@ namespace renderSystem
 		return true;
 	}
 
-	void Graphic::Release()
+	void Renderer::Release()
 	{
 		builtIn::ShaderPrograms::DestroyAll();
 		builtIn::InputLayouts::DestroyAll();
@@ -121,13 +122,13 @@ namespace renderSystem
 		ReleaseCOM(md3dDevice);
 	}
 
-	void Graphic::BeginRender()
+	void Renderer::BeginRender()
 	{
 		ID3D11ShaderResourceView* const SRVs[] = { NULL };
 		md3dContext->PSSetShaderResources(0, 1, SRVs);
 
 		md3dContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
-		md3dContext->ClearRenderTargetView(mRenderTargetView, common::color::White);
+		md3dContext->ClearRenderTargetView(mRenderTargetView, common::color::Black);
 		md3dContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		// const size_t OFFSCREEN_SIZE = static_cast<size_t>(eDefferedTexture::Size);
@@ -150,7 +151,7 @@ namespace renderSystem
 		// md3dContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
-	void Graphic::EndRender()
+	void Renderer::EndRender()
 	{
 		// 조명 적용 후 디퍼드 데이터 합치기
 
@@ -160,7 +161,7 @@ namespace renderSystem
 		mSwapChain->Present(0, 0);
 	}
 
-	void Graphic::OnResize()
+	void Renderer::OnResize()
 	{
 		assert(md3dContext);
 		assert(md3dDevice);
@@ -183,7 +184,7 @@ namespace renderSystem
 		depthStencilDesc.ArraySize = 1;
 		depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-		if (mEnable4xMsaa)
+		if (mbEnable4xMsaa)
 		{
 			depthStencilDesc.SampleDesc.Count = 4;
 			depthStencilDesc.SampleDesc.Quality = m4xMsaaQuality - 1;

@@ -2,14 +2,13 @@
 
 #include "Texture.h"
 
-namespace directXWrapper
+namespace resource
 {
 	bool Texture::Init(ID3D11Device* device, const wstring& path)
 	{
 		mPath = path;
 
 		DirectX::TexMetadata md;
-
 		HRESULT hr = LoadFromWICFile(path.c_str(), WIC_FLAGS_NONE, &md, mScratchImage);
 
 		if (FAILED(hr))
@@ -35,11 +34,5 @@ namespace directXWrapper
 	{
 
 		return true;
-	}
-
-	void Texture::Bind(ID3D11DeviceContext* context)
-	{
-		context->VSSetShaderResources(0, 1, mSRV.GetAddressOf());
-		context->PSSetShaderResources(0, 1, mSRV.GetAddressOf());
 	}
 }

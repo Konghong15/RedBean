@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="01.Drawable">
+      <UniqueIdentifier>{024ea8d0-006b-4ded-95ea-f27e47f52142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Header">
+      <UniqueIdentifier>{efb00c25-b4c9-40cf-8c80-267fcbdf5c0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Bindable">
+      <UniqueIdentifier>{cf6b7e70-bb04-48b7-9478-3c5026ab74a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Bindable\Private">
+      <UniqueIdentifier>{d48a3bff-c40f-40a3-b1c9-c4c5ea2c616a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Technique">
+      <UniqueIdentifier>{0e9f8be0-e1c1-4e86-980f-53730747d737}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Interface">
+      <UniqueIdentifier>{72ba9de3-7198-4c94-acb9-671b5c25bbb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Technique\Private">
+      <UniqueIdentifier>{b2736d75-17e6-4c13-b291-037926c6d2d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Interface\Private">
+      <UniqueIdentifier>{6b17b2d5-d720-4d35-a8e8-986b683018e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Header\Private">
+      <UniqueIdentifier>{ab56bc25-e281-4d31-95d6-d4f5850a17cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Drawable\Private">
+      <UniqueIdentifier>{6e7da561-f044-4d66-bd49-3d874bf064e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Dynamic">
+      <UniqueIdentifier>{d112c0fe-cae3-41df-8cec-43d4f305557a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Dynamic\Private">
+      <UniqueIdentifier>{069a613f-6f0c-4d36-aa9f-88089f14db70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Geometry">
+      <UniqueIdentifier>{916376c9-5d3e-4756-91e4-e8c96b4a4f14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{b00d6bb8-36c9-4140-b5e0-a2e6b2901e21}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SweetRedBean.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="BindableResourceManager.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="InputLayout.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Topology.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Rasterizer.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Stencil.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="BindableCommon.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="IBindable.h">
+      <Filter>98.Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender.h">
+      <Filter>00.Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameCommnader.h">
+      <Filter>02.Technique</Filter>
+    </ClInclude>
+    <ClInclude Include="Job.h">
+      <Filter>02.Technique</Filter>
+    </ClInclude>
+    <ClInclude Include="Pass.h">
+      <Filter>02.Technique</Filter>
+    </ClInclude>
+    <ClInclude Include="Step.h">
+      <Filter>02.Technique</Filter>
+    </ClInclude>
+    <ClInclude Include="Technique.h">
+      <Filter>02.Technique</Filter>
+    </ClInclude>
+    <ClInclude Include="IDrawable.h">
+      <Filter>98.Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCube.h">
+      <Filter>01.Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="TestPlane.h">
+      <Filter>01.Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Vertex.h">
+      <Filter>03.Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexLayout.h">
+      <Filter>03.Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h" />
+    <ClInclude Include="Cube.h">
+      <Filter>04.Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h" />
+    <ClInclude Include="ConstantBufferEx.h" />
+    <ClInclude Include="DynamicConstant.h" />
+    <ClInclude Include="LayoutCodex.h" />
+    <ClInclude Include="TechniqueProbe.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Topology.cpp">
+      <Filter>00.Bindable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="InputLayout.cpp">
+      <Filter>00.Bindable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender.cpp">
+      <Filter>00.Bindable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>00.Bindable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>00.Bindable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>00.Bindable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Rasterizer.cpp">
+      <Filter>00.Bindable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="BindableResourceManager.cpp">
+      <Filter>00.Bindable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Sampler.cpp">
+      <Filter>00.Bindable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Stencil.cpp">
+      <Filter>00.Bindable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>00.Bindable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>00.Bindable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>00.Bindable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameCommnader.cpp">
+      <Filter>02.Technique\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Job.cpp">
+      <Filter>02.Technique\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Pass.cpp">
+      <Filter>02.Technique\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Step.cpp">
+      <Filter>02.Technique\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Technique.cpp">
+      <Filter>02.Technique\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="IDrawable.cpp">
+      <Filter>98.Interface\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="IBindable.cpp">
+      <Filter>98.Interface\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>99.Header\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCube.cpp">
+      <Filter>01.Drawable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="TestPlane.cpp">
+      <Filter>01.Drawable\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="Vertex.cpp">
+      <Filter>03.Dynamic\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexLayout.cpp">
+      <Filter>03.Dynamic\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp" />
+    <ClCompile Include="ConstantBufferEx.cpp" />
+    <ClCompile Include="DynamicConstant.cpp" />
+    <ClCompile Include="LayoutCodex.cpp" />
+    <ClCompile Include="TechniqueProbe.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="ColorBlendPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorBlendVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorIndexPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorIndexVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

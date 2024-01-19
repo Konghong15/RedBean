@@ -1,11 +1,5 @@
 #pragma once
 
-namespace directXWrapper
-{
-	class Texture;
-	class ShaderProgram;
-}
-
 namespace resource
 {
 	enum class eTexutreType
@@ -16,41 +10,51 @@ namespace resource
 		Opacity,
 		Emissive,
 		Metalness,
-		Shininess, // smoothness
+		Roughness,
 		Size,
 	};
+	enum
+	{
+		eTextureTypeSize = static_cast<size_t>(eTexutreType::Size)
+	};
+
+	class Texture;
 
 	class Material
 	{
 	public:
-		using TextureArray = std::array<directXWrapper::Texture*, static_cast<size_t>(eTexutreType::Size)>;
-
-	public:
-		Material(aiMaterial* material, std::filesystem::path basePath = filesystem::current_path() / "../Resource/textures");
+		Material(aiMaterial* material, const filesystem::path& basePath);
 		~Material() = default;
 
-		directXWrapper::Texture* GetTextureOrNull(eTexutreType textureType) const { return mTextures[static_cast<size_t>(textureType)]; }
-		const TextureArray& GetTextures() const { return mTextures; }
-		bool GetIsPBRTexture() const { return mTextures[(size_t)eTexutreType::Metalness] != nullptr || mTextures[(size_t)eTexutreType::Shininess] != nullptr; }
+		void SetUseBlend(bool bUseBlend) { mbUseBlend = bUseBlend; }
+
+		bool GetHasPBRTexture() const { return mTextures[(size_t)eTexutreType::Metalness] != nullptr || mTextures[(size_t)eTexutreType::Roughness] != nullptr; }
+		bool GetHasAlpha() const { return mTextures[(size_t)eTexutreType::Opacity] != nullptr; }
+		Texture* GetTextureOrNull(eTexutreType textureType) const { return mTextures[static_cast<size_t>(textureType)]; }
+
+		const string& GetName() const { return mName; }
+		const array<Texture*, eTextureTypeSize>& GetTextures() const { return mTextures; }
 
 	private:
-		string Name;
-		TextureArray mTextures;
+		string mName;
+		array<Texture*, eTextureTypeSize> mTextures;
+		bool mbUseBlend;
 	};
 
 	class MaterialResource
 	{
 	public:
-		MaterialResource() = default;
+		MaterialResource(const aiScene* scene, const filesystem::path& basePath);
 		~MaterialResource() = default;
 
-		bool Init(string filename);
+		const Material& GetMaterial() const;
+		bool GetMaterial(string name, Material* materia) const;
 
-		const string& GetFileName() const { return mFilename; }
+		const string& GetName() const { return mName; }
 		const vector<Material>& GetMaterials() const { return mMaterials; }
 
 	private:
-		string mFilename;
+		string mName;
 		vector<Material> mMaterials;
 	};
 }

@@ -10,9 +10,26 @@
 
 namespace renderSystem
 {
-	directXWrapper::Texture* ResourceManager::CreateTextureOrNull(const string& filename)
+	void ResourceManager::Destroy()
 	{
-		using namespace directXWrapper;
+		auto destroyMap = [](auto& map)
+			{
+				for (auto& resource : map) { delete resource.second; }
+				map.clear();
+			};
+
+		destroyMap(mTextures);
+		destroyMap(mMeshResources);
+		destroyMap(mSkinnedMeshResources);
+		destroyMap(mMaterialResources);
+		destroyMap(mAnimationResources);
+		destroyMap(mModels);
+		destroyMap(mSkinnedModels);
+	}
+
+	resource::Texture* ResourceManager::CreateTextureOrNull(const string& filename)
+	{
+		using namespace resource;
 
 		auto find = mTextures.find(filename);
 
@@ -34,14 +51,13 @@ namespace renderSystem
 		return texture;
 	}
 
-	directXWrapper::Texture* ResourceManager::CreateTextureOrNull(const wstring& filename)
+	resource::Texture* ResourceManager::CreateTextureOrNull(const wstring& filename)
 	{
 		return CreateTextureOrNull(common::D3DHelper::ConvertWStrToStr(filename));
 	}
 
 	resource::MeshResource* ResourceManager::CreateMeshResourceOrNull(const string& filename)
 	{
-		using namespace directXWrapper;
 		using namespace resource;
 
 		auto find = mMeshResources.find(filename);
@@ -51,13 +67,24 @@ namespace renderSystem
 			return find->second;
 		}
 
-		MeshResource* meshResource = new MeshResource();
+		Assimp::Importer importer;
+		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);
+		unsigned int importFlags = aiProcess_Triangulate |
+			aiProcess_GenNormals |
+			aiProcess_GenUVCoords |
+			aiProcess_CalcTangentSpace |
+			aiProcess_LimitBoneWeights |
+			aiProcess_ConvertToLeftHanded;
 
-		if (!meshResource->Init(mDevice, filename))
+		const aiScene* scene = importer.ReadFile(filename, importFlags);
+
+		if (scene == nullptr)
 		{
-			delete meshResource;
 			return nullptr;
 		}
+
+		MeshResource* meshResource = new MeshResource(mDevice, scene);
+		importer.FreeScene();
 
 		mMeshResources.insert({ filename, meshResource });
 
@@ -68,9 +95,9 @@ namespace renderSystem
 	{
 		return CreateMeshResourceOrNull(common::D3DHelper::ConvertWStrToStr(filename));
 	}
+
 	resource::SkinnedMeshResource* ResourceManager::CreateSkinnedMeshResourceOrNull(const string& filename)
 	{
-		using namespace directXWrapper;
 		using namespace resource;
 
 		auto find = mSkinnedMeshResources.find(filename);
@@ -80,13 +107,24 @@ namespace renderSystem
 			return find->second;
 		}
 
-		SkinnedMeshResource* skinnedMeshResource = new SkinnedMeshResource();
+		Assimp::Importer importer;
+		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);
+		unsigned int importFlags = aiProcess_Triangulate |
+			aiProcess_GenNormals |
+			aiProcess_GenUVCoords |
+			aiProcess_CalcTangentSpace |
+			aiProcess_LimitBoneWeights |
+			aiProcess_ConvertToLeftHanded;
 
-		if (!skinnedMeshResource->Init(mDevice, filename))
+		const aiScene* scene = importer.ReadFile(filename, importFlags);
+
+		if (scene == nullptr)
 		{
-			delete skinnedMeshResource;
 			return nullptr;
 		}
+
+		SkinnedMeshResource* skinnedMeshResource = new SkinnedMeshResource(mDevice, scene);
+		importer.FreeScene();
 
 		mSkinnedMeshResources.insert({ filename, skinnedMeshResource });
 
@@ -96,9 +134,8 @@ namespace renderSystem
 	{
 		return CreateSkinnedMeshResourceOrNull(common::D3DHelper::ConvertWStrToStr(filename));;
 	}
-	resource::MaterialResource* ResourceManager::CreateMaterialResourceOrNull(const string& filename)
+	resource::MaterialResource* ResourceManager::CreateMaterialResourceOrNull(const string& filename, const filesystem::path& basePath)
 	{
-		using namespace directXWrapper;
 		using namespace resource;
 
 		auto find = mMaterialResources.find(filename);
@@ -108,25 +145,30 @@ namespace renderSystem
 			return find->second;
 		}
 
-		MaterialResource* materialResource = new MaterialResource();
+		Assimp::Importer importer;
+		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);
+		unsigned int importFlags = 0;
 
-		if (!materialResource->Init(filename))
+		const aiScene* scene = importer.ReadFile(filename, importFlags);
+
+		if (scene == nullptr)
 		{
-			delete materialResource;
 			return nullptr;
 		}
+
+		MaterialResource* materialResource = new MaterialResource(scene, basePath);
+		importer.FreeScene();
 
 		mMaterialResources.insert({ filename, materialResource });
 
 		return materialResource;
 	}
-	resource::MaterialResource* ResourceManager::CreateMaterialResourceOrNull(const wstring& filename)
+	resource::MaterialResource* ResourceManager::CreateMaterialResourceOrNull(const wstring& filename, const filesystem::path& basePath)
 	{
-		return CreateMaterialResourceOrNull(common::D3DHelper::ConvertWStrToStr(filename));;
+		return CreateMaterialResourceOrNull(common::D3DHelper::ConvertWStrToStr(filename), basePath);
 	}
 	resource::AnimationResource* ResourceManager::CreateAnimationResourceOrNull(const string& filename)
 	{
-		using namespace directXWrapper;
 		using namespace resource;
 
 		auto find = mAnimationResources.find(filename);
@@ -136,13 +178,19 @@ namespace renderSystem
 			return find->second;
 		}
 
-		AnimationResource* animationResource = new AnimationResource();
+		Assimp::Importer importer;
+		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);
+		unsigned int importFlags = aiProcess_ConvertToLeftHanded;
 
-		if (!animationResource->Init(filename))
+		const aiScene* scene = importer.ReadFile(filename, importFlags);
+
+		if (scene == nullptr)
 		{
-			delete animationResource;
 			return nullptr;
 		}
+
+		AnimationResource* animationResource = new AnimationResource(scene);
+		importer.FreeScene();
 
 		mAnimationResources.insert({ filename, animationResource });
 

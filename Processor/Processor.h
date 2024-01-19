@@ -45,7 +45,7 @@ namespace common
 		std::wstring mTitle;
 		UINT mWidth;
 		UINT mHeight;
-		bool mEnable4xMsaa;
+		bool mbEnable4xMsaa;
 	};
 
 	HINSTANCE Processor::GetInstance() const

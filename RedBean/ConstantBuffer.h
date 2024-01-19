@@ -62,10 +62,6 @@ namespace directXWrapper
 	template <typename T>
 	void ConstantBuffer<T>::Destroy()
 	{
-		if (mBuffer != nullptr)
-		{
-			mBuffer->Release();
-			mBuffer = nullptr;
-		}
+		mBuffer = nullptr;
 	}
 }

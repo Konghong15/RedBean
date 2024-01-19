@@ -7,12 +7,6 @@
     <Filter Include="DirectXWrapper">
       <UniqueIdentifier>{7b083ae9-18b5-4f38-a998-454fbb35cc71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RenderObject">
-      <UniqueIdentifier>{b1cf14b7-27f9-4d32-95e1-a27f61cb8ab3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RenderSystem">
-      <UniqueIdentifier>{9e14388e-e535-43c8-9435-60b1926da196}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header">
       <UniqueIdentifier>{47748222-3d51-48ec-a203-c2c06dca6187}</UniqueIdentifier>
     </Filter>
@@ -43,17 +37,14 @@
     <Filter Include="BuiltIn\Shader\RenderObject">
       <UniqueIdentifier>{5c3befce-81ec-40f3-85fa-1eac7dae0ecf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DirectXWrapper\Buffer">
-      <UniqueIdentifier>{019cfe84-92b1-4cdd-a93b-b4eebc01be1a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RenderObject\Resource">
-      <UniqueIdentifier>{f427ee50-f815-4ab3-80f9-a559f45cba88}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RenderSystem\MainSystem">
-      <UniqueIdentifier>{42125661-a457-41ca-abba-890258ea274f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="InterfaceClass">
       <UniqueIdentifier>{404ff26f-b453-444d-b28e-35d4fa51a5a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{b1cf14b7-27f9-4d32-95e1-a27f61cb8ab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{9e14388e-e535-43c8-9435-60b1926da196}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -65,9 +56,6 @@
     </ClCompile>
     <ClCompile Include="GeometryGenerator.cpp">
       <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>DirectXWrapper</Filter>
     </ClCompile>
     <ClCompile Include="LightHelper.cpp">
       <Filter>Common</Filter>
@@ -87,44 +75,44 @@
     <ClCompile Include="VertexTypes.cpp">
       <Filter>BuiltIn</Filter>
     </ClCompile>
-    <ClCompile Include="RenderTarget.cpp">
-      <Filter>DirectXWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>DirectXWrapper\Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="ConstantBuffer.cpp">
-      <Filter>DirectXWrapper\Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="IndexBuffer.cpp">
-      <Filter>DirectXWrapper\Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderManager.cpp">
-      <Filter>RenderSystem\MainSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>RenderSystem\MainSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphic.cpp">
-      <Filter>RenderSystem\MainSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>RenderObject\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>RenderObject\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>RenderObject\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>RenderObject\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="IRenderable.cpp">
       <Filter>InterfaceClass</Filter>
     </ClCompile>
     <ClCompile Include="ConstantBuffers.cpp">
       <Filter>BuiltIn</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderManager.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>DirectXWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>DirectXWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>DirectXWrapper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -136,9 +124,6 @@
     </ClInclude>
     <ClInclude Include="GeometryGenerator.h">
       <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>DirectXWrapper</Filter>
     </ClInclude>
     <ClInclude Include="LightHelper.h">
       <Filter>Common</Filter>
@@ -155,47 +140,47 @@
     <ClInclude Include="ShaderPrograms.h">
       <Filter>BuiltIn</Filter>
     </ClInclude>
-    <ClInclude Include="RenderTarget.h">
-      <Filter>DirectXWrapper</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
-      <Filter>DirectXWrapper\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="ConstantBuffer.h">
-      <Filter>DirectXWrapper\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="IndexBuffer.h">
-      <Filter>DirectXWrapper\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>RenderSystem\MainSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderManager.h">
-      <Filter>RenderSystem\MainSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic.h">
-      <Filter>RenderSystem\MainSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>RenderObject\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>RenderObject\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="VertexTypes.h">
       <Filter>BuiltIn</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>RenderObject\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>RenderObject\Resource</Filter>
     </ClInclude>
     <ClInclude Include="IRenderable.h">
       <Filter>InterfaceClass</Filter>
     </ClInclude>
     <ClInclude Include="ConstantBuffers.h">
       <Filter>BuiltIn</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderManager.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>DirectXWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>DirectXWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>DirectXWrapper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

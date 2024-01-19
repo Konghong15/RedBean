@@ -71,74 +71,64 @@ namespace resource
 		mIB.Init(device, mIndices);
 	}
 
-	bool MeshResource::Init(ID3D11Device* device, string filename)
+	MeshResource::MeshResource(ID3D11Device* device, const aiScene* scene)
+		: mName(scene->mName.C_Str())
 	{
-		Assimp::Importer importer;
-		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);
-		unsigned int importFlags = aiProcess_Triangulate |
-			aiProcess_GenNormals |
-			aiProcess_GenUVCoords |
-			aiProcess_CalcTangentSpace |
-			aiProcess_LimitBoneWeights |
-			aiProcess_ConvertToLeftHanded;
 
-		const aiScene* scene = importer.ReadFile(filename, importFlags);
-
-		if (scene == nullptr)
-		{
-			return false;
-		}
-
-		mFileName = filename;
-
-		mMeshes.clear();
 		mMeshes.reserve(scene->mNumMeshes);
 
 		function<void(aiNode*, Node*)> nodeRecursive = [&](aiNode* node, Node* myNodeParent)
-		{
-			Node* myNode = new Node();
-			myNode->Name = node->mName.C_Str();
-			myNode->Index = mNodes.size();
-			myNode->ToParentMatrix = convertMatrix(node->mTransformation).Transpose();
-
-			if (myNodeParent != nullptr)
 			{
-				myNode->ParentIndex = myNodeParent->Index;
-				myNode->ToRootMatrix = myNode->ToParentMatrix * myNodeParent->ToRootMatrix;
+				Node* myNode = new Node();
+				myNode->Name = node->mName.C_Str();
+				myNode->Index = mNodes.size();
+				myNode->ToParentMatrix = convertMatrix(node->mTransformation).Transpose();
 
-				myNode->Parent = myNodeParent;
-				myNodeParent->Children.push_back(myNode);
-			}
-			else
-			{
-				myNode->ParentIndex = Node::INVALID_INDEX;
-				myNode->Parent = nullptr;
+				if (myNodeParent != nullptr)
+				{
+					myNode->ParentIndex = myNodeParent->Index;
+					myNode->ToRootMatrix = myNode->ToParentMatrix * myNodeParent->ToRootMatrix;
 
-				myNode->ToRootMatrix = myNode->ToParentMatrix;
-			}
+					myNode->Parent = myNodeParent;
+					myNodeParent->Children.push_back(myNode);
+				}
+				else
+				{
+					myNode->ParentIndex = Node::INVALID_INDEX;
+					myNode->Parent = nullptr;
 
-			mNodes.push_back(myNode);
-			myNode->ContainMeshesIndex.reserve(node->mNumMeshes);
+					myNode->ToRootMatrix = myNode->ToParentMatrix;
+				}
 
-			for (UINT i = 0; i < node->mNumMeshes; ++i)
-			{
-				unsigned int meshIndex = node->mMeshes[i];
-				aiMesh* mesh = scene->mMeshes[meshIndex];
+				mNodes.push_back(myNode);
+				myNode->ContainMeshesIndex.reserve(node->mNumMeshes);
 
-				myNode->ContainMeshesIndex.push_back(mMeshes.size());
-				mMeshes.emplace_back(device, mesh);
-			}
+				for (UINT i = 0; i < node->mNumMeshes; ++i)
+				{
+					unsigned int meshIndex = node->mMeshes[i];
+					aiMesh* mesh = scene->mMeshes[meshIndex];
 
-			for (UINT i = 0; i < node->mNumChildren; ++i)
-			{
-				nodeRecursive(node->mChildren[i], myNode);
-			}
-		};
+					myNode->ContainMeshesIndex.push_back(mMeshes.size());
+					mMeshes.emplace_back(device, mesh);
+				}
+
+				for (UINT i = 0; i < node->mNumChildren; ++i)
+				{
+					nodeRecursive(node->mChildren[i], myNode);
+				}
+			};
 
 		nodeRecursive(scene->mRootNode, nullptr);
-		importer.FreeScene();
+	}
 
-		return true;
+	MeshResource::~MeshResource()
+	{
+		for (Node* node : mNodes)
+		{
+			delete node;
+		}
+
+		mNodes.clear();
 	}
 
 	SkinnedMesh::SkinnedMesh(ID3D11Device* device, aiMesh* mesh)
@@ -222,73 +212,54 @@ namespace resource
 		mIB.Init(device, mIndices);
 	}
 
-	bool SkinnedMeshResource::Init(ID3D11Device* device, string filename)
+	SkinnedMeshResource::SkinnedMeshResource(ID3D11Device* device, const aiScene* scene)
+		: mName(scene->mName.C_Str())
 	{
-		Assimp::Importer importer;
-		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);
-		unsigned int importFlags = aiProcess_Triangulate |
-			aiProcess_GenNormals |
-			aiProcess_GenUVCoords |
-			aiProcess_CalcTangentSpace |
-			aiProcess_LimitBoneWeights |
-			aiProcess_ConvertToLeftHanded;
-
-		const aiScene* scene = importer.ReadFile(filename, importFlags);
-
-		if (scene == nullptr)
-		{
-			return false;
-		}
-
-		mFileName = filename;
-
-		mSkinnedMeshes.clear();
 		mSkinnedMeshes.reserve(scene->mNumMeshes);
 		mNodes.reserve(128);
 
 		function<void(aiNode*, Node*)> nodeRecursive = [&](aiNode* node, Node* myNodeParent)
-		{
-			Node* myNode = new Node();
-			myNode->Name = node->mName.C_Str();
-			myNode->Index = mNodes.size();
-			myNode->ToParentMatrix = convertMatrix(node->mTransformation).Transpose();
-
-			if (myNodeParent != nullptr)
 			{
-				myNode->ParentIndex = myNodeParent->Index;
-				myNode->ToRootMatrix = myNode->ToParentMatrix * myNodeParent->ToRootMatrix;
+				Node* myNode = new Node();
+				myNode->Name = node->mName.C_Str();
+				myNode->Index = mNodes.size();
+				myNode->ToParentMatrix = convertMatrix(node->mTransformation).Transpose();
 
-				myNode->Parent = myNodeParent;
-				myNodeParent->Children.push_back(myNode);
-			}
-			else
-			{
-				myNode->ParentIndex = Node::INVALID_INDEX;
-				myNode->Parent = nullptr;
+				if (myNodeParent != nullptr)
+				{
+					myNode->ParentIndex = myNodeParent->Index;
+					myNode->ToRootMatrix = myNode->ToParentMatrix * myNodeParent->ToRootMatrix;
 
-				myNode->ToRootMatrix = myNode->ToParentMatrix;
-			}
+					myNode->Parent = myNodeParent;
+					myNodeParent->Children.push_back(myNode);
+				}
+				else
+				{
+					myNode->ParentIndex = Node::INVALID_INDEX;
+					myNode->Parent = nullptr;
 
-			mNodes.push_back(myNode);
-			myNode->ContainMeshesIndex.reserve(node->mNumMeshes);
+					myNode->ToRootMatrix = myNode->ToParentMatrix;
+				}
 
-			for (UINT i = 0; i < node->mNumMeshes; ++i)
-			{
-				unsigned int meshIndex = node->mMeshes[i];
-				aiMesh* mesh = scene->mMeshes[meshIndex];
+				mNodes.push_back(myNode);
+				myNode->ContainMeshesIndex.reserve(node->mNumMeshes);
 
-				myNode->ContainMeshesIndex.push_back(mSkinnedMeshes.size());
-				mSkinnedMeshes.emplace_back(device, mesh);
-			}
+				for (UINT i = 0; i < node->mNumMeshes; ++i)
+				{
+					unsigned int meshIndex = node->mMeshes[i];
+					aiMesh* mesh = scene->mMeshes[meshIndex];
 
-			for (UINT i = 0; i < node->mNumChildren; ++i)
-			{
-				nodeRecursive(node->mChildren[i], myNode);
-			}
-		};
+					myNode->ContainMeshesIndex.push_back(mSkinnedMeshes.size());
+					mSkinnedMeshes.emplace_back(device, mesh);
+				}
+
+				for (UINT i = 0; i < node->mNumChildren; ++i)
+				{
+					nodeRecursive(node->mChildren[i], myNode);
+				}
+			};
 
 		nodeRecursive(scene->mRootNode, nullptr);
-		importer.FreeScene();
 
 		// 본 계층구조의 node참조 인덱스 만들기
 		map<string, size_t> nodeMap;
@@ -306,7 +277,15 @@ namespace resource
 				bone.NodeIndedx = finded->second;
 			}
 		}
+	}
 
-		return true;
+	SkinnedMeshResource::~SkinnedMeshResource()
+	{
+		for (auto* node : mNodes)
+		{
+			delete node;
+		}
+
+		mNodes.clear();
 	}
 }

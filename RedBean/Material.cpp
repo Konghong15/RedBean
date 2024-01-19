@@ -6,69 +6,66 @@
 
 namespace resource
 {
-	Material::Material(aiMaterial* material, filesystem::path basePath)
+	Material::Material(aiMaterial* material, const filesystem::path& basePath)
 		: mTextures{ nullptr, }
+		, mName(material->GetName().C_Str())
+		, mbUseBlend(false)
 	{
-		auto addTexture = [&](aiTextureType aiTextureType, eTexutreType textureType)
-		{
-			aiString texturePath;
-
-			if (material->GetTexture(aiTextureType, 0, &texturePath) == AI_SUCCESS)
+		auto addTexture = [&](aiTextureType aiTextureType, eTexutreType textureType) -> bool
 			{
-				std::filesystem::path filePath = common::D3DHelper::ConvertStrToWStr(std::string(texturePath.C_Str()));
+				aiString texturePath;
 
-				auto curPath = basePath / filePath.filename();
+				if (material->GetTexture(aiTextureType, 0, &texturePath) == AI_SUCCESS)
+				{
+					std::filesystem::path filePath = common::D3DHelper::ConvertStrToWStr(std::string(texturePath.C_Str()));
 
-				mTextures[static_cast<size_t>(textureType)] = renderSystem::ResourceManager::GetInstance()->CreateTextureOrNull(curPath.string());
-			}
-		};
+					auto curPath = basePath / filePath.filename();
 
-		addTexture(aiTextureType_DIFFUSE, eTexutreType::Diffuse);
+					mTextures[static_cast<size_t>(textureType)] = renderSystem::ResourceManager::GetInstance()->CreateTextureOrNull(curPath.string());
+
+					return true;
+				}
+
+				return false;
+			};
+
+		if (!addTexture(aiTextureType_DIFFUSE, eTexutreType::Diffuse))
+		{
+			addTexture(aiTextureType_BASE_COLOR, eTexutreType::Diffuse);
+		}
 		addTexture(aiTextureType_SPECULAR, eTexutreType::Specular);
 		addTexture(aiTextureType_NORMALS, eTexutreType::Normal);
 		addTexture(aiTextureType_EMISSIVE, eTexutreType::Emissive);
-		addTexture(aiTextureType_OPACITY, eTexutreType::Opacity);
+		if (addTexture(aiTextureType_OPACITY, eTexutreType::Opacity))
+		{
+			mName = material->GetName().C_Str();
+		}
 		addTexture(aiTextureType_METALNESS, eTexutreType::Metalness);
-		addTexture(aiTextureType_SHININESS, eTexutreType::Shininess);
+		addTexture(aiTextureType_SHININESS, eTexutreType::Roughness);
 	}
 
-	bool MaterialResource::Init(string filename)
+	MaterialResource::MaterialResource(const aiScene* scene, const filesystem::path& basePath)
+		: mName(scene->mName.C_Str())
 	{
-		Assimp::Importer importer;
-		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);
-		unsigned int importFlags = 0;
-
-		const aiScene* scene = importer.ReadFile(filename, importFlags);
-
-		if (scene == nullptr)
-		{
-			return false;
-		}
-
-		mFilename = filename;
-		mMaterials.clear();
 		mMaterials.reserve(scene->mNumMeshes);
 
 		function<void(aiNode*)> nodeRecursive = [&](aiNode* node)
-		{
-			for (UINT i = 0; i < node->mNumMeshes; ++i)
 			{
-				unsigned int meshIndex = node->mMeshes[i];
-				aiMesh* mesh = scene->mMeshes[meshIndex];
-				aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+				for (UINT i = 0; i < node->mNumMeshes; ++i)
+				{
+					unsigned int meshIndex = node->mMeshes[i];
+					aiMesh* mesh = scene->mMeshes[meshIndex];
+					aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-				mMaterials.emplace_back(material);
-			}
+					mMaterials.emplace_back(material, basePath);
+				}
 
-			for (UINT i = 0; i < node->mNumChildren; ++i)
-			{
-				nodeRecursive(node->mChildren[i]);
-			}
-		};
+				for (UINT i = 0; i < node->mNumChildren; ++i)
+				{
+					nodeRecursive(node->mChildren[i]);
+				}
+			};
 
 		nodeRecursive(scene->mRootNode);
-		importer.FreeScene();
-
-		return true;
 	}
 }

@@ -24,15 +24,10 @@ namespace renderSystem
 
 	void RenderManager::RenderAll()
 	{
-		mCamera.UpdateViewMatrix();
-
-		mFrameInfo.EyePos = mCamera.GetPosition();
 		builtIn::ConstantBuffers::FrameCB.UpdateSubResource(md3dContext, &mFrameInfo);
-
-		builtIn::ConstantBuffers::TransformVP transformVP;
-		transformVP.View = mCamera.GetView().Transpose();
-		transformVP.Proj = mCamera.GetProj().Transpose();
-		builtIn::ConstantBuffers::TransformVPCB.UpdateSubResource(md3dContext, &transformVP);
+		mTransformVP.View = mTransformVP.View.Transpose();
+		mTransformVP.Proj = mTransformVP.Proj.Transpose();
+		builtIn::ConstantBuffers::TransformVPCB.UpdateSubResource(md3dContext, &mTransformVP);
 
 		for (interfaceClass::IRenderable* renderable : mRenderables)
 		{

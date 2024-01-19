@@ -1,12 +1,22 @@
 #include "pch.h"
 
 #include "Sample.h"
+
+#include <random>
+
 #include "../RedBean/Animation.h"
+#include "../RedBean/Material.h"
+
+#include "../SweetRedBean/Box.h"
 
 namespace entryPoint
 {
 	Sample::Sample(HINSTANCE hInstance, UINT width, UINT height, std::wstring name)
 		: Processor(hInstance, width, height, name)
+	{
+	}
+
+	Sample::~Sample()
 	{
 	}
 
@@ -17,55 +27,75 @@ namespace entryPoint
 			return false;
 		}
 
-		mGraphic.Init(mhWnd, mhInstance, mWidth, mHeight);
-		renderSystem::RenderManager::GetInstance()->Init(mGraphic.GetDevice(), mGraphic.GetContext());
-		renderSystem::ResourceManager::GetInstance()->Init(mGraphic.GetDevice());
+		mCamera.SetLens(0.25f * MathHelper::Pi, GetAspectRatio(), 1.0f, 10000.0f);
 
-		auto* skinnedModel = renderSystem::ResourceManager::GetInstance()->CreateSkinnedModelOrNull("dancing", "../Resource/Models/dancing.fbx");
-		mSkinnedModelInstance.ModelRef = skinnedModel;
-		mSkinnedModelInstance.ClipName = skinnedModel->GetAnimationResource()->GetAnimationClips().begin()->first;
-		mSkinnedModelInstance.TimePos = 0.f;
+		// new framework test
+		mSweetGrapic = make_unique<Graphics>(mhWnd, mWidth, mHeight);
+		mSweetGrapic->SetProjection(mCamera.GetProj());
 
-		auto* model = renderSystem::ResourceManager::GetInstance()->CreateModelOrNull("dancing", "../Resource/Models/pbrModel.fbx");
-		mModelInstance.ModelRef = model;
-		mModelInstance.WorldMatrix = Matrix::CreateTranslation({ 0, 10, 10 });
+		class Factory
+		{
+		public:
+			Factory(Graphics& gfx)
+				:
+				gfx(gfx)
+			{}
+			std::unique_ptr<IDrawable> operator()()
+			{
+				return std::make_unique<Box>(
+					gfx, rng, adist, ddist,
+					odist, rdist, bdist
+				);
+			}
+		private:
+			Graphics& gfx;
+			std::mt19937 rng{ std::random_device{}() };
+			std::uniform_real_distribution<float> adist{ 0.0f,3.14 * 2.0f };
+			std::uniform_real_distribution<float> ddist{ 0.0f,3.14 * 0.5f };
+			std::uniform_real_distribution<float> odist{ 0.0f,3.14 * 0.08f };
+			std::uniform_real_distribution<float> rdist{ 6.0f,20.0f };
+			std::uniform_real_distribution<float> bdist{ 0.4f,3.0f };
+			std::uniform_int_distribution<int> latdist{ 5,20 };
+			std::uniform_int_distribution<int> longdist{ 10,40 };
+			std::uniform_int_distribution<int> typedist{ 0,2 };
+		};
 
-		// renderSystem::RenderManager::GetInstance()->Register(&mSkinnedModelInstance);
-		renderSystem::RenderManager::GetInstance()->Register(&mModelInstance);
+		int num = 10;
 
-		renderSystem::RenderManager::GetInstance()->GetCamera().SetLens(0.25f * MathHelper::Pi, GetAspectRatio(), 1.0f, 10000.0f);
-		renderSystem::RenderManager::GetInstance()->GetCamera().SetPosition({ 0, 100, -500 });
+		Factory f(*mSweetGrapic.get());
+		mDrawables.reserve(num);
+		std::generate_n(std::back_inserter(mDrawables), num, f);
 
 		return true;
 	}
 
 	void Sample::Update(float deltaTime)
 	{
-		if (GetAsyncKeyState('W') & 0x8000)
+		if (mSweetGrapic == nullptr)
 		{
-			renderSystem::RenderManager::GetInstance()->GetCamera().TranslateLook(100 * deltaTime);
-		}
-		if (GetAsyncKeyState('S') & 0x8000)
-		{
-			renderSystem::RenderManager::GetInstance()->GetCamera().TranslateLook(-100 * deltaTime);
+			return;
 		}
 
-		mSkinnedModelInstance.TimePos += deltaTime;
-		mSkinnedModelInstance.TimePos = fmod(mSkinnedModelInstance.TimePos, mSkinnedModelInstance.ModelRef->GetAnimationResource()->GetAnimationClips().begin()->second.mDuration);
-
-		if (GetAsyncKeyState('Q') & 0x8000)
+		for (auto& d : mDrawables)
 		{
-			mModelInstance.WorldMatrix *= Matrix::CreateTranslation({ 0, 0, deltaTime * 100 });
-			mSkinnedModelInstance.WorldMatrix *= Matrix::CreateTranslation({ 0, 0, deltaTime * 100 });
+			d->Update(deltaTime);
 		}
 	}
 
 	void Sample::Render()
 	{
-		mGraphic.BeginRender();
+		if (mSweetGrapic == nullptr)
+		{
+			return;
+		}
 
-		renderSystem::RenderManager::GetInstance()->RenderAll();
+		mSweetGrapic->BeginFrame();
 
-		mGraphic.EndRender();
+		for (auto& d : mDrawables)
+		{
+			d->Draw(*mSweetGrapic.get());
+		}
+
+		mSweetGrapic->EndFrame();
 	}
 }

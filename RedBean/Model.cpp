@@ -34,109 +34,131 @@ namespace resource
 		const vector<Node*>& nodes = meshResource->GetNodes();
 		const vector<Mesh>& meshes = meshResource->GetMeshes();
 
-		size_t currentMeshMatIndex = 0;
-
-		for (Node* node : nodes)
-		{
-			for (size_t meshIndex : node->ContainMeshesIndex)
+		auto blend = [&](bool applyAlpha)
 			{
-				const Mesh& curMesh = meshes[meshIndex];
+				size_t currentMeshMatIndex = 0;
 
-				curMesh.GetIB().Bind(context);
-				curMesh.GetVB().Bind(context);
-
-				// 상수 버퍼 갱신
+				for (Node* node : nodes)
 				{
-					builtIn::ConstantBuffers::TransformW transformW;
-					transformW.World = (node->ToRootMatrix * WorldMatrix).Transpose();
-					transformW.WorldInvTranspose = common::MathHelper::InverseTranspose(transformW.World).Transpose();
-
-					auto transformWCB = builtIn::ConstantBuffers::TransformWCB.GetComPtr();
-					context->UpdateSubresource(transformWCB.Get(), 0, 0, &transformW, 0, 0);
-				}
-
-				// 텍스처 바인딩
-				{
-					const MaterialResource* materialResource = ModelRef->GetMaterialResource();
-					const Material& material = materialResource->GetMaterials()[currentMeshMatIndex];
-					const auto& textures = material.GetTextures();
-
-					if (material.GetIsPBRTexture())
+					for (size_t meshIndex : node->ContainMeshesIndex)
 					{
-						builtIn::ShaderPrograms::PBRBasicModelProgram.Bind(context);
+						const Mesh& curMesh = meshes[meshIndex];
 
-						directXWrapper::Texture* textures[] =
-						{
-							material.GetTextureOrNull(eTexutreType::Diffuse),
-							material.GetTextureOrNull(eTexutreType::Normal),
-							material.GetTextureOrNull(eTexutreType::Specular),
-							material.GetTextureOrNull(eTexutreType::Opacity),
-							material.GetTextureOrNull(eTexutreType::Metalness),
-							material.GetTextureOrNull(eTexutreType::Shininess),
-						};
+						curMesh.GetIB().Bind(context);
+						curMesh.GetVB().Bind(context);
 
-						builtIn::ConstantBuffers::PBRMaterial pbrMaterial;
-						int* legacyMaterialPtr = reinterpret_cast<int*>(&pbrMaterial);
-						for (auto* texture : textures)
+						// 상수 버퍼 갱신
 						{
-							*legacyMaterialPtr = texture != nullptr;
-							++legacyMaterialPtr;
+							builtIn::ConstantBuffers::TransformW transformW;
+							transformW.World = (node->ToRootMatrix * WorldMatrix).Transpose();
+							transformW.WorldInvTranspose = common::MathHelper::InverseTranspose(transformW.World).Transpose();
+
+							auto transformWCB = builtIn::ConstantBuffers::TransformWCB.GetComPtr();
+							context->UpdateSubresource(transformWCB.Get(), 0, 0, &transformW, 0, 0);
 						}
 
-						ID3D11ShaderResourceView* SRVs[] =
+						// 텍스처 바인딩
 						{
-							textures[0] == nullptr ? nullptr : textures[0]->GetComPtr().Get(),
-							textures[1] == nullptr ? nullptr : textures[1]->GetComPtr().Get(),
-							textures[2] == nullptr ? nullptr : textures[2]->GetComPtr().Get(),
-							textures[3] == nullptr ? nullptr : textures[3]->GetComPtr().Get(),
-							textures[4] == nullptr ? nullptr : textures[4]->GetComPtr().Get(),
-							textures[5] == nullptr ? nullptr : textures[5]->GetComPtr().Get(),
-						};
+							const MaterialResource* materialResource = ModelRef->GetMaterialResource();
+							const Material& material = materialResource->GetMaterials()[currentMeshMatIndex];
+							const auto& textures = material.GetTextures();
 
-						context->PSSetShaderResources(0, ARRAYSIZE(SRVs), SRVs);
+							if (material.GetHasPBRTexture())
+							{
+								builtIn::ShaderPrograms::PBRBasicModelProgram.Bind(context);
 
-						auto materialCB = builtIn::ConstantBuffers::PBRMaterialCB.GetComPtr();
-						context->UpdateSubresource(materialCB.Get(), 0, 0, &pbrMaterial, 0, 0);
-					}
-					else
-					{
-						builtIn::ShaderPrograms::BasicModelProgram.Bind(context);
+								resource::Texture* textures[] =
+								{
+									material.GetTextureOrNull(eTexutreType::Diffuse),
+									material.GetTextureOrNull(eTexutreType::Normal),
+									material.GetTextureOrNull(eTexutreType::Emissive),
+									material.GetTextureOrNull(eTexutreType::Opacity),
+									material.GetTextureOrNull(eTexutreType::Metalness),
+									material.GetTextureOrNull(eTexutreType::Roughness),
+								};
 
-						directXWrapper::Texture* textures[] =
-						{
-							material.GetTextureOrNull(eTexutreType::Diffuse),
-							material.GetTextureOrNull(eTexutreType::Normal),
-							material.GetTextureOrNull(eTexutreType::Specular),
-							material.GetTextureOrNull(eTexutreType::Opacity),
-						};
+								builtIn::ConstantBuffers::PBRMaterial pbrMaterial;
+								int* legacyMaterialPtr = reinterpret_cast<int*>(&pbrMaterial);
+								for (auto* texture : textures)
+								{
+									*legacyMaterialPtr = texture != nullptr;
+									++legacyMaterialPtr;
+								}
 
-						builtIn::ConstantBuffers::LegacyMaterial legacyMaterial;
-						int* legacyMaterialPtr = reinterpret_cast<int*>(&legacyMaterial);
-						for (auto* texture : textures)
-						{
-							*legacyMaterialPtr = texture != nullptr;
-							++legacyMaterialPtr;
+								ID3D11ShaderResourceView* SRVs[] =
+								{
+									textures[0] == nullptr ? nullptr : textures[0]->GetComPtr().Get(),
+									textures[1] == nullptr ? nullptr : textures[1]->GetComPtr().Get(),
+									textures[2] == nullptr ? nullptr : textures[2]->GetComPtr().Get(),
+									textures[3] == nullptr ? nullptr : textures[3]->GetComPtr().Get(),
+									textures[4] == nullptr ? nullptr : textures[4]->GetComPtr().Get(),
+									textures[5] == nullptr ? nullptr : textures[5]->GetComPtr().Get(),
+								};
+
+								context->PSSetShaderResources(0, ARRAYSIZE(SRVs), SRVs);
+
+								auto materialCB = builtIn::ConstantBuffers::PBRMaterialCB.GetComPtr();
+								context->UpdateSubresource(materialCB.Get(), 0, 0, &pbrMaterial, 0, 0);
+							}
+							else
+							{
+								builtIn::ShaderPrograms::BasicModelProgram.Bind(context);
+
+								resource::Texture* textures[] =
+								{
+									material.GetTextureOrNull(eTexutreType::Diffuse),
+									material.GetTextureOrNull(eTexutreType::Normal),
+									material.GetTextureOrNull(eTexutreType::Specular),
+									material.GetTextureOrNull(eTexutreType::Opacity),
+								};
+
+								builtIn::ConstantBuffers::LegacyMaterial legacyMaterial;
+								int* legacyMaterialPtr = reinterpret_cast<int*>(&legacyMaterial);
+								for (auto* texture : textures)
+								{
+									*legacyMaterialPtr = texture != nullptr;
+									++legacyMaterialPtr;
+								}
+
+								ID3D11ShaderResourceView* SRVs[] =
+								{
+									textures[0] == nullptr ? nullptr : textures[0]->GetComPtr().Get(),
+									textures[1] == nullptr ? nullptr : textures[1]->GetComPtr().Get(),
+									textures[2] == nullptr ? nullptr : textures[2]->GetComPtr().Get(),
+									textures[3] == nullptr ? nullptr : textures[3]->GetComPtr().Get(),
+								};
+
+								context->PSSetShaderResources(0, ARRAYSIZE(SRVs), SRVs);
+
+								auto materialCB = builtIn::ConstantBuffers::LegacyMaterialCB.GetComPtr();
+								context->UpdateSubresource(materialCB.Get(), 0, 0, &legacyMaterial, 0, 0);
+							}
+
+							float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+							if (applyAlpha && material.GetHasAlpha())
+							{
+								context->OMSetBlendState(builtIn::RenderStates::TransparentBS.Get(), blendFactor, 0xffffffff);
+								// context->OMSetDepthStencilState(builtIn::RenderStates::LessEqualDSS.Get(), 0);
+								context->DrawIndexed(curMesh.GetIB().GetCount(), 0, 0);
+							}
+
+							if (!material.GetHasAlpha())
+							{
+								context->OMSetBlendState(NULL, blendFactor, 0xffffffff);
+								// context->OMSetDepthStencilState(NULL, 0);
+								context->DrawIndexed(curMesh.GetIB().GetCount(), 0, 0);
+							}
 						}
 
-						ID3D11ShaderResourceView* SRVs[] =
-						{
-							textures[0] == nullptr ? nullptr : textures[0]->GetComPtr().Get(),
-							textures[1] == nullptr ? nullptr : textures[1]->GetComPtr().Get(),
-							textures[2] == nullptr ? nullptr : textures[2]->GetComPtr().Get(),
-							textures[3] == nullptr ? nullptr : textures[3]->GetComPtr().Get(),
-						};
-
-						context->PSSetShaderResources(0, ARRAYSIZE(SRVs), SRVs);
-
-						auto materialCB = builtIn::ConstantBuffers::LegacyMaterialCB.GetComPtr();
-						context->UpdateSubresource(materialCB.Get(), 0, 0, &legacyMaterial, 0, 0);
+						++currentMeshMatIndex;
 					}
 				}
+			};
 
-				context->DrawIndexed(curMesh.GetIB().GetCount(), 0, 0);
-				++currentMeshMatIndex;
-			}
-		}
+		blend(false);
+
+		blend(true);
 	}
 
 	bool SkinnedModel::Init(SkinnedMeshResource* skinnedMeshResource, MaterialResource* materialResource, AnimationResource* animationResource)
@@ -167,17 +189,14 @@ namespace resource
 			// 노드 로컬 행렬 갱신
 			vector<Node*>& nodes = ModelRef->GetSkinnedMeshResource()->GetNodes();
 
-			int findNodeCount = 0;
-			int total = 0;
 			for (const Bone& bone : skinnedMesh.mBones)
 			{
-				total++;
-				const auto& nodeAnim = animClip.mAnimationNodes.find(bone.Name);
+				resource::Keyframes keyframes;
 
-				if (nodeAnim != animClip.mAnimationNodes.end())
+				if (animClip.Getkeyframes(bone.Name, keyframes))
 				{
-					findNodeCount++;
-					nodes[bone.NodeIndedx]->ToParentMatrix = nodeAnim->second.Interpolate(TimePos);
+					size_t index = bone.NodeIndedx;
+					nodes[index]->ToParentMatrix = keyframes.Interpolate(TimePos);
 				}
 			}
 
@@ -225,18 +244,18 @@ namespace resource
 				const Material& material = materialResource->GetMaterials()[currentMeshMatIndex];
 				const auto& textures = material.GetTextures();
 
-				if (material.GetIsPBRTexture())
+				if (material.GetHasPBRTexture())
 				{
 					builtIn::ShaderPrograms::PBRSkinnedModelProgram.Bind(context);
 
-					directXWrapper::Texture* textures[] =
+					resource::Texture* textures[] =
 					{
 						material.GetTextureOrNull(eTexutreType::Diffuse),
 						material.GetTextureOrNull(eTexutreType::Normal),
 						material.GetTextureOrNull(eTexutreType::Specular),
 						material.GetTextureOrNull(eTexutreType::Opacity),
 						material.GetTextureOrNull(eTexutreType::Metalness),
-						material.GetTextureOrNull(eTexutreType::Shininess),
+						material.GetTextureOrNull(eTexutreType::Roughness),
 					};
 
 					builtIn::ConstantBuffers::PBRMaterial pbrMaterial;
@@ -266,7 +285,7 @@ namespace resource
 				{
 					builtIn::ShaderPrograms::SkinnedModelProgram.Bind(context);
 
-					directXWrapper::Texture* textures[] =
+					resource::Texture* textures[] =
 					{
 						material.GetTextureOrNull(eTexutreType::Diffuse),
 						material.GetTextureOrNull(eTexutreType::Normal),

@@ -135,7 +135,7 @@
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="ConstantBuffers.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
-    <ClCompile Include="Graphic.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="IRenderable.cpp" />
     <ClCompile Include="LightHelper.cpp" />
@@ -146,7 +146,6 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="RenderStates.cpp" />
-    <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="ShaderPrograms.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -160,7 +159,7 @@
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="ConstantBuffers.h" />
     <ClInclude Include="GeometryGenerator.h" />
-    <ClInclude Include="Graphic.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="LightHelper.h" />
@@ -171,7 +170,6 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="RenderStates.h" />
-    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ShaderPrograms.h" />
     <ClInclude Include="Texture.h" />

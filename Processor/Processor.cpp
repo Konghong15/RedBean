@@ -29,7 +29,7 @@ namespace common
 		, mTitle(name)
 		, mWidth(width)
 		, mHeight(height)
-		, mEnable4xMsaa(false)
+		, mbEnable4xMsaa(false)
 	{
 		gd3dApp = this;
 	}

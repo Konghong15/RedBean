@@ -40,10 +40,10 @@ VS_OUTPUT main(VS_INPUT Input)
 
 	Output.UV = Input.UV;
 
-	float3 worldNormal = mul(Input.Normal, (float3x3)gWorldInvTranspose);
+	float3 worldNormal = mul(Input.Normal, (float3x3)gWorld);
 	Output.N = normalize(worldNormal);
 
-	float3 worldTangent = mul(Input.Tangent, (float3x3)gWorldInvTranspose);
+	float3 worldTangent = mul(Input.Tangent, (float3x3)gWorld);
 	Output.T = normalize(worldTangent);
 
 	return Output;

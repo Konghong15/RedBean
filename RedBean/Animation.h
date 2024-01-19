@@ -18,7 +18,7 @@ namespace resource
 
 		Matrix Interpolate(float timePos) const;
 
-		const string& GetName() { return mName; }
+		const string& GetName() const { return mName; }
 		float GetStartTime() const { return mKeyframes.front().TimePos; }
 		float GetEndTime() const { return mKeyframes.back().TimePos; }
 
@@ -27,34 +27,60 @@ namespace resource
 		vector<Keyframe> mKeyframes;
 	};
 
-	struct AnimationClip
+	class AnimationClip
 	{
+	public:
 		AnimationClip(aiAnimation* animation);
 		~AnimationClip() = default;
 
-		const string& GetName() { return mName; }
-		float GetDuration() { return mDuration; }
-		const map<string, Keyframes>& GetAnimationNodes() { return mAnimationNodes; }
+		inline const Keyframes& Getkeyframes(string boneName) const;
+		inline bool Getkeyframes(string boneName, Keyframes& keyframes) const;
 
+		const string& GetName() const { return mName; }
+		float GetDuration() const { return mDuration; }
+		const map<string, Keyframes>& GetBoneKeyframes() const { return mBoneKeyframes; }
+
+	private:
 		string mName;
 		float mDuration;
-		map<string, Keyframes> mAnimationNodes;
+		map<string, Keyframes> mBoneKeyframes;
 	};
+
+	inline const Keyframes& AnimationClip::Getkeyframes(string boneName) const
+	{
+		auto find = mBoneKeyframes.find(boneName);
+		assert(find != mBoneKeyframes.end());
+
+		return find->second;
+	};
+
+	inline bool AnimationClip::Getkeyframes(string boneName, Keyframes& keyframes) const
+	{
+		auto find = mBoneKeyframes.find(boneName);
+
+		if (find == mBoneKeyframes.end())
+		{
+			return false;
+		}
+
+		keyframes = find->second;
+
+		return true;
+	}
 
 	class AnimationResource
 	{
 	public:
-		AnimationResource() = default;
+		AnimationResource(const aiScene* scene);
 		~AnimationResource() = default;
 
-		bool Init(const string& filename);
-
-		const string GetFileName() const { return mFilename; }
-		const map<string, AnimationClip> GetAnimationClips() const { return mAnimationClips; }
 		const AnimationClip& GetAnimationClip(string name) const { return mAnimationClips.find(name)->second; }
 
+		const string GetFileName() const { return mName; }
+		const map<string, AnimationClip> GetAnimationClips() const { return mAnimationClips; }
+
 	private:
-		string mFilename;
+		string mName;
 		map<string, AnimationClip> mAnimationClips;
 	};
 }

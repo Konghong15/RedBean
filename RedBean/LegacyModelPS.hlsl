@@ -58,7 +58,7 @@ float4 main(VS_OUTPUT Input) : SV_TARGET
 	if (gUseDiffuse)
 	{
 		material.Diffuse = gDiffuseMap.Sample(gSamplerLinear, Input.UV);
-		clip(material.Diffuse.a - 0.1f);
+		// clip(material.Diffuse.a - 0.1f);
 	}
 
 	if (gUseSpecular)

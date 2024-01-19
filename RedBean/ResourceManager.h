@@ -1,12 +1,8 @@
 #pragma once
 
-namespace directXWrapper
-{
-	class Texture;
-}
-
 namespace resource
 {
+	class Texture;
 	class MeshResource;
 	class SkinnedMeshResource;
 	class MaterialResource;
@@ -17,29 +13,29 @@ namespace resource
 
 namespace renderSystem
 {
+	struct ModelDesc
+	{
+		string MeshFilePath;
+		string MaterialFilePath;
+	};
+
+	struct SkinnedModelDesc
+	{
+		string MeshFilePath;
+		string MaterialFilePath;
+		string AnimationFilePath;
+	};
+
 	class ResourceManager : public Singleton<ResourceManager>
 	{
 		friend class Singleton<ResourceManager>;
 
 	public:
-		struct ModelDesc
-		{
-			string MeshFilePath;
-			string MaterialFilePath;
-		};
-
-		struct SkinnedModelDesc
-		{
-			string MeshFilePath;
-			string MaterialFilePath;
-			string AnimationFilePath;
-		};
-
-	public:
 		void Init(ID3D11Device* device) { mDevice = device; }
+		void Destroy();
 
-		directXWrapper::Texture* CreateTextureOrNull(const string& filename);
-		directXWrapper::Texture* CreateTextureOrNull(const wstring& filename);
+		resource::Texture* CreateTextureOrNull(const string& filename);
+		resource::Texture* CreateTextureOrNull(const wstring& filename);
 
 		resource::MeshResource* CreateMeshResourceOrNull(const string& filename);
 		resource::MeshResource* CreateMeshResourceOrNull(const wstring& filename);
@@ -47,8 +43,8 @@ namespace renderSystem
 		resource::SkinnedMeshResource* CreateSkinnedMeshResourceOrNull(const string& filename);
 		resource::SkinnedMeshResource* CreateSkinnedMeshResourceOrNull(const wstring& filename);
 
-		resource::MaterialResource* CreateMaterialResourceOrNull(const string& filename);
-		resource::MaterialResource* CreateMaterialResourceOrNull(const wstring& filename);
+		resource::MaterialResource* CreateMaterialResourceOrNull(const string& filename, const std::filesystem::path& basePath = filesystem::current_path() / "../Resource/textures");
+		resource::MaterialResource* CreateMaterialResourceOrNull(const wstring& filename, const std::filesystem::path& basePath = filesystem::current_path() / "../Resource/textures");
 
 		resource::AnimationResource* CreateAnimationResourceOrNull(const string& filename);
 		resource::AnimationResource* CreateAnimationResourceOrNull(const wstring& filename);
@@ -64,11 +60,13 @@ namespace renderSystem
 
 	private:
 		ResourceManager() = default;
-		~ResourceManager() = default;
+		~ResourceManager() { Destroy(); }
+		ResourceManager(const ResourceManager&) = delete;
+		ResourceManager& operator=(const ResourceManager&) = delete;
 
 	private:
 		ID3D11Device* mDevice;
-		map<string, directXWrapper::Texture*> mTextures;
+		map<string, resource::Texture*> mTextures;
 		map<string, resource::MeshResource*> mMeshResources;
 		map<string, resource::SkinnedMeshResource*> mSkinnedMeshResources;
 		map<string, resource::MaterialResource*> mMaterialResources;

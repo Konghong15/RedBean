@@ -116,7 +116,8 @@ float4 main(VS_OUTPUT Input) : SV_TARGET
 
 	if (gUseAlpha)
 	{
-		emissive = gOpacityMap.Sample(gSamplerAnisotropic, Input.UV).r;
+		opacity = gOpacityMap.Sample(gSamplerAnisotropic, Input.UV).r;
+		clip(opacity - 0.1f);
 	}
 
 	float metalness = 0.f;
@@ -133,8 +134,10 @@ float4 main(VS_OUTPUT Input) : SV_TARGET
 		roughness = gRoughnessMap.Sample(gSamplerAnisotropic, Input.UV).r;
 	}
 
-	float ndotv = max(0.f, dot(normal, toEye));
-	float3 viewReflect = reflect(normal, -toEye);
+	//return float4(-toEye, 1);
+
+	float ndotv = max(0.f, dot(normal, normalize(toEye)));
+	float3 viewReflect = 2.0 * ndotv * normal - toEye;
 
 	float3 F0 = lerp(Fdielectric, albedo, metalness);
 
@@ -179,6 +182,14 @@ float4 main(VS_OUTPUT Input) : SV_TARGET
 
 		ambientLighting = diffuseIBL + specularIBL;
 	}
+	
+	float3 litColor = directLighting + ambientLighting; // + emissive;
 
-	return float4(directLighting + ambientLighting + emissive, opacity);
+	if (gUseFog)
+	{
+		float fogLerp = saturate((distanceEye - gFogStart) / gFogRange);
+		litColor = lerp(litColor, gFogColor, fogLerp);
+	}
+
+	return float4(litColor, opacity);
 }

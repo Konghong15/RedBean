@@ -1,6 +1,6 @@
 #pragma once
 
-namespace directXWrapper
+namespace resource
 {
 	enum class eRenderTargetType
 	{
