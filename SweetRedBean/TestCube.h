@@ -17,7 +17,7 @@
 //	Matrix GetTransform() const override;
 //
 //private:
-//	std::vector<std::shared_ptr<bind::IBindable>> outlineEffect;
+//	std::vector<std::shared_ptr<IBindable>> outlineEffect;
 //	struct PSMaterialConstant
 //	{
 //		float specularIntensity = 0.1f;

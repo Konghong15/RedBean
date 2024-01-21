@@ -1,30 +1,65 @@
 #include "pch.h"
 
+#include <assimp/scene.h>
+
 #include "IDrawable.h"
-#include "IBindable.h"
-#include "IndexBuffer.h"
+#include "BindableCommon.h"
+#include "BindableResourceManager.h"
+#include "Material.h"
 
-void IDrawable::Draw(Graphics& gfx) const
+using namespace Bind;
+
+IDrawable::IDrawable(Graphics& graphics, const Material& mat, const aiMesh& mesh, float scale)
 {
-	for (auto& b : binds)
+	// 매테리얼 정보로부터 정점과 인덱스를 만든다.
+	pVertices = mat.MakeVertexBindable(graphics, mesh, scale);
+	pIndices = mat.MakeIndexBindable(graphics, mesh);
+	pTopology = Bind::Topology::Create(graphics);
+
+	for (auto& t : mat.GetTechniques())
 	{
-		b->Bind(gfx);
+		AddTechnique(std::move(t));
 	}
-	for (auto& b : GetStaticBinds())
-	{
-		b->Bind(gfx);
-	}
-	gfx.DrawIndexed(pIndexBuffer->GetCount());
 }
 
-void IDrawable::AddBind(std::unique_ptr<IBindable> bind)
+void IDrawable::Submit() const
 {
-	assert(typeid(*bind) != typeid(bind::IndexBuffer));
-	binds.push_back(std::move(bind));
+	for (const auto& technique : techniques)
+	{
+		technique.Submit(*this);
+	}
 }
-void IDrawable::AddIndexBuffer(std::unique_ptr<bind::IndexBuffer> ibuf)
+
+void IDrawable::Bind(Graphics& graphics) const
 {
-	assert("Attempting to add index buffer a second time" && pIndexBuffer == nullptr);
-	pIndexBuffer = ibuf.get();
-	binds.push_back(std::move(ibuf));
+	pTopology->Bind(graphics);
+	pIndices->Bind(graphics);
+	pVertices->Bind(graphics);
+}
+
+void IDrawable::Accept(TechniqueProbe& probe)
+{
+	for (auto& technique : techniques)
+	{
+		technique.Accept(probe);
+	}
+}
+
+void IDrawable::LinkTechniques(Rgph::RenderGraph& rg)
+{
+	for (auto& tech : techniques)
+	{
+		tech.Link(rg);
+	}
+}
+
+void IDrawable::AddTechnique(Technique technique) 
+{
+	technique.InitReferences(*this);
+	techniques.push_back(std::move(technique));
+}
+
+UINT IDrawable::GetIndexCount() const
+{
+	return pIndices->GetCount();
 }

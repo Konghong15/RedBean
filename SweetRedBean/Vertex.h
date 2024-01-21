@@ -1,235 +1,278 @@
 #pragma once
 
 #include "Graphics.h"
-#include "VertexLayout.h"
 
-namespace dynamic
+#define DVTX_ELEMENT_AI_EXTRACTOR(member) static SysType Extract( const aiMesh& mesh,size_t i )  {return *reinterpret_cast<const SysType*>(&mesh.member[i]);}
+
+struct BGRAColor
 {
+	unsigned char a;
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+};
+
+#define LAYOUT_ELEMENT_TYPES \
+	X( Position2D ) \
+	X( Position3D ) \
+	X( Texture2D ) \
+	X( Normal ) \
+	X( Tangent ) \
+	X( Bitangent ) \
+	X( Float3Color ) \
+	X( Float4Color ) \
+	X( BGRAColor ) \
+	X( Count )
+
+namespace Dvtx
+{
+	class VertexLayout
+	{
+	public:
+		enum ElementType
+		{
+#define X(el) el,
+			LAYOUT_ELEMENT_TYPES
+#undef X
+		};
+
+		template<ElementType> struct Map;
+		template<> struct Map<Position2D>
+		{
+			using SysType = DirectX::XMFLOAT2;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32_FLOAT;
+			static constexpr const char* semantic = "Position";
+			static constexpr const char* code = "P2";
+			DVTX_ELEMENT_AI_EXTRACTOR(mVertices)
+		};
+		template<> struct Map<Position3D>
+		{
+			using SysType = DirectX::XMFLOAT3;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+			static constexpr const char* semantic = "Position";
+			static constexpr const char* code = "P3";
+			DVTX_ELEMENT_AI_EXTRACTOR(mVertices)
+		};
+		template<> struct Map<Texture2D>
+		{
+			using SysType = DirectX::XMFLOAT2;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32_FLOAT;
+			static constexpr const char* semantic = "Texcoord";
+			static constexpr const char* code = "T2";
+			DVTX_ELEMENT_AI_EXTRACTOR(mTextureCoords[0])
+		};
+		template<> struct Map<Normal>
+		{
+			using SysType = DirectX::XMFLOAT3;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+			static constexpr const char* semantic = "Normal";
+			static constexpr const char* code = "N";
+			DVTX_ELEMENT_AI_EXTRACTOR(mNormals)
+		};
+		template<> struct Map<Tangent>
+		{
+			using SysType = DirectX::XMFLOAT3;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+			static constexpr const char* semantic = "Tangent";
+			static constexpr const char* code = "Nt";
+			DVTX_ELEMENT_AI_EXTRACTOR(mTangents)
+		};
+		template<> struct Map<Bitangent>
+		{
+			using SysType = DirectX::XMFLOAT3;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+			static constexpr const char* semantic = "Bitangent";
+			static constexpr const char* code = "Nb";
+			DVTX_ELEMENT_AI_EXTRACTOR(mBitangents)
+		};
+		template<> struct Map<Float3Color>
+		{
+			using SysType = DirectX::XMFLOAT3;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+			static constexpr const char* semantic = "Color";
+			static constexpr const char* code = "C3";
+			DVTX_ELEMENT_AI_EXTRACTOR(mColors[0])
+		};
+		template<> struct Map<Float4Color>
+		{
+			using SysType = DirectX::XMFLOAT4;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			static constexpr const char* semantic = "Color";
+			static constexpr const char* code = "C4";
+			DVTX_ELEMENT_AI_EXTRACTOR(mColors[0])
+		};
+		template<> struct Map<BGRAColor>
+		{
+			using SysType = ::BGRAColor;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+			static constexpr const char* semantic = "Color";
+			static constexpr const char* code = "C8";
+			DVTX_ELEMENT_AI_EXTRACTOR(mColors[0])
+		};
+		template<> struct Map<Count>
+		{
+			using SysType = long double;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_UNKNOWN;
+			static constexpr const char* semantic = "!INVALID!";
+			static constexpr const char* code = "!INV!";
+			DVTX_ELEMENT_AI_EXTRACTOR(mFaces)
+		};
+
+		template<template<VertexLayout::ElementType> class F, typename... Args>
+		static constexpr auto Bridge(VertexLayout::ElementType type, Args&&... args)
+		{
+			switch (type)
+			{
+#define X(el) case VertexLayout::el: return F<VertexLayout::el>::Exec( std::forward<Args>( args )... );
+				LAYOUT_ELEMENT_TYPES
+#undef X
+			}
+			assert("Invalid element type" && false);
+			return F<VertexLayout::Count>::Exec(std::forward<Args>(args)...);
+		}
+
+		class Element
+		{
+		public:
+			Element(ElementType type, size_t offset);
+			size_t GetOffsetAfter() const;
+			size_t GetOffset() const;
+			size_t Size() const;
+			static constexpr size_t SizeOf(ElementType type);
+			ElementType GetType() const;
+			D3D11_INPUT_ELEMENT_DESC GetDesc() const;
+			const char* GetCode() const;
+		private:
+			ElementType type;
+			size_t offset;
+		};
+	public:
+		template<ElementType Type>
+		const Element& Create() const
+		{
+			for (auto& e : elements)
+			{
+				if (e.GetType() == Type)
+				{
+					return e;
+				}
+			}
+			assert("Could not resolve element type" && false);
+			return elements.front();
+		}
+		const Element& ResolveByIndex(size_t i) const;
+		VertexLayout& Append(ElementType type);
+		size_t Size() const;
+		size_t GetElementCount() const;
+		std::vector<D3D11_INPUT_ELEMENT_DESC> GetD3DLayout() const;
+		std::string GetCode() const;
+		bool Has(ElementType type) const;
+	private:
+		std::vector<Element> elements;
+	};
+
 	class Vertex
 	{
 		friend class VertexBuffer;
-
+	private:
+		// necessary for Bridge to SetAttribute
+		template<VertexLayout::ElementType type>
+		struct AttributeSetting
+		{
+			template<typename T>
+			static constexpr auto Exec(Vertex* pVertex, char* pAttribute, T&& val)
+			{
+				return pVertex->SetAttribute<type>(pAttribute, std::forward<T>(val));
+			}
+		};
 	public:
 		template<VertexLayout::ElementType Type>
-		auto& GetAttribute();
+		auto& Attr()
+		{
+			auto pAttribute = pData + layout.Create<Type>().GetOffset();
+			return *reinterpret_cast<typename VertexLayout::Map<Type>::SysType*>(pAttribute);
+		}
 		template<typename T>
-		void SetAttributeByIndex(size_t i, T&& val);
-
-		// 그냥 인스턴스 생성 못하도록 한 건가
+		void SetAttributeByIndex(size_t i, T&& val)
+		{
+			const auto& element = layout.ResolveByIndex(i);
+			auto pAttribute = pData + element.GetOffset();
+			VertexLayout::Bridge<AttributeSetting>(
+				element.GetType(), this, pAttribute, std::forward<T>(val)
+				);
+		}
 	protected:
-		inline Vertex(char* pData, const VertexLayout& layout);
-
+		Vertex(char* pData, const VertexLayout& layout);
 	private:
+		// enables parameter pack setting of multiple parameters by element index
 		template<typename First, typename ...Rest>
-		void setAttributeByIndexRecursive(size_t i, First&& first, Rest&&... rest);
+		void SetAttributeByIndex(size_t i, First&& first, Rest&&... rest)
+		{
+			SetAttributeByIndex(i, std::forward<First>(first));
+			SetAttributeByIndex(i + 1, std::forward<Rest>(rest)...);
+		}
+		// helper to reduce code duplication in SetAttributeByIndex
 		template<VertexLayout::ElementType DestLayoutType, typename SrcType>
-		void setAttribute(char* pAttribute, SrcType&& val);
-
+		void SetAttribute(char* pAttribute, SrcType&& val)
+		{
+			using Dest = typename VertexLayout::Map<DestLayoutType>::SysType;
+			if constexpr (std::is_assignable<Dest, SrcType>::value)
+			{
+				*reinterpret_cast<Dest*>(pAttribute) = val;
+			}
+			else
+			{
+				assert("Parameter attribute type mismatch" && false);
+			}
+		}
 	private:
-		char* mpData = nullptr;
-		const VertexLayout& mLayout;
+		char* pData = nullptr;
+		const VertexLayout& layout;
 	};
-
-#pragma region VertexInlineFunc
-	template<VertexLayout::ElementType Type>
-	auto& Vertex::GetAttribute()
-	{
-		auto pAttribute = mpData + mLayout.Create<Type>().GetOffset();
-		return *reinterpret_cast<typename VertexLayout::Map<Type>::SysType*>(pAttribute);
-	}
-
-	template<typename T>
-	void Vertex::SetAttributeByIndex(size_t i, T&& val)
-	{
-		const auto& element = mLayout.CreateByIndex(i);
-		auto pAttribute = mpData + element.GetOffset();
-
-		switch (element.GetType())
-		{
-		case VertexLayout::Position2D:
-			setAttribute<VertexLayout::Position2D>(pAttribute, std::forward<T>(val));
-			break;
-		case VertexLayout::Position3D:
-			setAttribute<VertexLayout::Position3D>(pAttribute, std::forward<T>(val));
-			break;
-		case VertexLayout::Texture2D:
-			setAttribute<VertexLayout::Texture2D>(pAttribute, std::forward<T>(val));
-			break;
-		case VertexLayout::Normal:
-			setAttribute<VertexLayout::Normal>(pAttribute, std::forward<T>(val));
-			break;
-		case VertexLayout::Tangent:
-			setAttribute<VertexLayout::Tangent>(pAttribute, std::forward<T>(val));
-			break;
-		case VertexLayout::Bitangent:
-			setAttribute<VertexLayout::Bitangent>(pAttribute, std::forward<T>(val));
-			break;
-		case VertexLayout::Float3Color:
-			setAttribute<VertexLayout::Float3Color>(pAttribute, std::forward<T>(val));
-			break;
-		case VertexLayout::Float4Color:
-			setAttribute<VertexLayout::Float4Color>(pAttribute, std::forward<T>(val));
-			break;
-		case VertexLayout::BGRAColor:
-			setAttribute<VertexLayout::BGRAColor>(pAttribute, std::forward<T>(val));
-			break;
-		default:
-			assert("Bad element type" && false);
-		}
-	}
-
-	Vertex::Vertex(char* pData, const VertexLayout& layout)
-		: mpData(pData)
-		, mLayout(layout)
-	{
-		assert(pData != nullptr);
-	}
-
-	template<typename First, typename ...Rest>
-	void Vertex::setAttributeByIndexRecursive(size_t i, First&& first, Rest&&... rest)
-	{
-		SetAttributeByIndex(i, std::forward<First>(first));
-		setAttributeByIndexRecursive(i + 1, std::forward<Rest>(rest)...);
-	}
-
-	template<VertexLayout::ElementType DestLayoutType, typename SrcType>
-	void Vertex::setAttribute(char* pAttribute, SrcType&& val)
-	{
-		using Dest = typename VertexLayout::Map<DestLayoutType>::SysType;
-
-		if constexpr (std::is_assignable<Dest, SrcType>::value)
-		{
-			*reinterpret_cast<Dest*>(pAttribute) = val;
-		}
-		else
-		{
-			assert("Parameter attribute type mismatch" && false);
-		}
-	}
-#pragma endregion
 
 	class ConstVertex
 	{
 	public:
-		inline ConstVertex(const Vertex& vertex);
-		~ConstVertex() = default;
-
+		ConstVertex(const Vertex& v);
 		template<VertexLayout::ElementType Type>
-		const auto& GetAttribute() const;
-
+		const auto& Attr() const
+		{
+			return const_cast<Vertex&>(vertex).Attr<Type>();
+		}
 	private:
-		Vertex mVertex;
+		Vertex vertex;
 	};
-
-#pragma region ConstVertexInlineFunc
-	ConstVertex::ConstVertex(const Vertex& vertex)
-		: mVertex(vertex)
-	{
-
-	}
-
-	template<VertexLayout::ElementType Type>
-	const auto& ConstVertex::GetAttribute() const
-	{
-		return const_cast<Vertex&>(mVertex).GetAttribute<Type>();
-	}
-#pragma endregion
 
 	class VertexBuffer
 	{
 	public:
-		inline VertexBuffer(VertexLayout layout, size_t size = 0u);
-		~VertexBuffer() = default;
-
+		VertexBuffer(VertexLayout layout, size_t size = 0u);
+		VertexBuffer(VertexLayout layout, const aiMesh& mesh);
+		const char* GetData() const;
+		const VertexLayout& GetLayout() const;
+		void Resize(size_t newSize);
+		size_t Size() const;
+		size_t SizeBytes() const;
 		template<typename ...Params>
-		void EmplaceBack(Params&&... params);
-		inline void Resize(size_t newSize);
-
-		inline Vertex Back();
-		inline Vertex Front();
-		inline Vertex operator[](size_t i);
-		inline ConstVertex Back() const;
-		inline ConstVertex Front() const;
-		inline ConstVertex operator[](size_t i) const;
-
-		inline const char* GetData() const;
-		inline const VertexLayout& GetLayout() const;
-		inline size_t GetSize() const;
-		inline size_t GetSizeBytes() const;
-
-	private:
-		std::vector<char> mBuffer;
-		VertexLayout mLayout;
-	};
-
-#pragma region VertexBufferInlineFunc
-	VertexBuffer::VertexBuffer(VertexLayout layout, size_t size)
-		: mLayout(std::move(layout))
-	{
-		Resize(size);
-	}
-
-	template<typename ...Params>
-	void VertexBuffer::EmplaceBack(Params&&... params)
-	{
-		assert(sizeof...(params) == mLayout.GetElementCount() && "인자 개수는 Layout 크기와 같아야 함");
-
-		mBuffer.resize(mBuffer.size() + mLayout.GetSize());
-		Back().SetAttributeByIndex(0u, std::forward<Params>(params)...);
-	}
-	void VertexBuffer::Resize(size_t newSize)
-	{
-		const auto size = GetSize();
-
-		if (size < newSize)
+		void EmplaceBack(Params&&... params)
 		{
-			mBuffer.resize(mBuffer.size() + mLayout.GetSize() * (newSize - size));
+			assert(sizeof...(params) == layout.GetElementCount() && "Param count doesn't match number of vertex elements");
+			buffer.resize(buffer.size() + layout.Size());
+			Back().SetAttributeByIndex(0u, std::forward<Params>(params)...);
 		}
-	}
-
-	Vertex VertexBuffer::Back()
-	{
-		assert(mBuffer.size() != 0u);
-		return Vertex{ mBuffer.data() + mBuffer.size() - mLayout.GetSize(), mLayout };
-	}
-	Vertex VertexBuffer::Front()
-	{
-		assert(mBuffer.size() != 0u);
-		return Vertex{ mBuffer.data(), mLayout };
-	}
-	Vertex VertexBuffer::operator[](size_t i)
-	{
-		assert(i < GetSize());
-		return Vertex{ mBuffer.data() + mLayout.GetSize() * i, mLayout };
-	}
-	ConstVertex VertexBuffer::Back() const
-	{
-		return const_cast<VertexBuffer*>(this)->Back();
-	}
-	ConstVertex VertexBuffer::Front() const
-	{
-		return const_cast<VertexBuffer*>(this)->Front();
-	}
-	ConstVertex VertexBuffer::operator[](size_t i) const
-	{
-		return const_cast<VertexBuffer&>(*this)[i];
-	}
-
-	const char* VertexBuffer::GetData() const
-	{
-		return mBuffer.data();
-	}
-	const VertexLayout& VertexBuffer::GetLayout() const
-	{
-		return mLayout;
-	}
-	size_t VertexBuffer::GetSize() const
-	{
-		return mBuffer.size() / mLayout.GetSize();
-	}
-	size_t VertexBuffer::GetSizeBytes() const
-	{
-		return mBuffer.size();
-	}
-#pragma endregion
+		Vertex Back();
+		Vertex Front();
+		Vertex operator[](size_t i);
+		ConstVertex Back() const;
+		ConstVertex Front() const;
+		ConstVertex operator[](size_t i) const;
+	private:
+		std::vector<char> buffer;
+		VertexLayout layout;
+	};
 }
+
+#undef DVTX_ELEMENT_AI_EXTRACTOR
+#ifndef DVTX_SOURCE_FILE
+#undef LAYOUT_ELEMENT_TYPES
+#endif

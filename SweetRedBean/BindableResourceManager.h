@@ -4,7 +4,7 @@
 
 class Graphics;
 
-namespace bind
+namespace Bind
 {
 	class ResourceManager
 	{
@@ -15,6 +15,10 @@ namespace bind
 		static shared_ptr<T> Create(Graphics& graphics, Params&&... params);
 
 	private:
+		ResourceManager() = default;;
+		~ResourceManager() = default;
+
+	private:
 		template <class T, typename... Params>
 		shared_ptr<T> create(Graphics& graphics, Params&&... params);
 
@@ -23,10 +27,10 @@ namespace bind
 	};
 
 	template <class T, typename... Params>
-	static shared_ptr<T> ResourceManager::Create(Graphics& graphics, Params&&... params)
+	std::shared_ptr<T> ResourceManager::Create(Graphics& graphics, Params&&... params)
 	{
-		static_assert(is_base_of_v<T, IBindable>, "IBindable만 지원합니다");
-		return Get().create<T>(graphics, forward<params>(params)...);
+		static_assert(std::is_base_of<IBindable, T>::value, "T must be IBindable");
+		return Get().create<T>(graphics, std::forward<Params>(params)...);
 	}
 
 	template <class T, typename... Params>

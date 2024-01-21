@@ -2,29 +2,31 @@
 
 #include "IBindable.h"
 
-namespace bind
+class Surface;
+
+namespace Bind
 {
 	class Texture : public IBindable
 	{
 	public:
 		Texture(Graphics& graphics, const std::string& path, UINT slot = 0);
-		~Texture() = default;
+		virtual ~Texture() = default;
 
-		// static shared_ptr<Texture> Create(Graphics& graphics, const std::string& path, UINT slot = 0);
-		// static string GenerateUID(const std::string& path, UINT slot = 0);
+		static std::shared_ptr<Texture> Create(Graphics& graphics, const std::string& path, UINT slot = 0);
+		static std::string GenerateUID(const std::string& path, UINT slot = 0);
 
-		virtual void Bind(Graphics& graphics)  override;
+		void Bind(Graphics& graphics) override;
 
-		string GetUID() const  override;
+		std::string GetUID() const override;
 		bool HasAlpha() const;
 
 	private:
-		static UINT CalculateNumberOfMipLevels(UINT width, UINT height);
+		static UINT calculateNumberOfMipLevels(UINT width, UINT height);
 
 	protected:
 		bool mbHasAlpha = false;
-		string mPath;
-		ComPtr<ID3D11ShaderResourceView> mpTextureView;
+		std::string mPath;
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mpTextureView;
 
 	private:
 		unsigned int mSlot;

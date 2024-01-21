@@ -141,15 +141,46 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BindableCommon.h" />
+    <ClInclude Include="BindingPass.h" />
     <ClInclude Include="Blender.h" />
-    <ClInclude Include="Box.h" />
-    <ClInclude Include="common.h" />
+    <ClInclude Include="BlurOutlineDrawingPass.h" />
+    <ClInclude Include="BlurOutlineRenderGraph.h" />
+    <ClInclude Include="BufferClearPass.h" />
+    <ClInclude Include="BufferResource.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="FullscreenPass.h" />
+    <ClInclude Include="HorizontalBlurPass.h" />
+    <ClInclude Include="LambertianPass.h" />
+    <ClInclude Include="MathUtil.h" />
+    <ClInclude Include="OutlineDrawingPass.h" />
+    <ClInclude Include="OutlineMaskGenerationPass.h" />
+    <ClInclude Include="PointLight.h" />
+    <ClInclude Include="RenderQueuePass.h" />
+    <ClInclude Include="ScaleOutlineRenderGraph.h" />
+    <ClInclude Include="Sink.h" />
+    <ClInclude Include="SolidSphere.h" />
+    <ClInclude Include="Source.h" />
+    <ClInclude Include="Util.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="ConstantBufferEx.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="DepthStencil.h" />
     <ClInclude Include="DynamicConstant.h" />
-    <ClInclude Include="FrameCommnader.h" />
+    <ClInclude Include="GraphicsResource.h" />
+    <ClInclude Include="IndexedTriangleList.h" />
     <ClInclude Include="LayoutCodex.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="ModelProbe.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="NullPixelShader.h" />
+    <ClInclude Include="Plane.h" />
+    <ClInclude Include="RenderGraph.h" />
+    <ClInclude Include="RenderTarget.h" />
+    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="StepLinkingProbe.h" />
+    <ClInclude Include="Surface.h" />
     <ClInclude Include="SweetRedBean.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="IBindable.h" />
@@ -171,25 +202,53 @@
     <ClInclude Include="TestPlane.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Topology.h" />
+    <ClInclude Include="TransformCbuf.h" />
+    <ClInclude Include="TransformCbufScaling.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />
-    <ClInclude Include="VertexLayout.h" />
+    <Text Include="123">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </Text>
     <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="VerticalBlurPass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BindingPass.cpp" />
     <ClCompile Include="Blender.cpp" />
-    <ClCompile Include="Box.cpp" />
+    <ClCompile Include="BlurOutlineRenderGraph.cpp" />
+    <ClCompile Include="BufferClearPass.cpp" />
+    <ClCompile Include="BufferResource.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="FullscreenPass.cpp" />
+    <ClCompile Include="HorizontalBlurPass.cpp" />
+    <ClCompile Include="MathUtil.cpp" />
+    <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="RenderQueuePass.cpp" />
+    <ClCompile Include="ScaleOutlineRenderGraph.cpp" />
+    <ClCompile Include="Sink.cpp" />
+    <ClCompile Include="SolidSphere.cpp" />
+    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Util.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="ConstantBufferEx.cpp" />
+    <ClCompile Include="DepthStencil.cpp" />
     <ClCompile Include="DynamicConstant.cpp" />
-    <ClCompile Include="FrameCommnader.cpp" />
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="GraphicsResource.cpp" />
     <ClCompile Include="IBindable.cpp" />
     <ClCompile Include="IDrawable.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
+    <ClCompile Include="IndexedTriangleList.cpp" />
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Job.cpp" />
     <ClCompile Include="LayoutCodex.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ModelProbe.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="NullPixelShader.cpp" />
     <ClCompile Include="Pass.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -198,37 +257,121 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PixelShader.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
     <ClCompile Include="BindableResourceManager.cpp" />
+    <ClCompile Include="RenderGraph.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Sampler.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Stencil.cpp" />
     <ClCompile Include="Step.cpp" />
+    <ClCompile Include="StepLinkingProbe.cpp" />
+    <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Technique.cpp" />
     <ClCompile Include="TechniqueProbe.cpp" />
     <ClCompile Include="TestCube.cpp" />
     <ClCompile Include="TestPlane.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Topology.cpp" />
+    <ClCompile Include="TransformCbuf.cpp" />
+    <ClCompile Include="TransformCbufScaling.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
-    <ClCompile Include="VertexLayout.cpp" />
+    <ClCompile Include="12">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="VertexShader.cpp" />
+    <ClCompile Include="VerticalBlurPass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="BlurOutline_PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Blur_PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="ColorBlendPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="ColorBlendVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="ColorIndexPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="ColorIndexVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Fullscreen_VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="LightVectorData.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Offset_VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="PhongDifMskSpcNrm_PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="PhongDifMskSpcNrm_VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="PhongDifNrm_PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="PhongDifNrm_VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="PhongDifSpcNrm_PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="PhongDifSpcNrm_VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="PhongDifSpc_PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="PhongDifSpc_VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="PhongDif_PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="PhongDif_VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Phong_PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Phong_VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="PointLight.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="ShaderOps.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Solid_PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Solid_VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Transform.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="xPhongDifNro.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,7 +1,8 @@
 #include "pch.h"
+
 #include "BindableResourceManager.h"
 
-namespace bind
+namespace Bind
 {
 	ResourceManager& ResourceManager::Get()
 	{

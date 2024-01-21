@@ -1,81 +1,26 @@
 #pragma once
 
 #include "IBindable.h"
-#include "common.h"
-#include "BindableResourceManager.h"
 
-namespace bind
+class Graphics;
+
+namespace Bind
 {
 	class PixelShader : public IBindable
 	{
 	public:
-		PixelShader(Graphics& graphics, const std::wstring& path)
-		{
-			ComPtr<ID3DBlob> pBlob;
+		PixelShader(Graphics& graphics, const std::string& path);
+		virtual ~PixelShader() = default;
 
-			D3DHelper::CompileShaderFromFile(path.c_str(), "main", "ps_5_0", pBlob.GetAddressOf());
-			// 접두사따라 분기하는 로직
-			// D3DReadFileToBlob(path.c_str(), &pBlob);
+		static shared_ptr<PixelShader> Create(Graphics& graphics, const std::string& path);
+		static string GenerateUID(const std::string& path);
 
-			GetDevice(graphics)->CreatePixelShader(
-				pBlob->GetBufferPointer(),
-				pBlob->GetBufferSize(),
-				nullptr,
-				&mpPixelShader);
-		}
-		~PixelShader() = default;
+		void Bind(Graphics& graphics) override;
 
-		static shared_ptr<PixelShader> Resolve(Graphics& graphics, const std::string& path)
-		{
-			return ResourceManager::Create<PixelShader>(graphics, path);
-		}
-		static string GenerateUID(const std::string& path)
-		{
-			return typeid(PixelShader).name() + "#"s + path;
-		}
-
-		void Bind(Graphics& graphics) override
-		{
-			GetContext(graphics)->PSSetShader(mpPixelShader.Get(), nullptr, 0u);
-		}
-
-		string GetUID() const override
-		{
-			return GenerateUID(mPath);
-		}
+		string GetUID() const override;
 
 	protected:
 		string mPath;
-		ComPtr<ID3D11PixelShader> mpPixelShader;
-	};
-
-	class NullPixelShader : public IBindable
-	{
-	public:
-		NullPixelShader(Graphics& graphics)
-		{
-
-
-		}
-		~NullPixelShader() = default;
-
-		static std::shared_ptr<NullPixelShader> Resolve(Graphics& graphics)
-		{
-
-		}
-		static std::string GenerateUID()
-		{
-			return typeid(NullPixelShader).name();
-		}
-
-		virtual void Bind(Graphics& graphics) override
-		{
-			GetContext(graphics)->PSSetShader(nullptr, nullptr, 0u);
-		}
-
-		std::string GetUID() const override
-		{
-			return GenerateUID();
-		}
+		Microsoft::WRL::ComPtr<ID3D11PixelShader> mpPixelShader;
 	};
 }

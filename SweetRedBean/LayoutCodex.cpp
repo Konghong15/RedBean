@@ -4,7 +4,7 @@
 
 namespace Dcb
 {
-	Dcb::CookedLayout LayoutCodex::Resolve(Dcb::RawLayout&& layout)
+	Dcb::CookedLayout LayoutCodex::Create(Dcb::RawLayout&& layout)
 	{
 		auto sig = layout.GetSignature();
 		auto& map = Get_().map;
@@ -12,7 +12,7 @@ namespace Dcb
 		// idential layout already exists
 		if (i != map.end())
 		{
-			// input layout is expected to be cleared after Resolve
+			// input layout is expected to be cleared after Create
 			// so just throw away the layout tree
 			layout.ClearRoot();
 			return { i->second };

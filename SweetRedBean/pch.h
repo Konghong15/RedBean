@@ -16,16 +16,20 @@
 #include <array>
 #include <algorithm>
 #include <cassert>
+#include <cmath>
+#include <cctype>
 #include <iostream>
 #include <list>
 #include <memory>
 #include <map>
 #include <set>
+#include <sstream>
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
 #include <filesystem>
 #include <optional>
+#include <typeinfo>
 #include <type_traits>
 #include <random>
 

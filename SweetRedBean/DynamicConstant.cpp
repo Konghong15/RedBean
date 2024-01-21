@@ -1,6 +1,6 @@
-#define DCB_IMPL_SOURCE
-
 #include "pch.h"
+
+#define DCB_IMPL_SOURCE
 
 #include "DynamicConstant.h"
 #include <cctype>
@@ -37,7 +37,7 @@ namespace Dcb
 			return "???";
 		}
 	}
-	bool LayoutElement::Exists() const noexcept
+	bool LayoutElement::Exists() const
 	{
 		return type != Empty;
 	}
@@ -194,22 +194,22 @@ namespace Dcb
 		data.layoutElement->Finalize(*offset);
 		return GetOffsetEnd();
 	}
-	bool LayoutElement::CrossesBoundary(size_t offset, size_t size) noexcept
+	bool LayoutElement::CrossesBoundary(size_t offset, size_t size)
 	{
 		const auto end = offset + size;
 		const auto pageStart = offset / 16u;
 		const auto pageEnd = end / 16u;
 		return (pageStart != pageEnd && end % 16 != 0u) || size > 16u;
 	}
-	size_t LayoutElement::AdvanceIfCrossesBoundary(size_t offset, size_t size) noexcept
+	size_t LayoutElement::AdvanceIfCrossesBoundary(size_t offset, size_t size)
 	{
 		return CrossesBoundary(offset, size) ? AdvanceToBoundary(offset) : offset;
 	}
-	size_t LayoutElement::AdvanceToBoundary(size_t offset) noexcept
+	size_t LayoutElement::AdvanceToBoundary(size_t offset)
 	{
 		return offset + (16u - offset % 16u) % 16u;
 	}
-	bool LayoutElement::ValidateSymbolName(const std::string& name) noexcept
+	bool LayoutElement::ValidateSymbolName(const std::string& name)
 	{
 		// symbols can contain alphanumeric and underscore, must not start with digit
 		return !name.empty() && !std::isdigit(name.front()) &&
@@ -222,11 +222,11 @@ namespace Dcb
 
 
 
-	Layout::Layout(std::shared_ptr<LayoutElement> pRoot) noexcept
+	Layout::Layout(std::shared_ptr<LayoutElement> pRoot)
 		:
 		pRoot{ std::move(pRoot) }
 	{}
-	size_t Layout::GetSizeInBytes() const noexcept
+	size_t Layout::GetSizeInBytes() const
 	{
 		return pRoot->GetSizeInBytes();
 	}
@@ -236,7 +236,7 @@ namespace Dcb
 	}
 
 
-	RawLayout::RawLayout() noexcept
+	RawLayout::RawLayout()
 		:
 		Layout{ std::shared_ptr<LayoutElement>{ new LayoutElement(Struct) } }
 	{}
@@ -244,28 +244,27 @@ namespace Dcb
 	{
 		return (*pRoot)[key];
 	}
-	std::shared_ptr<LayoutElement> RawLayout::DeliverRoot() noexcept
+	std::shared_ptr<LayoutElement> RawLayout::DeliverRoot()
 	{
 		auto temp = std::move(pRoot);
 		temp->Finalize(0);
 		*this = RawLayout();
 		return std::move(temp);
 	}
-	void RawLayout::ClearRoot() noexcept
+	void RawLayout::ClearRoot()
 	{
 		*this = RawLayout();
 	}
 
-
-	CookedLayout::CookedLayout(std::shared_ptr<LayoutElement> pRoot) noexcept
+	CookedLayout::CookedLayout(std::shared_ptr<LayoutElement> pRoot)
 		:
 		Layout(std::move(pRoot))
 	{}
-	std::shared_ptr<LayoutElement> CookedLayout::RelinquishRoot() const noexcept
+	std::shared_ptr<LayoutElement> CookedLayout::RelinquishRoot() const
 	{
 		return std::move(pRoot);
 	}
-	std::shared_ptr<LayoutElement> CookedLayout::ShareRoot() const noexcept
+	std::shared_ptr<LayoutElement> CookedLayout::ShareRoot() const
 	{
 		return pRoot;
 	}
@@ -278,7 +277,7 @@ namespace Dcb
 
 
 
-	bool ConstElementRef::Exists() const noexcept
+	bool ConstElementRef::Exists() const
 	{
 		return pLayout->Exists();
 	}
@@ -295,21 +294,21 @@ namespace Dcb
 	{
 		return Ptr{ this };
 	}
-	ConstElementRef::ConstElementRef(const LayoutElement* pLayout, const char* pBytes, size_t offset) noexcept
+	ConstElementRef::ConstElementRef(const LayoutElement* pLayout, const char* pBytes, size_t offset)
 		:
 		offset(offset),
 		pLayout(pLayout),
 		pBytes(pBytes)
 	{}
-	ConstElementRef::Ptr::Ptr(const ConstElementRef* ref) noexcept : ref(ref)
+	ConstElementRef::Ptr::Ptr(const ConstElementRef* ref) : ref(ref)
 	{}
 
 
-	ElementRef::operator ConstElementRef() const noexcept
+	ElementRef::operator ConstElementRef() const
 	{
 		return { pLayout,pBytes,offset };
 	}
-	bool ElementRef::Exists() const noexcept
+	bool ElementRef::Exists() const
 	{
 		return pLayout->Exists();
 	}
@@ -326,13 +325,13 @@ namespace Dcb
 	{
 		return Ptr{ const_cast<ElementRef*>(this) };
 	}
-	ElementRef::ElementRef(const LayoutElement* pLayout, char* pBytes, size_t offset) noexcept
+	ElementRef::ElementRef(const LayoutElement* pLayout, char* pBytes, size_t offset)
 		:
 		offset(offset),
 		pLayout(pLayout),
 		pBytes(pBytes)
 	{}
-	ElementRef::Ptr::Ptr(ElementRef* ref) noexcept : ref(ref)
+	ElementRef::Ptr::Ptr(ElementRef* ref) : ref(ref)
 	{}
 
 
@@ -340,7 +339,7 @@ namespace Dcb
 
 	Buffer::Buffer(RawLayout&& lay)
 		:
-		Buffer(LayoutCodex::Resolve(std::move(lay)))
+		Buffer(LayoutCodex::Create(std::move(lay)))
 	{}
 	Buffer::Buffer(const CookedLayout& lay)
 		:
@@ -352,12 +351,12 @@ namespace Dcb
 		pLayoutRoot(lay.RelinquishRoot()),
 		bytes(pLayoutRoot->GetOffsetEnd())
 	{}
-	Buffer::Buffer(const Buffer& buf) noexcept
+	Buffer::Buffer(const Buffer& buf)
 		:
 		pLayoutRoot(buf.pLayoutRoot),
 		bytes(buf.bytes)
 	{}
-	Buffer::Buffer(Buffer&& buf) noexcept
+	Buffer::Buffer(Buffer&& buf)
 		:
 		pLayoutRoot(std::move(buf.pLayoutRoot)),
 		bytes(std::move(buf.bytes))
@@ -370,15 +369,15 @@ namespace Dcb
 	{
 		return const_cast<Buffer&>(*this)[key];
 	}
-	const char* Buffer::GetData() const noexcept
+	const char* Buffer::GetData() const
 	{
 		return bytes.data();
 	}
-	size_t Buffer::GetSizeInBytes() const noexcept
+	size_t Buffer::GetSizeInBytes() const
 	{
 		return bytes.size();
 	}
-	const LayoutElement& Buffer::GetRootLayoutElement() const noexcept
+	const LayoutElement& Buffer::GetRootLayoutElement() const
 	{
 		return *pLayoutRoot;
 	}
@@ -387,7 +386,7 @@ namespace Dcb
 		assert(&GetRootLayoutElement() == &other.GetRootLayoutElement());
 		std::copy(other.bytes.begin(), other.bytes.end(), bytes.begin());
 	}
-	std::shared_ptr<LayoutElement> Buffer::ShareLayoutRoot() const noexcept
+	std::shared_ptr<LayoutElement> Buffer::ShareLayoutRoot() const
 	{
 		return pLayoutRoot;
 	}

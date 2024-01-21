@@ -7,8 +7,6 @@
 #include "../RedBean/Animation.h"
 #include "../RedBean/Material.h"
 
-#include "../SweetRedBean/Box.h"
-
 namespace entryPoint
 {
 	Sample::Sample(HINSTANCE hInstance, UINT width, UINT height, std::wstring name)
@@ -29,42 +27,15 @@ namespace entryPoint
 
 		mCamera.SetLens(0.25f * MathHelper::Pi, GetAspectRatio(), 1.0f, 10000.0f);
 
-		// new framework test
 		mSweetGrapic = make_unique<Graphics>(mhWnd, mWidth, mHeight);
 		mSweetGrapic->SetProjection(mCamera.GetProj());
 
-		class Factory
-		{
-		public:
-			Factory(Graphics& gfx)
-				:
-				gfx(gfx)
-			{}
-			std::unique_ptr<IDrawable> operator()()
-			{
-				return std::make_unique<Box>(
-					gfx, rng, adist, ddist,
-					odist, rdist, bdist
-				);
-			}
-		private:
-			Graphics& gfx;
-			std::mt19937 rng{ std::random_device{}() };
-			std::uniform_real_distribution<float> adist{ 0.0f,3.14 * 2.0f };
-			std::uniform_real_distribution<float> ddist{ 0.0f,3.14 * 0.5f };
-			std::uniform_real_distribution<float> odist{ 0.0f,3.14 * 0.08f };
-			std::uniform_real_distribution<float> rdist{ 6.0f,20.0f };
-			std::uniform_real_distribution<float> bdist{ 0.4f,3.0f };
-			std::uniform_int_distribution<int> latdist{ 5,20 };
-			std::uniform_int_distribution<int> longdist{ 10,40 };
-			std::uniform_int_distribution<int> typedist{ 0,2 };
-		};
+		mRenderGraph = std::make_unique<Rgph::BlurOutlineRenderGraph>(*mSweetGrapic);
+		mLight = std::make_unique<::PointLight>(*mSweetGrapic);
+		mModel = std::make_unique<::Model>(*mSweetGrapic, "../Resource/Models/");
 
-		int num = 10;
-
-		Factory f(*mSweetGrapic.get());
-		mDrawables.reserve(num);
-		std::generate_n(std::back_inserter(mDrawables), num, f);
+		mLight->LinkTechniques(*mRenderGraph);
+		mModel->LinkTechniques(*mRenderGraph);
 
 		return true;
 	}
@@ -76,10 +47,8 @@ namespace entryPoint
 			return;
 		}
 
-		for (auto& d : mDrawables)
-		{
-			d->Update(deltaTime);
-		}
+		mSweetGrapic->SetView(mCamera.GetView());
+		mLight->Bind(*mSweetGrapic, mCamera.GetView());
 	}
 
 	void Sample::Render()
@@ -91,10 +60,14 @@ namespace entryPoint
 
 		mSweetGrapic->BeginFrame();
 
-		for (auto& d : mDrawables)
-		{
-			d->Draw(*mSweetGrapic.get());
-		}
+		mLight->Submit();
+		mModel->Submit();
+
+		mRenderGraph->Execute(*mSweetGrapic);
+
+		/*
+		임구이처리 프로브 보내서 다루기
+		*/
 
 		mSweetGrapic->EndFrame();
 	}

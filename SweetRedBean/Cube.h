@@ -13,7 +13,7 @@ public:
 		assert(vertices.size() > 2);
 		assert(indices.size() % 3 == 0);
 	}
-	void Transform(DirectX::FXMMATRIX matrix)
+	void Transform(Matrix matrix)
 	{
 		for (auto& v : vertices)
 		{

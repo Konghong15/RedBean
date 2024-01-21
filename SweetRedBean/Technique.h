@@ -1,25 +1,36 @@
-//#pragma once
-//
-//#include "Step.h"
-//
-//class IDrawable;
-//
-//class Technique
-//{
-//public:
-//	Technique() = default;
-//	~Technique() = default;
-//
-//	void Submit(class FrameCommander& frame, const IDrawable& drawable) const;
-//	void InitReferences(const IDrawable& parent);
-//
-//	void AddStep(Step step);
-//
-//	void SetIsActive(bool bIsActive);
-//
-//	bool IsActive() const;
-//
-//private:
-//	bool mbIsActive = true;
-//	std::vector<Step> steps;
-//};
+#pragma once
+#include "Step.h"
+#include <vector>
+
+class TechniqueProbe;
+class IDrawable;
+
+namespace Rgph
+{
+	class RenderGraph;
+}
+
+class Technique
+{
+public:
+	Technique() = default;
+	Technique(std::string name, bool startActive = true);
+
+	void Submit(const IDrawable& drawable) const;
+	void Accept(TechniqueProbe& probe);
+	void Link(Rgph::RenderGraph& renderGraph);
+
+	void InitReferences(const IDrawable& parent);
+
+	void AddStep(Step step);
+
+	void SetActiveState(bool active_in);
+
+	const std::string& GetName() const;
+	bool IsActive() const;
+
+private:
+	bool mbIsActive = true;
+	std::vector<Step> mSteps;
+	std::string mName;
+};

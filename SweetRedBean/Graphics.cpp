@@ -1,7 +1,11 @@
 #include "pch.h"
+
 #include "Graphics.h"
+#include "RenderTarget.h"
 
 Graphics::Graphics(HWND hWnd, int width, int height)
+	: mWidth(width)
+	, mHeight(height)
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
 	sd.BufferDesc.Width = width;
@@ -42,38 +46,12 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 		&mpContext
 	);
 
-	ComPtr<ID3D11Resource> pBackBuffer;
-	hr = mpSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pBackBuffer);
-	hr = mpDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &mpRTV);
+	// 후면버퍼를 참조로하는 RenderTarget 생성
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> pBackBuffer;
+	hr = mpSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), &pBackBuffer);
+	mpRenderTarget = std::shared_ptr<Bind::RenderTarget>{ new Bind::OutputOnlyRenderTarget(*this, pBackBuffer.Get()) };
 
-	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
-	dsDesc.DepthEnable = TRUE;
-	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
-	ComPtr<ID3D11DepthStencilState> pDSState;
-	hr = mpDevice->CreateDepthStencilState(&dsDesc, &pDSState);
-
-	mpContext->OMSetDepthStencilState(pDSState.Get(), 1u);
-
-	ComPtr<ID3D11Texture2D> pDepthStencil;
-	D3D11_TEXTURE2D_DESC descDepth = {};
-	descDepth.Width = width;
-	descDepth.Height = height;
-	descDepth.MipLevels = 1u;
-	descDepth.ArraySize = 1u;
-	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	descDepth.SampleDesc.Count = 1u;
-	descDepth.SampleDesc.Quality = 0u;
-	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	hr = mpDevice->CreateTexture2D(&descDepth, NULL, &pDepthStencil);
-
-	hr = mpDevice->CreateDepthStencilView(pDepthStencil.Get(), NULL, mpDSV.GetAddressOf());
-
-	// bind depth stensil view to OM
-	mpContext->OMSetRenderTargets(1u, mpRTV.GetAddressOf(), mpDSV.Get());
-
-	// configure viewport
+	// 뷰포트 설정
 	D3D11_VIEWPORT vp;
 	vp.TopLeftX = 0.0f;
 	vp.TopLeftY = 0.0f;
@@ -86,9 +64,6 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 
 void Graphics::BeginFrame()
 {
-	const float color[] = { 0.f, 0.f, 0.f, 1.0f };
-	mpContext->ClearRenderTargetView(mpRTV.Get(), color);
-	mpContext->ClearDepthStencilView(mpDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 void Graphics::DrawIndexed(UINT count)
 {
@@ -112,14 +87,6 @@ void Graphics::SetView(Matrix view)
 //
 //}
 
-Matrix Graphics::GetProjection() const
-{
-	return mProjection;
-}
-Matrix Graphics::GetView() const
-{
-	return mView;
-}
 //bool Graphics::IsEnableImgui()
 //{
 //	

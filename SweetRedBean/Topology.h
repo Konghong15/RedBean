@@ -2,29 +2,22 @@
 
 #include "IBindable.h"
 
-namespace bind
+namespace Bind
 {
 	class Topology : public IBindable
 	{
 	public:
-		Topology(Graphics& graphics, D3D11_PRIMITIVE_TOPOLOGY type)
-			: mType(type)
-		{
-		}
-		~Topology() = default;
+		Topology(Graphics& graphics, D3D11_PRIMITIVE_TOPOLOGY type);
+		virtual ~Topology() = default;
 
-		// static shared_ptr<Topology> Create(Graphics& graphics, D3D11_PRIMITIVE_TOPOLOGY type);
-		// static string GenerateUID(D3D11_PRIMITIVE_TOPOLOGY type);
+		static std::shared_ptr<Topology> Create(Graphics& graphics, D3D11_PRIMITIVE_TOPOLOGY type = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		static std::string GenerateUID(D3D11_PRIMITIVE_TOPOLOGY type);
 
-		virtual void Bind(Graphics& graphics)  override
-		{
-			GetContext(graphics)->IASetPrimitiveTopology(mType);
-		}
+		void Bind(Graphics& graphics) override;
 
-		// string GetUID() const override;
+		std::string GetUID() const  override;
 
 	protected:
 		D3D11_PRIMITIVE_TOPOLOGY mType;
 	};
 }
-

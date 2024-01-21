@@ -1,13 +1,13 @@
 #pragma once
 
 #include "../Processor/Processor.h"
-#include "../RedBean/Renderer.h"
-#include "../RedBean/RenderManager.h"
-#include "../RedBean/ResourceManager.h"
-#include "../RedBean/Model.h"
 #include "../RedBean/Camera.h"
+
 #include "../SweetRedBean/Graphics.h"
 #include "../SweetRedBean/IDrawable.h"
+#include "../SweetRedBean/PointLight.h"
+#include "../SweetRedBean/Model.h"
+#include "../SweetRedBean/BlurOutlineRenderGraph.h"
 
 namespace entryPoint
 {
@@ -26,7 +26,11 @@ namespace entryPoint
 	private:
 		common::Camera mCamera;
 
-		unique_ptr<Graphics> mSweetGrapic;
 		vector<unique_ptr<IDrawable>> mDrawables;
+
+		unique_ptr<Graphics> mSweetGrapic;
+		unique_ptr<Rgph::BlurOutlineRenderGraph> mRenderGraph;
+		unique_ptr<::PointLight> mLight;
+		unique_ptr<::Model> mModel;
 	};
 }

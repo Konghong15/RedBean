@@ -6,7 +6,8 @@
 	X( Float3 ) \
 	X( Float4 ) \
 	X( Matrix ) \
-	X( Bool )
+	X( Bool ) \
+	X( Integer )
 
 namespace Dcb
 {
@@ -69,6 +70,13 @@ namespace Dcb
 		static constexpr const char* code = "BL";
 		static constexpr bool valid = true;
 	};
+	template<> struct Map<Integer>
+	{
+		using SysType = int;
+		static constexpr size_t hlslSize = sizeof(SysType);
+		static constexpr const char* code = "IN";
+		static constexpr bool valid = true;
+	};
 
 #define X(el) static_assert(Map<el>::valid,"Missing map implementation for " #el);
 	LEAF_ELEMENT_TYPES
@@ -121,7 +129,7 @@ namespace Dcb
 			return Set(typeAdded, size);
 		}
 		template<typename T>
-		size_t Resolve() const
+		size_t Create() const
 		{
 			switch (type)
 			{
@@ -224,7 +232,7 @@ namespace Dcb
 		operator const T& () const
 		{
 			static_assert(ReverseMap<std::remove_const_t<T>>::valid, "Unsupported SysType used in conversion");
-			return *reinterpret_cast<const T*>(pBytes + offset + pLayout->Resolve<T>());
+			return *reinterpret_cast<const T*>(pBytes + offset + pLayout->Create<T>());
 		}
 	private:
 		ConstElementRef(const LayoutElement* pLayout, const char* pBytes, size_t offset);
@@ -272,7 +280,7 @@ namespace Dcb
 		operator T& () const
 		{
 			static_assert(ReverseMap<std::remove_const_t<T>>::valid, "Unsupported SysType used in conversion");
-			return *reinterpret_cast<T*>(pBytes + offset + pLayout->Resolve<T>());
+			return *reinterpret_cast<T*>(pBytes + offset + pLayout->Create<T>());
 		}
 		template<typename T>
 		T& operator=(const T& rhs) const
