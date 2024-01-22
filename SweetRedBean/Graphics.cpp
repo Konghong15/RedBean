@@ -60,10 +60,19 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	mpContext->RSSetViewports(1u, &vp);
+
+	ImGui_ImplWin32_Init(hWnd);
+	ImGui_ImplDX11_Init(mpDevice.Get(), mpContext.Get());
 }
 
 void Graphics::BeginFrame()
 {
+	if (mbUseImgui)
+	{
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+	}
 }
 void Graphics::DrawIndexed(UINT count)
 {
@@ -71,6 +80,12 @@ void Graphics::DrawIndexed(UINT count)
 }
 void Graphics::EndFrame()
 {
+	if (mbUseImgui)
+	{
+		ImGui::Render();
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	}
+
 	mpSwapChain->Present(1u, 0u);
 }
 

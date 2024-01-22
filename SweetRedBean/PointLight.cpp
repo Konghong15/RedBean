@@ -10,7 +10,7 @@ PointLight::PointLight(Graphics& gfx, float radius)
 	Reset();
 }
 
-void PointLight::SpawnControlWindow() 
+void PointLight::SpawnControlWindow()
 {
 	if (ImGui::Begin("Light"))
 	{
@@ -20,14 +20,14 @@ void PointLight::SpawnControlWindow()
 		ImGui::SliderFloat("Z", &cbData.pos.z, -60.0f, 60.0f, "%.1f");
 
 		ImGui::Text("Intensity/Color");
-		ImGui::SliderFloat("Intensity", &cbData.diffuseIntensity, 0.01f, 2.0f, "%.2f", 2);
+		ImGui::SliderFloat("Intensity", &cbData.diffuseIntensity, 0.01f, 2.0f, "%.2f");
 		ImGui::ColorEdit3("Diffuse Color", &cbData.diffuseColor.x);
 		ImGui::ColorEdit3("Ambient", &cbData.ambient.x);
 
 		ImGui::Text("Falloff");
-		ImGui::SliderFloat("Constant", &cbData.attConst, 0.05f, 10.0f, "%.2f", 4);
-		ImGui::SliderFloat("Linear", &cbData.attLin, 0.0001f, 4.0f, "%.4f", 8);
-		ImGui::SliderFloat("Quadratic", &cbData.attQuad, 0.0000001f, 10.0f, "%.7f", 10);
+		ImGui::SliderFloat("Constant", &cbData.attConst, 0.05f, 10.0f, "%.2f");
+		ImGui::SliderFloat("Linear", &cbData.attLin, 0.0001f, 4.0f, "%.4f");
+		ImGui::SliderFloat("Quadratic", &cbData.attQuad, 0.0000001f, 10.0f, "%.7f");
 
 		if (ImGui::Button("Reset"))
 		{
@@ -37,7 +37,7 @@ void PointLight::SpawnControlWindow()
 	ImGui::End();
 }
 
-void PointLight::Reset() 
+void PointLight::Reset()
 {
 	cbData = {
 		{ 10.0f,9.0f,2.5f },
@@ -50,17 +50,17 @@ void PointLight::Reset()
 	};
 }
 
-void PointLight::Submit() const 
+void PointLight::Submit() const
 {
 	mesh.SetPos(cbData.pos);
 	mesh.Submit();
 }
 
-void PointLight::Bind(Graphics& gfx, DirectX::FXMMATRIX view) const 
+void PointLight::Bind(Graphics& gfx, Matrix view) const
 {
 	auto dataCopy = cbData;
-	const auto pos = DirectX::XMLoadFloat3(&cbData.pos);
-	DirectX::XMStoreFloat3(&dataCopy.pos, DirectX::XMVector3Transform(pos, view));
+	dataCopy.pos = Vector3::Transform(dataCopy.pos, view);
+
 	cbuf.Update(gfx, dataCopy);
 	cbuf.Bind(gfx);
 }

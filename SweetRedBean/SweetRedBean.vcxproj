@@ -150,6 +150,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="FullscreenPass.h" />
     <ClInclude Include="HorizontalBlurPass.h" />
+    <ClInclude Include="ImguiManager.h" />
     <ClInclude Include="LambertianPass.h" />
     <ClInclude Include="MathUtil.h" />
     <ClInclude Include="OutlineDrawingPass.h" />
@@ -206,10 +207,6 @@
     <ClInclude Include="TransformCbufScaling.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />
-    <Text Include="123">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <FileType>Document</FileType>
-    </Text>
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="VerticalBlurPass.h" />
   </ItemGroup>
@@ -222,6 +219,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="FullscreenPass.cpp" />
     <ClCompile Include="HorizontalBlurPass.cpp" />
+    <ClCompile Include="ImguiManager.cpp" />
     <ClCompile Include="MathUtil.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="RenderQueuePass.cpp" />
@@ -278,9 +276,6 @@
     <ClCompile Include="TransformCbufScaling.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
-    <ClCompile Include="12">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="VerticalBlurPass.cpp" />
   </ItemGroup>

@@ -14,10 +14,11 @@ namespace Rgph
 	{
 	public:
 		LambertianPass(Graphics& gfx, std::string name)
-			:
-			RenderQueuePass(std::move(name))
+			: RenderQueuePass(std::move(name))
 		{
 			using namespace Bind;
+
+			// 싱크로 랜더 타겟을 필요로 하고, 소스로 랜더 타겟을 만든다.
 			registerSink(DirectBufferSink<RenderTarget>::Make("renderTarget", mRenderTarget));
 			registerSink(DirectBufferSink<DepthStencil>::Make("depthStencil", mDepthStencil));
 			registerSource(DirectBufferSource<RenderTarget>::Make("renderTarget", mRenderTarget));

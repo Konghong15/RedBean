@@ -23,8 +23,8 @@ namespace Rgph
 		{
 			using namespace Bind;
 			mRenderTarget = std::make_unique<ShaderInputRenderTarget>(gfx, fullWidth / 2, fullHeight / 2, 0);
-			AddBind(VertexShader::Create(gfx, "Solid_VS.cso"));
-			AddBind(PixelShader::Create(gfx, "Solid_PS.cso"));
+			AddBind(VertexShader::Create(gfx, "../SweetRedBean/Solid_VS.hlsl"));
+			AddBind(PixelShader::Create(gfx, "../SweetRedBean/Solid_PS.hlsl"));
 			AddBind(Stencil::Create(gfx, Stencil::Mode::Mask));
 			AddBind(Blender::Create(gfx, false));
 			registerSource(DirectBindableSource<Bind::RenderTarget>::Make("scratchOut", mRenderTarget));

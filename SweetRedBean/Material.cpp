@@ -13,7 +13,7 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 {
 	using namespace Bind;
 
-	const auto rootPath = path.parent_path().string() + "\\";
+	const auto rootPath = path.parent_path().string() + "/../textures/";
 
 	{
 		aiString tempName;
@@ -49,7 +49,9 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 
 				shaderCode += "Dif";
 
-				auto tex = Bind::Texture::Create(graphics, rootPath + texFileName.C_Str());
+				std::filesystem::path filePath = texFileName.C_Str();
+
+				auto tex = Bind::Texture::Create(graphics, rootPath + filePath.filename().string());
 
 				if (tex->HasAlpha())
 				{
@@ -77,7 +79,11 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 				hasTexture = true;
 				shaderCode += "Spc";
 				mVertexLayout.Append(Dvtx::VertexLayout::Texture2D);
-				auto tex = Bind::Texture::Create(graphics, rootPath + texFileName.C_Str(), 1);
+
+				std::filesystem::path filePath = texFileName.C_Str();
+				auto tex = Bind::Texture::Create(graphics, rootPath + filePath.filename().string(), 1);
+
+				// auto tex = Bind::Texture::Create(graphics, rootPath + texFileName.C_Str(), 1);
 				hasGlossAlpha = tex->HasAlpha();
 				step.AddBindable(std::move(tex));
 				pscLayout.Add<Dcb::Bool>("useGlossAlpha");
@@ -98,7 +104,11 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 				mVertexLayout.Append(Dvtx::VertexLayout::Texture2D);
 				mVertexLayout.Append(Dvtx::VertexLayout::Tangent);
 				mVertexLayout.Append(Dvtx::VertexLayout::Bitangent);
-				step.AddBindable(Bind::Texture::Create(graphics, rootPath + texFileName.C_Str(), 2));
+
+				std::filesystem::path filePath = texFileName.C_Str();
+				step.AddBindable(Bind::Texture::Create(graphics, rootPath + filePath.filename().string(), 2));
+
+				// step.AddBindable(Bind::Texture::Create(graphics, rootPath + texFileName.C_Str(), 2));
 				pscLayout.Add<Dcb::Bool>("useNormalMap");
 				pscLayout.Add<Dcb::Float>("normalMapWeight");
 			}
@@ -106,10 +116,10 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 		// common (post)
 		{
 			step.AddBindable(std::make_shared<Bind::TransformCbuf>(graphics, 0u));
-			auto pvs = Bind::VertexShader::Create(graphics, shaderCode + "_VS.cso");
+			auto pvs = Bind::VertexShader::Create(graphics, "../SweetRedBean/" + shaderCode + "_VS.hlsl");
 			auto pvsbc = pvs->GetBytecode();
 			step.AddBindable(std::move(pvs));
-			step.AddBindable(Bind::PixelShader::Create(graphics, shaderCode + "_PS.cso"));
+			step.AddBindable(Bind::PixelShader::Create(graphics, "../SweetRedBean/" + shaderCode + "_PS.hlsl"));
 			step.AddBindable(Bind::InputLayout::Create(graphics, mVertexLayout, pvsbc));
 			if (hasTexture)
 			{
@@ -141,7 +151,8 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 			}
 			buf["useNormalMap"].SetIfExists(true);
 			buf["normalMapWeight"].SetIfExists(1.0f);
-			step.AddBindable(std::make_unique<Bind::CachingPixelConstantBufferEx>(graphics, std::move(buf), 1u));
+
+			step.AddBindable(std::make_shared<Bind::CachingPixelConstantBufferEx>(graphics, std::move(buf), 1u));
 		}
 		phong.AddStep(std::move(step));
 
@@ -154,7 +165,7 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 		{
 			Step mask("outlineMask");
 
-			mask.AddBindable(InputLayout::Create(graphics, mVertexLayout, VertexShader::Create(graphics, "Solid_VS.cso")->GetBytecode()));
+			mask.AddBindable(InputLayout::Create(graphics, mVertexLayout, VertexShader::Create(graphics, "../SweetRedBean/Solid_VS.hlsl")->GetBytecode()));
 			mask.AddBindable(std::make_shared<TransformCbuf>(graphics));
 			outline.AddStep(std::move(mask));
 		}
@@ -169,7 +180,7 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 				draw.AddBindable(std::make_shared<Bind::CachingPixelConstantBufferEx>(graphics, buf, 1u));
 			}
 
-			draw.AddBindable(InputLayout::Create(graphics, mVertexLayout, VertexShader::Create(graphics, "Solid_VS.cso")->GetBytecode()));
+			draw.AddBindable(InputLayout::Create(graphics, mVertexLayout, VertexShader::Create(graphics, "../SweetRedBean/Solid_VS.hlsl")->GetBytecode()));
 			draw.AddBindable(std::make_shared<TransformCbuf>(graphics));
 
 			outline.AddStep(std::move(draw));

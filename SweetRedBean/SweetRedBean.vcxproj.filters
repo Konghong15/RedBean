@@ -252,6 +252,7 @@
     <ClInclude Include="PointLight.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="ImguiManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Topology.cpp">
@@ -330,9 +331,6 @@
       <Filter>Common\Private</Filter>
     </ClCompile>
     <ClCompile Include="Vertex.cpp">
-      <Filter>Common\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="12">
       <Filter>Common\Private</Filter>
     </ClCompile>
     <ClCompile Include="IDrawable.cpp">
@@ -440,6 +438,7 @@
     <ClCompile Include="MathUtil.cpp">
       <Filter>Common\Private</Filter>
     </ClCompile>
+    <ClCompile Include="ImguiManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ColorBlendPS.hlsl">
@@ -523,10 +522,5 @@
     <FxCompile Include="xPhongDifNro.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="123">
-      <Filter>Common</Filter>
-    </Text>
   </ItemGroup>
 </Project>

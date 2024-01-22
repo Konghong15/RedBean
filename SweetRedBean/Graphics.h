@@ -23,12 +23,15 @@ public:
 	void SetView(Matrix view);
 	//void SetIsEnableImgui(bool bIsEnableImgui);
 
+	inline void SetUseImgui(bool bUseImgui);
+
 	inline Matrix GetProjection() const;
 	inline Matrix GetView() const;
 	//bool IsEnableImgui();
 	inline UINT GetWidth() const;
 	inline UINT GetHeight() const;
 	inline std::shared_ptr<Bind::RenderTarget> GetRenderTarget();
+	inline bool GetUseImgui() const;
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> mpDevice;
@@ -41,7 +44,14 @@ private:
 
 	UINT mWidth;
 	UINT mHeight;
+
+	bool mbUseImgui = true;
 };
+
+void Graphics::SetUseImgui(bool bUseImgui)
+{
+	mbUseImgui = bUseImgui;
+}
 
 Matrix Graphics::GetProjection() const
 {
@@ -63,4 +73,9 @@ UINT Graphics::GetHeight() const
 std::shared_ptr<Bind::RenderTarget> Graphics::GetRenderTarget()
 {
 	return mpRenderTarget;
+}
+
+bool Graphics::GetUseImgui() const
+{
+
 }

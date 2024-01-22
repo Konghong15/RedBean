@@ -21,7 +21,7 @@ namespace Rgph
 		std::vector<unsigned short> indices = { 0,1,2,1,3,2 };
 		AddBind(Bind::IndexBuffer::Create(graphics, "$Full", std::move(indices)));
 		// setup other common fullscreen bindables
-		auto vs = Bind::VertexShader::Create(graphics, "Fullscreen_VS.cso");
+		auto vs = Bind::VertexShader::Create(graphics, "../SweetRedBean/Fullscreen_VS.hlsl");
 		AddBind(Bind::InputLayout::Create(graphics, lay, vs->GetBytecode()));
 		AddBind(std::move(vs));
 		AddBind(Bind::Topology::Create(graphics));

@@ -21,7 +21,7 @@ namespace Rgph
 			using namespace Bind;
 			registerSink(DirectBufferSink<Bind::DepthStencil>::Make("depthStencil", mDepthStencil));
 			registerSource(DirectBufferSource<Bind::DepthStencil>::Make("depthStencil", mDepthStencil));
-			AddBind(VertexShader::Create(gfx, "Solid_VS.cso"));
+			AddBind(VertexShader::Create(gfx, "../SweetRedBean/Solid_VS.hlsl"));
 			AddBind(NullPixelShader::Create(gfx));
 			AddBind(Stencil::Create(gfx, Stencil::Mode::Write));
 			AddBind(Rasterizer::Create(gfx, false));

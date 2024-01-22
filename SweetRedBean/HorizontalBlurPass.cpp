@@ -17,7 +17,7 @@ namespace Rgph
 		:
 		FullscreenPass(std::move(name), gfx)
 	{
-		AddBind(PixelShader::Create(gfx, "BlurOutline_PS.cso"));
+		AddBind(PixelShader::Create(gfx, "../SweetRedBean/BlurOutline_PS.hlsl"));
 		AddBind(Blender::Create(gfx, false));
 		AddBind(Sampler::Create(gfx, Sampler::Type::Point, true));
 

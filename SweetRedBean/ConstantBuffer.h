@@ -118,7 +118,7 @@ namespace Bind
 	template<typename C>
 	void VertexConstantBuffer<C>::Bind(Graphics& graphics)
 	{
-		GetContext(graphics)->VSSetConstantBuffers(0u, 1u, mpConstantBuffer.GetAddressOf());
+		GetContext(graphics)->VSSetConstantBuffers(mSlot, 1u, mpConstantBuffer.GetAddressOf());
 	}
 
 	template<typename C>
@@ -175,7 +175,7 @@ namespace Bind
 	template<typename C>
 	void PixelConstantBuffer<C>::Bind(Graphics& graphics)
 	{
-		GetContext(graphics)->PSSetConstantBuffers(0u, 1u, mpConstantBuffer.GetAddressOf());
+		GetContext(graphics)->PSSetConstantBuffers(mSlot, 1u, mpConstantBuffer.GetAddressOf());
 	}
 
 	template<typename C>

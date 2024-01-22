@@ -88,15 +88,15 @@ namespace Bind
 
 	void RenderTarget::Clear(Graphics& graphics)
 	{
-		Clear(graphics, { 0.0f,0.0f,0.0f,0.0f });
+		Clear(graphics, { 1,1,1,1 });
 	}
 
-	UINT RenderTarget::GetWidth() const 
+	UINT RenderTarget::GetWidth() const
 	{
 		return mWidth;
 	}
 
-	UINT RenderTarget::GetHeight() const 
+	UINT RenderTarget::GetHeight() const
 	{
 		return mHeight;
 	}

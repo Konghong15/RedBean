@@ -8,21 +8,23 @@ namespace Bind
 {
 	VertexShader::VertexShader(Graphics& graphics, const string& path)
 	{
-		HRESULT hr = D3DReadFileToBlob(Util::ToWide(path).c_str(), &mpBytecodeBlob);
-
+		HRESULT hr = Util::CompileShaderFromFile(Util::ToWide(path).c_str(), "main", "vs_5_0", mpBytecodeBlob.GetAddressOf());
+		
 		if (FAILED(hr))
 		{
-			Util::CompileShaderFromFile(Util::ToWide(path).c_str(), "main", "vs_5_0", mpBytecodeBlob.GetAddressOf());
+			hr = D3DReadFileToBlob(Util::ToWide(path).c_str(), &mpBytecodeBlob);
 		}
 
 		assert(SUCCEEDED(hr));
 
-		GetDevice(graphics)->CreateVertexShader(
+		hr = GetDevice(graphics)->CreateVertexShader(
 			mpBytecodeBlob->GetBufferPointer(),
 			mpBytecodeBlob->GetBufferSize(),
 			nullptr,
-			&mpVertexShader
+			mpVertexShader.GetAddressOf()
 		);
+		
+		assert(SUCCEEDED(hr));
 	}
 
 	std::shared_ptr<VertexShader> VertexShader::Create(Graphics& graphics, const std::string& path)

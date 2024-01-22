@@ -43,7 +43,7 @@ namespace Bind
 		TransformCbuf::Transforms result =
 		{
 			modelView.Transpose(),
-			modelView * graphics.GetProjection().Transpose()
+			(modelView * graphics.GetProjection()).Transpose()
 		};
 
 		return result;
