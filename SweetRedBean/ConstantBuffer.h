@@ -10,6 +10,8 @@ namespace Bind
 	template<typename C>
 	class ConstantBuffer : public IBindable
 	{
+		static_assert(sizeof(C) % 16 == 0, "constant buffer must be aligned by 16 bytes");
+
 	public:
 		ConstantBuffer(Graphics& graphics, UINT slot = 0u);
 		ConstantBuffer(Graphics& graphics, const C& consts, UINT slot = 0u);
@@ -52,7 +54,8 @@ namespace Bind
 		cbd.ByteWidth = sizeof(C);
 		cbd.StructureByteStride = 0u;
 
-		GetDevice(graphics)->CreateBuffer(&cbd, NULL, &mpConstantBuffer);
+		HRESULT hr = GetDevice(graphics)->CreateBuffer(&cbd, NULL, &mpConstantBuffer);
+		assert(SUCCEEDED(hr));
 	}
 
 	template<typename C>
@@ -209,7 +212,7 @@ namespace Bind
 		// virtual void InitReference(const IDrawable& parent) override;
 
 	protected:
-		// void UpdateBindImpl(Graphics& graphics, const Transforms& tf);
+		// void UpdateBindImpl(Graphics& graphics, const Transforms& transform);
 		// Transforms GetTransforms(Graphics& graphics);
 
 	private:

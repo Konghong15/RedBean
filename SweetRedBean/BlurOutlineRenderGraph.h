@@ -16,7 +16,7 @@ namespace Rgph
 	class BlurOutlineRenderGraph : public RenderGraph
 	{
 	public:
-		BlurOutlineRenderGraph(Graphics& gfx);
+		BlurOutlineRenderGraph(Graphics& grapics);
 	private:
 		// private functions
 		void SetKernelGauss(int radius, float sigma);

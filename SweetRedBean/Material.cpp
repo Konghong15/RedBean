@@ -13,153 +13,151 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 {
 	using namespace Bind;
 
-	const auto rootPath = path.parent_path().string() + "/../textures/";
-
+	// 머테리얼 이름
 	{
 		aiString tempName;
 		material.Get(AI_MATKEY_NAME, tempName);
 		mName = tempName.C_Str();
 	}
 
-	// 재질에 따른 쉐이더 추가
+	// 랜더 테크닉 : pbr인지 non pbr인지 분기
 	{
-		// 퐁 기법은 램버티안 스탭하나로 이뤄짐
-		Technique phong{ "Phong" };
-		Step step("lambertian");
-		std::string shaderCode = "Phong";
+		Technique renderTech{ " RenderTechnique " };
 
-		// 기본 레이아웃 추가
-		mVertexLayout.Append(Dvtx::VertexLayout::Position3D);
-		mVertexLayout.Append(Dvtx::VertexLayout::Normal);
-		Dcb::RawLayout pscLayout;
-		bool hasTexture = false;
-		bool hasGlossAlpha = false;
+		// 베이스 패스
+		const auto rootPath = path.parent_path().string() + "/../textures/";
 
-		// diffuse
-		{
-			aiString texFileName;
-			bool hasAlpha = false;
-
-			// diffuse가 존재하면 쉐이더 이름을 바꾸고 텍스처를 바인딩함
-			if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+		auto createTexture = [&](aiTextureType aiTextureType, unsigned int bindIndex, Step& step) -> bool
 			{
-				mVertexLayout.Append(Dvtx::VertexLayout::Texture2D);
+				aiString texturePath;
 
-				hasTexture = true;
-
-				shaderCode += "Dif";
-
-				std::filesystem::path filePath = texFileName.C_Str();
-
-				auto tex = Bind::Texture::Create(graphics, rootPath + filePath.filename().string());
-
-				if (tex->HasAlpha())
+				if (material.GetTexture(aiTextureType, 0, &texturePath) == AI_SUCCESS)
 				{
-					hasAlpha = true;
-					shaderCode += "Msk";
+					std::filesystem::path filePath = texturePath.C_Str();
+
+					auto texture = Bind::Texture::Create(graphics, rootPath + filePath.filename().string(), bindIndex);
+					step.AddBindable(texture);
+
+					return true;
 				}
 
-				step.AddBindable(std::move(tex));
-			}
-			// diffuse가 존재하지 않으면 상수 버퍼에 머테리얼 색상을 추가함
-			else
-			{
-				pscLayout.Add<Dcb::Float3>("materialColor");
-			}
+				return false;
+			};
 
-			step.AddBindable(Bind::Rasterizer::Create(graphics, hasAlpha));
-		}
+		mVertexLayout.Append(Dvtx::VertexLayout::Position3D)
+			.Append(Dvtx::VertexLayout::Texture2D)
+			.Append(Dvtx::VertexLayout::Normal)
+			.Append(Dvtx::VertexLayout::Tangent);
 
-		// specular
+		// pbr 텍스처
+		if (material.GetTextureCount(aiTextureType_METALNESS) > 0u || material.GetTextureCount(aiTextureType_SHININESS) > 0u)
 		{
-			aiString texFileName;
+			Step step{ "PBR" };
 
-			if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
+			// 상수 버퍼 생성
 			{
-				hasTexture = true;
-				shaderCode += "Spc";
-				mVertexLayout.Append(Dvtx::VertexLayout::Texture2D);
+				Dcb::RawLayout PSLayout;
+				PSLayout.Add<Dcb::Bool>("useDiffuse")
+					.Add<Dcb::Bool>("useNormal")
+					.Add<Dcb::Bool>("useEmissive")
+					.Add<Dcb::Bool>("useAlpha")
+					.Add<Dcb::Bool>("useMatalness")
+					.Add<Dcb::Bool>("useRoughness");
 
-				std::filesystem::path filePath = texFileName.C_Str();
-				auto tex = Bind::Texture::Create(graphics, rootPath + filePath.filename().string(), 1);
+				Dcb::Buffer PSBuffer{ std::move(PSLayout) };
 
-				// auto tex = Bind::Texture::Create(graphics, rootPath + texFileName.C_Str(), 1);
-				hasGlossAlpha = tex->HasAlpha();
-				step.AddBindable(std::move(tex));
-				pscLayout.Add<Dcb::Bool>("useGlossAlpha");
-				pscLayout.Add<Dcb::Bool>("useSpecularMap");
+				if (!(PSBuffer["useDiffuse"] = createTexture(aiTextureType_DIFFUSE, 0, step)))
+				{
+					PSBuffer["useDiffuse"] = createTexture(aiTextureType_BASE_COLOR, 0, step);
+				}
+
+				PSBuffer["useNormal"] = createTexture(aiTextureType_NORMALS, 1, step);
+				PSBuffer["useEmissive"] = createTexture(aiTextureType_EMISSIVE, 2, step);
+
+				if (PSBuffer["useAlpha"] = createTexture(aiTextureType_OPACITY, 3, step))
+				{
+					step.AddBindable(Bind::Rasterizer::Create(graphics, true));
+				}
+
+				PSBuffer["useMatalness"] = createTexture(aiTextureType_METALNESS, 4, step);
+				PSBuffer["useRoughness"] = createTexture(aiTextureType_SHININESS, 5, step);
+
+				step.AddBindable(std::make_unique<Bind::CachingPixelConstantBufferEx>(graphics, std::move(PSBuffer), 1u));
+				step.AddBindable(std::make_unique<Bind::CachingPixelConstantBufferEx>(graphics, std::move(PSBuffer), 1u));
+				step.AddBindable(std::make_shared<TransformCbuf>(graphics, 0u));
 			}
-			pscLayout.Add<Dcb::Float3>("specularColor");
-			pscLayout.Add<Dcb::Float>("specularWeight");
-			pscLayout.Add<Dcb::Float>("specularGloss");
+			// 쉐이더 생성
+			{
+				std::string pixelShaderName = "../SweetRedBean/ModelPBR_PS.hlsl";
+
+				auto vertexShader = VertexShader::Create(graphics, "../SweetRedBean/Model_VS.hlsl");
+				auto inputLayout = InputLayout::Create(graphics, mVertexLayout, vertexShader->GetBytecode());
+				auto pixelShader = PixelShader::Create(graphics, pixelShaderName);
+
+				step.AddBindable(inputLayout);
+				step.AddBindable(vertexShader);
+				step.AddBindable(pixelShader);
+			}
+
+			renderTech.AddStep(std::move(step));
 		}
-		// normal
+		// non-pbr 
+		else
 		{
-			aiString texFileName;
+			Step step{ "NonPBR" };
 
-			if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
+			// 상수 버퍼 생성
 			{
-				hasTexture = true;
-				shaderCode += "Nrm";
-				mVertexLayout.Append(Dvtx::VertexLayout::Texture2D);
-				mVertexLayout.Append(Dvtx::VertexLayout::Tangent);
-				mVertexLayout.Append(Dvtx::VertexLayout::Bitangent);
+				Dcb::RawLayout PSLayout;
+				PSLayout.Add<Dcb::Bool>("useDiffuse")
+					.Add<Dcb::Bool>("useNormal")
+					.Add<Dcb::Bool>("useSpecular")
+					.Add<Dcb::Bool>("useAlpha");
 
-				std::filesystem::path filePath = texFileName.C_Str();
-				step.AddBindable(Bind::Texture::Create(graphics, rootPath + filePath.filename().string(), 2));
+				Dcb::Buffer PSBuffer{ std::move(PSLayout) };
 
-				// step.AddBindable(Bind::Texture::Create(graphics, rootPath + texFileName.C_Str(), 2));
-				pscLayout.Add<Dcb::Bool>("useNormalMap");
-				pscLayout.Add<Dcb::Float>("normalMapWeight");
+				if (!(PSBuffer["useDiffuse"] = createTexture(aiTextureType_DIFFUSE, 0, step)))
+				{
+					PSBuffer["useDiffuse"] = createTexture(aiTextureType_BASE_COLOR, 0, step);
+				}
+
+				PSBuffer["useNormal"] = createTexture(aiTextureType_NORMALS, 1, step);
+				PSBuffer["useSpecular"] = createTexture(aiTextureType_SPECULAR, 2, step);
+
+				if (PSBuffer["useAlpha"] = createTexture(aiTextureType_OPACITY, 3, step))
+				{
+					step.AddBindable(Bind::Rasterizer::Create(graphics, true));
+				}
+
+				step.AddBindable(std::make_shared<TransformCbuf>(graphics, 0u));
+				step.AddBindable(std::make_unique<Bind::CachingPixelConstantBufferEx>(graphics, std::move(PSBuffer), 1u));
 			}
+
+			// 쉐이더 생성
+			{
+				std::string pixelShaderName = "../SweetRedBean/Model_PS.hlsl";
+
+				auto vertexShader = VertexShader::Create(graphics, "../SweetRedBean/Model_VS.hlsl");
+				auto inputLayout = InputLayout::Create(graphics, mVertexLayout, vertexShader->GetBytecode());
+				auto pixelShader = PixelShader::Create(graphics, pixelShaderName);
+
+				step.AddBindable(inputLayout);
+				step.AddBindable(vertexShader);
+				step.AddBindable(pixelShader);
+			}
+
+			// 샘플러 스테이트
+			{
+				step.AddBindable(Sampler::Create(graphics));
+			}
+
+			renderTech.AddStep(std::move(step));
 		}
-		// common (post)
-		{
-			step.AddBindable(std::make_shared<Bind::TransformCbuf>(graphics, 0u));
-			auto pvs = Bind::VertexShader::Create(graphics, "../SweetRedBean/" + shaderCode + "_VS.hlsl");
-			auto pvsbc = pvs->GetBytecode();
-			step.AddBindable(std::move(pvs));
-			step.AddBindable(Bind::PixelShader::Create(graphics, "../SweetRedBean/" + shaderCode + "_PS.hlsl"));
-			step.AddBindable(Bind::InputLayout::Create(graphics, mVertexLayout, pvsbc));
-			if (hasTexture)
-			{
-				step.AddBindable(Bind::Sampler::Create(graphics));
-			}
 
-			// PS material params (cbuf) // 상수 버퍼 기본 값 정의
-			Dcb::Buffer buf{ std::move(pscLayout) };
-			if (auto r = buf["materialColor"]; r.Exists())
-			{
-				aiColor3D color = { 0.45f,0.45f,0.85f };
-				material.Get(AI_MATKEY_COLOR_DIFFUSE, color);
-				r = reinterpret_cast<DirectX::XMFLOAT3&>(color);
-			}
-			buf["useGlossAlpha"].SetIfExists(hasGlossAlpha);
-			buf["useSpecularMap"].SetIfExists(true);
-			if (auto r = buf["specularColor"]; r.Exists())
-			{
-				aiColor3D color = { 0.18f,0.18f,0.18f };
-				material.Get(AI_MATKEY_COLOR_SPECULAR, color);
-				r = reinterpret_cast<DirectX::XMFLOAT3&>(color);
-			}
-			buf["specularWeight"].SetIfExists(1.0f);
-			if (auto r = buf["specularGloss"]; r.Exists())
-			{
-				float gloss = 8.0f;
-				material.Get(AI_MATKEY_SHININESS, gloss);
-				r = gloss;
-			}
-			buf["useNormalMap"].SetIfExists(true);
-			buf["normalMapWeight"].SetIfExists(1.0f);
-
-			step.AddBindable(std::make_shared<Bind::CachingPixelConstantBufferEx>(graphics, std::move(buf), 1u));
-		}
-		phong.AddStep(std::move(step));
-
-		mTechniques.push_back(std::move(phong));
+		mTechniques.push_back(std::move(renderTech));
 	}
 
-	// 아웃라인 스탭
+	// 아웃라인 테크닉
 	{
 		Technique outline("Outline", false);
 		{

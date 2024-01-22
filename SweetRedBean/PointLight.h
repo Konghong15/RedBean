@@ -12,13 +12,13 @@ namespace Rgph
 class PointLight
 {
 public:
-	PointLight(Graphics& gfx, float radius = 0.5f);
+	PointLight(Graphics& grapics, float radius = 0.5f);
 	~PointLight() = default;
 
 	void SpawnControlWindow();
 	void Reset();
 	void Submit() const;
-	void Bind(Graphics& gfx, Matrix view) const;
+	void Bind(Graphics& grapics, Matrix view) const;
 	void LinkTechniques(Rgph::RenderGraph&);
 
 private:

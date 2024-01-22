@@ -31,11 +31,14 @@ namespace entryPoint
 		mSweetGrapic->SetProjection(mCamera.GetProj());
 
 		mRenderGraph = std::make_unique<Rgph::BlurOutlineRenderGraph>(*mSweetGrapic);
+
 		mLight = std::make_unique<::PointLight>(*mSweetGrapic);
 		mModel = std::make_unique<::Model>(*mSweetGrapic, "../Resource/Models/dancing.fbx");
+		mFrameLight = std::make_unique<::FrameLight>(*mSweetGrapic);
 
 		mLight->LinkTechniques(*mRenderGraph);
 		mModel->LinkTechniques(*mRenderGraph);
+		mFrameLight->LinkTechnique(*mRenderGraph);
 
 		Bind::ResourceManager::Get();
 
@@ -74,8 +77,6 @@ namespace entryPoint
 		}
 
 		mCamera.UpdateViewMatrix();
-		mSweetGrapic->SetView(mCamera.GetView());
-		mLight->Bind(*mSweetGrapic, mCamera.GetView());
 	}
 
 	void Sample::Render()
@@ -85,9 +86,16 @@ namespace entryPoint
 			return;
 		}
 
+		// 상수 버퍼 관리
+		{
+			mSweetGrapic->SetView(mCamera.GetView());
+			mLight->Bind(*mSweetGrapic, mCamera.GetView());
+			mFrameLight->Bind(*mSweetGrapic, mCamera.GetPosition());
+		}
+
 		mSweetGrapic->BeginFrame();
 
-		mLight->Submit();
+		// mLight->Submit();
 		mModel->Submit();
 
 		mRenderGraph->Execute(*mSweetGrapic);

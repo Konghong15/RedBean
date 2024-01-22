@@ -28,10 +28,10 @@ namespace Bind
 		return std::make_unique<TransformCbuf>(*this);
 	}
 
-	void TransformCbuf::updateBindImpl(Graphics& graphics, const Transforms& tf)
+	void TransformCbuf::updateBindImpl(Graphics& graphics, const Transforms& transform)
 	{
 		assert(pParent != nullptr);
-		pVcbuf->Update(graphics, tf);
+		pVcbuf->Update(graphics, transform);
 		pVcbuf->Bind(graphics);
 	}
 
@@ -42,8 +42,8 @@ namespace Bind
 
 		TransformCbuf::Transforms result =
 		{
-			modelView.Transpose(),
-			(modelView * graphics.GetProjection()).Transpose()
+			pParent->GetTransform().Transpose(),
+			(pParent->GetTransform() * graphics.GetView() * graphics.GetProjection()).Transpose()
 		};
 
 		return result;

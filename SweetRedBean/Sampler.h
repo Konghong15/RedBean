@@ -14,11 +14,11 @@ namespace Bind
 		};
 
 	public:
-		Sampler(Graphics& gfx, Type type, bool reflect);
+		Sampler(Graphics& grapics, Type type, bool reflect);
 		//Sampler(Graphics& graphics, Type type, D3D11_TEXTURE_ADDRESS_MODE addressMode = D3D11_TEXTURE_ADDRESS_WRAP);
 		virtual ~Sampler() = default;
 
-		static std::shared_ptr<Sampler> Create(Graphics& gfx, Type type = Type::Anisotropic, bool reflect = false);
+		static std::shared_ptr<Sampler> Create(Graphics& grapics, Type type = Type::Anisotropic, bool reflect = false);
 		// static std::shared_ptr<Sampler> Create(Graphics& graphics, Type type = Type::Anisotropic, D3D11_TEXTURE_ADDRESS_MODE addressMode = D3D11_TEXTURE_ADDRESS_WRAP);
 		static std::string GenerateUID(Type type, bool reflect);
 

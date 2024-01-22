@@ -5,17 +5,20 @@
 #include "Mesh.h"
 #include "Material.h"
 
-Model::Model(Graphics& gfx, const std::string& pathString, const float scale)
+Model::Model(Graphics& grapics, const std::string& pathString, const float scale)
 {
 	Assimp::Importer imp;
 
-	const auto pScene = imp.ReadFile(pathString.c_str(),
-		aiProcess_Triangulate |
-		aiProcess_JoinIdenticalVertices |
-		aiProcess_ConvertToLeftHanded |
+	Assimp::Importer importer;
+	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);
+	unsigned int importFlags = aiProcess_Triangulate |
 		aiProcess_GenNormals |
-		aiProcess_CalcTangentSpace
-	);
+		aiProcess_GenUVCoords |
+		aiProcess_CalcTangentSpace |
+		aiProcess_LimitBoneWeights |
+		aiProcess_ConvertToLeftHanded;
+
+	const aiScene* pScene = importer.ReadFile(pathString, importFlags);
 
 	if (pScene == nullptr)
 	{
@@ -28,16 +31,16 @@ Model::Model(Graphics& gfx, const std::string& pathString, const float scale)
 
 	for (size_t i = 0; i < pScene->mNumMaterials; i++)
 	{
-		materials.emplace_back(gfx, *pScene->mMaterials[i], pathString);
+		materials.emplace_back(grapics, *pScene->mMaterials[i], pathString);
 	}
 
 	// 매쉬 생성
 	for (size_t i = 0; i < pScene->mNumMeshes; i++)
 	{
 		const auto& mesh = *pScene->mMeshes[i];
-		
+
 		// 메쉬는 재질과 1대1 대응이라 요렇게 생성 가능하다.
-		mMeshPtrs.push_back(std::make_unique<Mesh>(gfx, materials[mesh.mMaterialIndex], mesh, scale));
+		mMeshPtrs.push_back(std::make_unique<Mesh>(grapics, materials[mesh.mMaterialIndex], mesh, scale));
 	}
 
 	// 노드 생성

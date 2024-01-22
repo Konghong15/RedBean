@@ -16,8 +16,8 @@ namespace Rgph
 		registerSource( DirectBufferSource<Bind::BufferResource>::Make( "buffer",buffer ) );
 	}
 
-	void BufferClearPass::Execute( Graphics& gfx ) const 
+	void BufferClearPass::Execute( Graphics& grapics ) const 
 	{
-		buffer->Clear( gfx );
+		buffer->Clear( grapics );
 	}
 }

@@ -9,7 +9,7 @@ struct aiMesh;
 class Mesh : public IDrawable
 {
 public:
-	Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale = 1.0f);
+	Mesh(Graphics& grapics, const Material& mat, const aiMesh& mesh, float scale = 1.0f);
 	virtual ~Mesh() = default;
 
 	void Submit(Matrix accumulatedTranform) const;

@@ -13,7 +13,7 @@ namespace Rgph
 	class LambertianPass : public RenderQueuePass
 	{
 	public:
-		LambertianPass(Graphics& gfx, std::string name)
+		LambertianPass(Graphics& grapics, std::string name)
 			: RenderQueuePass(std::move(name))
 		{
 			using namespace Bind;
@@ -24,7 +24,7 @@ namespace Rgph
 			registerSource(DirectBufferSource<RenderTarget>::Make("renderTarget", mRenderTarget));
 			registerSource(DirectBufferSource<DepthStencil>::Make("depthStencil", mDepthStencil));
 
-			AddBind(Stencil::Create(gfx, Stencil::Mode::Off));
+			AddBind(Stencil::Create(grapics, Stencil::Mode::Off));
 		}
 	};
 }

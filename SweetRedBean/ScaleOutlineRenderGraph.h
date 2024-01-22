@@ -8,6 +8,6 @@ namespace Rgph
 	class ScaleOutlineRenderGraph : public RenderGraph
 	{
 	public:
-		ScaleOutlineRenderGraph( Graphics& gfx );
+		ScaleOutlineRenderGraph( Graphics& grapics );
 	};
 }

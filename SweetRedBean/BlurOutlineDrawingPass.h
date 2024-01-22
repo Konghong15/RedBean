@@ -17,22 +17,23 @@ namespace Rgph
 	class BlurOutlineDrawingPass : public RenderQueuePass
 	{
 	public:
-		BlurOutlineDrawingPass(Graphics& gfx, std::string name, unsigned int fullWidth, unsigned int fullHeight)
+		BlurOutlineDrawingPass(Graphics& grapics, std::string name, unsigned int fullWidth, unsigned int fullHeight)
 			:
 			RenderQueuePass(std::move(name))
 		{
 			using namespace Bind;
-			mRenderTarget = std::make_unique<ShaderInputRenderTarget>(gfx, fullWidth / 2, fullHeight / 2, 0);
-			AddBind(VertexShader::Create(gfx, "../SweetRedBean/Solid_VS.hlsl"));
-			AddBind(PixelShader::Create(gfx, "../SweetRedBean/Solid_PS.hlsl"));
-			AddBind(Stencil::Create(gfx, Stencil::Mode::Mask));
-			AddBind(Blender::Create(gfx, false));
+			mRenderTarget = std::make_unique<ShaderInputRenderTarget>(grapics, fullWidth / 2, fullHeight / 2, 0);
+			AddBind(VertexShader::Create(grapics, "../SweetRedBean/Solid_VS.hlsl"));
+			AddBind(PixelShader::Create(grapics, "../SweetRedBean/Solid_PS.hlsl"));
+			AddBind(Stencil::Create(grapics, Stencil::Mode::Mask));
+			AddBind(Blender::Create(grapics, false));
+
 			registerSource(DirectBindableSource<Bind::RenderTarget>::Make("scratchOut", mRenderTarget));
 		}
-		void Execute(Graphics& gfx) const  override
+		void Execute(Graphics& grapics) const  override
 		{
-			mRenderTarget->Clear(gfx);
-			RenderQueuePass::Execute(gfx);
+			mRenderTarget->Clear(grapics);
+			RenderQueuePass::Execute(grapics);
 		}
 	};
 }

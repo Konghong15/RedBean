@@ -22,8 +22,9 @@ namespace Bind
 		const float scale = mBuf["scale"];
 
 		const auto scaleMatrix = Matrix::CreateScale(scale, scale, scale);
+
 		auto Transforms = getTransforms(graphics);
-		Transforms.ModelView *= scaleMatrix;
+		Transforms.Model *= scaleMatrix;
 		Transforms.ModelViewProj *= scaleMatrix;
 
 		updateBindImpl(graphics, Transforms);

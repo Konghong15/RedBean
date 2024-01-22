@@ -20,6 +20,7 @@ namespace Rgph
 		// 백버퍼에 대한 랜더타겟과 깊이버퍼는 반드시 연결됨
 		addGlobalSource(DirectBufferSource<Bind::RenderTarget>::Make("backbuffer", mBackBufferTarget));
 		addGlobalSource(DirectBufferSource<Bind::DepthStencil>::Make("masterDepth", mMasterDepth));
+
 		addGlobalSink(DirectBufferSink<Bind::RenderTarget>::Make("backbuffer", mBackBufferTarget));
 	}
 

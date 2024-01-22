@@ -2,10 +2,10 @@
 
 #include "PointLight.h"
 
-PointLight::PointLight(Graphics& gfx, float radius)
+PointLight::PointLight(Graphics& grapics, float radius)
 	:
-	mesh(gfx, radius),
-	cbuf(gfx)
+	mesh(grapics, radius),
+	cbuf(grapics)
 {
 	Reset();
 }
@@ -56,13 +56,13 @@ void PointLight::Submit() const
 	mesh.Submit();
 }
 
-void PointLight::Bind(Graphics& gfx, Matrix view) const
+void PointLight::Bind(Graphics& grapics, Matrix view) const
 {
 	auto dataCopy = cbData;
 	dataCopy.pos = Vector3::Transform(dataCopy.pos, view);
 
-	cbuf.Update(gfx, dataCopy);
-	cbuf.Bind(gfx);
+	cbuf.Update(grapics, dataCopy);
+	cbuf.Bind(grapics);
 }
 
 void PointLight::LinkTechniques(Rgph::RenderGraph& rg)

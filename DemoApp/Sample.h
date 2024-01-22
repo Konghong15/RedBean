@@ -9,6 +9,7 @@
 #include "../SweetRedBean/Model.h"
 #include "../SweetRedBean/BlurOutlineRenderGraph.h"
 #include "../SweetRedBean/ImguiManager.h"
+#include "../SweetRedBean/FrameLight.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -46,5 +47,6 @@ namespace entryPoint
 		unique_ptr<::PointLight> mLight;
 		unique_ptr<::Model> mModel;
 		ImguiManager mImguiManager;
+		unique_ptr<::FrameLight> mFrameLight;
 	};
 }

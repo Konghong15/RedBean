@@ -12,7 +12,7 @@ namespace Rgph
 	{
 	public:
 		BufferClearPass( std::string name );
-		void Execute( Graphics& gfx ) const  override;
+		void Execute( Graphics& grapics ) const  override;
 	private:
 		std::shared_ptr<Bind::BufferResource> buffer;
 	};

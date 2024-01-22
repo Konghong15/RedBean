@@ -252,7 +252,11 @@
     <ClInclude Include="PointLight.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="ImguiManager.h" />
+    <ClInclude Include="ImguiManager.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameLight.h" />
+    <ClInclude Include="LightHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Topology.cpp">
@@ -438,7 +442,11 @@
     <ClCompile Include="MathUtil.cpp">
       <Filter>Common\Private</Filter>
     </ClCompile>
-    <ClCompile Include="ImguiManager.cpp" />
+    <ClCompile Include="ImguiManager.cpp">
+      <Filter>Common\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameLight.cpp" />
+    <ClCompile Include="LightHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ColorBlendPS.hlsl">
@@ -522,5 +530,22 @@
     <FxCompile Include="xPhongDifNro.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="Model_VS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Model_PS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ModelPBR_PS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ModelSkinned_VS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LightHelper.hlsli">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

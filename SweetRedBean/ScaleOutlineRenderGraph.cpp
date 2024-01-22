@@ -8,8 +8,8 @@
 
 namespace Rgph
 {
-	ScaleOutlineRenderGraph::ScaleOutlineRenderGraph(Graphics& gfx)
-		: RenderGraph(gfx)
+	ScaleOutlineRenderGraph::ScaleOutlineRenderGraph(Graphics& grapics)
+		: RenderGraph(grapics)
 	{
 		{
 			auto pass = std::make_unique<BufferClearPass>("clearRT");
@@ -22,18 +22,18 @@ namespace Rgph
 			appendPass(std::move(pass));
 		}
 		{
-			auto pass = std::make_unique<LambertianPass>(gfx, "lambertian");
+			auto pass = std::make_unique<LambertianPass>(grapics, "lambertian");
 			pass->SetSinkLinkage("renderTarget", "clearRT.buffer");
 			pass->SetSinkLinkage("depthStencil", "clearDS.buffer");
 			appendPass(std::move(pass));
 		}
 		{
-			auto pass = std::make_unique<OutlineMaskGenerationPass>(gfx, "outlineMask");
+			auto pass = std::make_unique<OutlineMaskGenerationPass>(grapics, "outlineMask");
 			pass->SetSinkLinkage("depthStencil", "lambertian.depthStencil");
 			appendPass(std::move(pass));
 		}
 		{
-			auto pass = std::make_unique<OutlineDrawingPass>(gfx, "outlineDraw");
+			auto pass = std::make_unique<OutlineDrawingPass>(grapics, "outlineDraw");
 			pass->SetSinkLinkage("renderTarget", "lambertian.renderTarget");
 			pass->SetSinkLinkage("depthStencil", "outlineMask.depthStencil");
 			appendPass(std::move(pass));

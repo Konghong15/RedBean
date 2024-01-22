@@ -14,17 +14,17 @@ namespace Rgph
 	class OutlineMaskGenerationPass : public RenderQueuePass
 	{
 	public:
-		OutlineMaskGenerationPass(Graphics& gfx, std::string name)
+		OutlineMaskGenerationPass(Graphics& grapics, std::string name)
 			:
 			RenderQueuePass(std::move(name))
 		{
 			using namespace Bind;
 			registerSink(DirectBufferSink<Bind::DepthStencil>::Make("depthStencil", mDepthStencil));
 			registerSource(DirectBufferSource<Bind::DepthStencil>::Make("depthStencil", mDepthStencil));
-			AddBind(VertexShader::Create(gfx, "../SweetRedBean/Solid_VS.hlsl"));
-			AddBind(NullPixelShader::Create(gfx));
-			AddBind(Stencil::Create(gfx, Stencil::Mode::Write));
-			AddBind(Rasterizer::Create(gfx, false));
+			AddBind(VertexShader::Create(grapics, "../SweetRedBean/Solid_VS.hlsl"));
+			AddBind(NullPixelShader::Create(grapics));
+			AddBind(Stencil::Create(grapics, Stencil::Mode::Write));
+			AddBind(Rasterizer::Create(grapics, false));
 		}
 	};
 }

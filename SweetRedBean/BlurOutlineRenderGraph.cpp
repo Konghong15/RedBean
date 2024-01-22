@@ -20,25 +20,32 @@ namespace Rgph
 		:
 		RenderGraph(graphics)
 	{
+		// 각각 처리할 순서대로 패스를 정의하고,
 		{
 			auto pass = std::make_unique<BufferClearPass>("clearRT");
-			pass->SetSinkLinkage("buffer", "$.backbuffer");
+			pass->SetSinkLinkage("buffer", "$.backbuffer"); // $ 붙은건 전역 백버퍼를 의미함
 			appendPass(std::move(pass));
 		}
 		{
 			auto pass = std::make_unique<BufferClearPass>("clearDS");
-			pass->SetSinkLinkage("buffer", "$.masterDepth");
+			pass->SetSinkLinkage("buffer", "$.masterDepth"); // 전역 깊이 버퍼
 			appendPass(std::move(pass));
 		}
 		{
-			auto pass = std::make_unique<LambertianPass>(graphics, "lambertian");
-			pass->SetSinkLinkage("renderTarget", "clearRT.buffer");
+			auto pass = std::make_unique<LambertianPass>(graphics, "NonPBR");
+			pass->SetSinkLinkage("renderTarget", "clearRT.buffer"); // 램버시안 패스를 그리기 위해 clearRT의 소스를 싱크로 연결
 			pass->SetSinkLinkage("depthStencil", "clearDS.buffer");
 			appendPass(std::move(pass));
 		}
 		{
+			auto pass = std::make_unique<LambertianPass>(graphics, "PBR");
+			pass->SetSinkLinkage("renderTarget", "NonPBR.renderTarget"); // 램버시안 패스를 그리기 위해 clearRT의 소스를 싱크로 연결
+			pass->SetSinkLinkage("depthStencil", "NonPBR.depthStencil");
+			appendPass(std::move(pass));
+		}
+		{
 			auto pass = std::make_unique<OutlineMaskGenerationPass>(graphics, "outlineMask");
-			pass->SetSinkLinkage("depthStencil", "lambertian.depthStencil");
+			pass->SetSinkLinkage("depthStencil", "PBR.depthStencil");
 			appendPass(std::move(pass));
 		}
 
@@ -76,7 +83,7 @@ namespace Rgph
 		}
 		{
 			auto pass = std::make_unique<VerticalBlurPass>("vertical", graphics);
-			pass->SetSinkLinkage("renderTarget", "lambertian.renderTarget");
+			pass->SetSinkLinkage("renderTarget", "PBR.renderTarget");
 			pass->SetSinkLinkage("depthStencil", "outlineMask.depthStencil");
 			pass->SetSinkLinkage("scratchIn", "horizontal.scratchOut");
 			pass->SetSinkLinkage("kernel", "$.blurKernel");

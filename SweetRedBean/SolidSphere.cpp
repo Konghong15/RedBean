@@ -7,7 +7,7 @@
 #include "Stencil.h"
 #include "TransformCbuf.h"
 
-SolidSphere::SolidSphere(Graphics& gfx, float radius)
+SolidSphere::SolidSphere(Graphics& grapics, float radius)
 {
 	using namespace Bind;
 	namespace dx = DirectX;
@@ -15,32 +15,32 @@ SolidSphere::SolidSphere(Graphics& gfx, float radius)
 	auto model = Sphere::Make();
 	model.Transform(dx::XMMatrixScaling(radius, radius, radius));
 	const auto geometryTag = "$sphere." + std::to_string(radius);
-	pVertices = VertexBuffer::Create(gfx, geometryTag, model.vertices);
-	pIndices = IndexBuffer::Create(gfx, geometryTag, model.indices);
-	pTopology = Topology::Create(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	pVertices = VertexBuffer::Create(grapics, geometryTag, model.vertices);
+	pIndices = IndexBuffer::Create(grapics, geometryTag, model.indices);
+	pTopology = Topology::Create(grapics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	{
 		Technique solid;
-		Step only("lambertian");
+		Step only("NonPBR");
 
-		auto pvs = VertexShader::Create(gfx, "../SweetRedBean/Solid_VS.hlsl");
+		auto pvs = VertexShader::Create(grapics, "../SweetRedBean/Solid_VS.hlsl");
 		auto pvsbc = pvs->GetBytecode();
 		only.AddBindable(std::move(pvs));
 
-		only.AddBindable(PixelShader::Create(gfx, "../SweetRedBean/Solid_PS.hlsl"));
+		only.AddBindable(PixelShader::Create(grapics, "../SweetRedBean/Solid_PS.hlsl"));
 
 		struct PSColorConstant
 		{
 			dx::XMFLOAT3 color = { 1.0f,1.0f,1.0f };
 			float padding;
 		} colorConst;
-		only.AddBindable(PixelConstantBuffer<PSColorConstant>::Create(gfx, colorConst, 1u));
+		only.AddBindable(PixelConstantBuffer<PSColorConstant>::Create(grapics, colorConst, 1u));
 
-		only.AddBindable(InputLayout::Create(gfx, model.vertices.GetLayout(), pvsbc));
+		only.AddBindable(InputLayout::Create(grapics, model.vertices.GetLayout(), pvsbc));
 
-		only.AddBindable(std::make_shared<TransformCbuf>(gfx));
+		only.AddBindable(std::make_shared<TransformCbuf>(grapics));
 
-		only.AddBindable(Rasterizer::Create(gfx, false));
+		only.AddBindable(Rasterizer::Create(grapics, false));
 
 		solid.AddStep(std::move(only));
 		AddTechnique(std::move(solid));

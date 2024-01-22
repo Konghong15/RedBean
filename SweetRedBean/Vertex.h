@@ -22,7 +22,9 @@ struct BGRAColor
 	X( Float3Color ) \
 	X( Float4Color ) \
 	X( BGRAColor ) \
-	X( Count )
+	X( BoneIndices ) \
+	X( BoneWeights ) \
+	X( Count ) \
 
 namespace Dvtx
 {
@@ -108,6 +110,22 @@ namespace Dvtx
 			static constexpr const char* semantic = "Color";
 			static constexpr const char* code = "C8";
 			DVTX_ELEMENT_AI_EXTRACTOR(mColors[0])
+		};
+		template<> struct Map<BoneIndices>
+		{
+			using SysType = long double;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32A32_SINT;
+			static constexpr const char* semantic = "Indices";
+			static constexpr const char* code = "BI";
+			DVTX_ELEMENT_AI_EXTRACTOR(mFaces)
+		};
+		template<> struct Map<BoneWeights>
+		{
+			using SysType = long double;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			static constexpr const char* semantic = "Weights";
+			static constexpr const char* code = "BW";
+			DVTX_ELEMENT_AI_EXTRACTOR(mFaces)
 		};
 		template<> struct Map<Count>
 		{
@@ -199,7 +217,7 @@ namespace Dvtx
 			auto pAttribute = pData + element.GetOffset();
 			VertexLayout::Bridge<AttributeSetting>(
 				element.GetType(), this, pAttribute, std::forward<T>(val)
-				);
+			);
 		}
 	protected:
 		Vertex(char* pData, const VertexLayout& layout);

@@ -7,8 +7,8 @@
 #include "Stencil.h"
 
 // Mesh는 생성을 IDrawable에게 맡긴다.
-Mesh::Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale)
-	: IDrawable(gfx, mat, mesh, scale)
+Mesh::Mesh(Graphics& grapics, const Material& mat, const aiMesh& mesh, float scale)
+	: IDrawable(grapics, mat, mesh, scale)
 {
 }
 

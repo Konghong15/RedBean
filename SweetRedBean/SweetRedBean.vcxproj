@@ -148,10 +148,12 @@
     <ClInclude Include="BufferClearPass.h" />
     <ClInclude Include="BufferResource.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="FrameLight.h" />
     <ClInclude Include="FullscreenPass.h" />
     <ClInclude Include="HorizontalBlurPass.h" />
     <ClInclude Include="ImguiManager.h" />
     <ClInclude Include="LambertianPass.h" />
+    <ClInclude Include="LightHelper.h" />
     <ClInclude Include="MathUtil.h" />
     <ClInclude Include="OutlineDrawingPass.h" />
     <ClInclude Include="OutlineMaskGenerationPass.h" />
@@ -217,9 +219,11 @@
     <ClCompile Include="BufferClearPass.cpp" />
     <ClCompile Include="BufferResource.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="FrameLight.cpp" />
     <ClCompile Include="FullscreenPass.cpp" />
     <ClCompile Include="HorizontalBlurPass.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
+    <ClCompile Include="LightHelper.cpp" />
     <ClCompile Include="MathUtil.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="RenderQueuePass.cpp" />
@@ -280,6 +284,11 @@
     <ClCompile Include="VerticalBlurPass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Model_VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="BlurOutline_PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
@@ -310,6 +319,19 @@
     </FxCompile>
     <FxCompile Include="LightVectorData.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="ModelPBR_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="ModelSkinned_VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Model_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Offset_VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -368,6 +390,9 @@
     <FxCompile Include="xPhongDifNro.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LightHelper.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

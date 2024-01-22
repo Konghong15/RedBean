@@ -14,8 +14,8 @@ namespace Rgph
 	class VerticalBlurPass : public FullscreenPass
 	{
 	public:
-		VerticalBlurPass( std::string name,Graphics& gfx );
-		void Execute( Graphics& gfx ) const  override;
+		VerticalBlurPass( std::string name,Graphics& grapics );
+		void Execute( Graphics& grapics ) const  override;
 
 	private:
 		std::shared_ptr<Bind::CachingPixelConstantBufferEx> direction;

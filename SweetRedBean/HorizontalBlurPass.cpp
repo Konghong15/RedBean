@@ -13,32 +13,32 @@ using namespace Bind;
 
 namespace Rgph
 {
-	HorizontalBlurPass::HorizontalBlurPass(std::string name, Graphics& gfx, unsigned int fullWidth, unsigned int fullHeight)
+	HorizontalBlurPass::HorizontalBlurPass(std::string name, Graphics& grapics, unsigned int fullWidth, unsigned int fullHeight)
 		:
-		FullscreenPass(std::move(name), gfx)
+		FullscreenPass(std::move(name), grapics)
 	{
-		AddBind(PixelShader::Create(gfx, "../SweetRedBean/BlurOutline_PS.hlsl"));
-		AddBind(Blender::Create(gfx, false));
-		AddBind(Sampler::Create(gfx, Sampler::Type::Point, true));
+		AddBind(PixelShader::Create(grapics, "../SweetRedBean/BlurOutline_PS.hlsl"));
+		AddBind(Blender::Create(grapics, false));
+		AddBind(Sampler::Create(grapics, Sampler::Type::Point, true));
 
 		addBindSink<Bind::RenderTarget>("scratchIn");
 		addBindSink<Bind::CachingPixelConstantBufferEx>("kernel");
 		registerSink(DirectBindableSink<CachingPixelConstantBufferEx>::Make("direction", direction));
 
 		// the renderTarget is internally sourced and then exported as a IBindable
-		mRenderTarget = std::make_shared<Bind::ShaderInputRenderTarget>(gfx, fullWidth / 2, fullHeight / 2, 0u);
+		mRenderTarget = std::make_shared<Bind::ShaderInputRenderTarget>(grapics, fullWidth / 2, fullHeight / 2, 0u);
 		registerSource(DirectBindableSource<RenderTarget>::Make("scratchOut", mRenderTarget));
 	}
 
 	// this override is necessary because we cannot (yet) link input bindables directly into
 	// the container of bindables (mainly because vector growth buggers references)
-	void HorizontalBlurPass::Execute(Graphics& gfx) const
+	void HorizontalBlurPass::Execute(Graphics& grapics) const
 	{
 		auto buf = direction->GetBuffer();
 		buf["isHorizontal"] = true;
 		direction->SetBuffer(buf);
 
-		direction->Bind(gfx);
-		FullscreenPass::Execute(gfx);
+		direction->Bind(grapics);
+		FullscreenPass::Execute(grapics);
 	}
 }

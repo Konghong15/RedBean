@@ -71,6 +71,7 @@ namespace Rgph
 		mbIslinked = true;
 		return mBuffer;
 	}
+
 #pragma endregion
 
 	template<class T>

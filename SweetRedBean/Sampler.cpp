@@ -5,7 +5,7 @@
 
 namespace Bind
 {
-	Sampler::Sampler(Graphics& gfx, Type type, bool reflect)
+	Sampler::Sampler(Graphics& grapics, Type type, bool reflect)
 		: mType(type)
 		, mbIsReflect(reflect)
 	{
@@ -30,7 +30,7 @@ namespace Bind
 		samplerDesc.AddressW = reflect ? D3D11_TEXTURE_ADDRESS_MIRROR : D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
 
-		GetDevice(gfx)->CreateSamplerState(&samplerDesc, &mpSampler);
+		GetDevice(grapics)->CreateSamplerState(&samplerDesc, &mpSampler);
 	}
 
 	//Sampler::Sampler(Graphics& graphics, Type type, D3D11_TEXTURE_ADDRESS_MODE addressMode)

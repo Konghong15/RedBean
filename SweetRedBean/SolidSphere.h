@@ -5,7 +5,7 @@
 class SolidSphere : public IDrawable
 {
 public:
-	SolidSphere(Graphics& gfx, float radius);
+	SolidSphere(Graphics& grapics, float radius);
 	virtual ~SolidSphere() = default;
 
 	void SetPos(Vector3 pos);

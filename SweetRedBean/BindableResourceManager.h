@@ -20,10 +20,10 @@ namespace Bind
 
 	private:
 		template <class T, typename... Params>
-		shared_ptr<T> create(Graphics& graphics, Params&&... params);
+		std::shared_ptr<T> create(Graphics& graphics, Params&&... params);
 
 	private:
-		unordered_map<string, shared_ptr<IBindable>> mBindables;
+		std::unordered_map<string, shared_ptr<IBindable>> mBindables;
 	};
 
 	template <class T, typename... Params>

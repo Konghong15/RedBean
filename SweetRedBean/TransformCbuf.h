@@ -15,20 +15,20 @@ namespace Bind
 	protected:
 		struct Transforms
 		{
-			Matrix ModelView;
+			Matrix Model;
 			Matrix ModelViewProj;
 		};
 
 	public:
 		TransformCbuf(Graphics& graphics, UINT slot = 0u);
 
-		void Bind(Graphics& graphics)   override;
+		void Bind(Graphics& graphics) override;
 		void InitReference(const IDrawable& parent) override;
-		
+
 		std::unique_ptr<ICloningBindable> Clone() const override;
 
 	protected:
-		void updateBindImpl(Graphics& graphics, const Transforms& tf);
+		void updateBindImpl(Graphics& graphics, const Transforms& transform);
 		Transforms getTransforms(Graphics& graphics);
 
 	private:
