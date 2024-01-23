@@ -5,9 +5,10 @@
 
 namespace Bind
 {
-	Sampler::Sampler(Graphics& grapics, Type type, bool reflect)
+	Sampler::Sampler(Graphics& grapics, Type type, bool reflect, UINT slot)
 		: mType(type)
 		, mbIsReflect(reflect)
+		, mSlot(slot)
 	{
 		D3D11_SAMPLER_DESC samplerDesc = CD3D11_SAMPLER_DESC{ CD3D11_DEFAULT{} };
 
@@ -23,14 +24,14 @@ namespace Bind
 			default:
 				assert(false);
 			}
-		}();
+			}();
 
-		samplerDesc.AddressU = reflect ? D3D11_TEXTURE_ADDRESS_MIRROR : D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.AddressV = reflect ? D3D11_TEXTURE_ADDRESS_MIRROR : D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.AddressW = reflect ? D3D11_TEXTURE_ADDRESS_MIRROR : D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
+			samplerDesc.AddressU = reflect ? D3D11_TEXTURE_ADDRESS_MIRROR : D3D11_TEXTURE_ADDRESS_WRAP;
+			samplerDesc.AddressV = reflect ? D3D11_TEXTURE_ADDRESS_MIRROR : D3D11_TEXTURE_ADDRESS_WRAP;
+			samplerDesc.AddressW = reflect ? D3D11_TEXTURE_ADDRESS_MIRROR : D3D11_TEXTURE_ADDRESS_WRAP;
+			samplerDesc.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
 
-		GetDevice(grapics)->CreateSamplerState(&samplerDesc, &mpSampler);
+			GetDevice(grapics)->CreateSamplerState(&samplerDesc, &mpSampler);
 	}
 
 	//Sampler::Sampler(Graphics& graphics, Type type, D3D11_TEXTURE_ADDRESS_MODE addressMode)
@@ -63,21 +64,21 @@ namespace Bind
 
 	void Sampler::Bind(Graphics& graphics)
 	{
-		GetContext(graphics)->PSSetSamplers(0, 1, mpSampler.GetAddressOf());
+		GetContext(graphics)->PSSetSamplers(mSlot, 1, mpSampler.GetAddressOf());
 	}
 
-	std::shared_ptr<Sampler> Sampler::Create(Graphics& graphics, Type type, bool reflect)
+	std::shared_ptr<Sampler> Sampler::Create(Graphics& graphics, Type type, bool reflect, UINT slot)
 	{
-		return ResourceManager::Create<Sampler>(graphics, type, reflect);
+		return ResourceManager::Create<Sampler>(graphics, type, reflect, slot);
 	}
 	// std::shared_ptr<Sampler> Sampler::Create(Graphics& graphics, Type type, D3D11_TEXTURE_ADDRESS_MODE addressMode)
 	// {
 	// 	return ResourceManager::Create<Sampler>(graphics, type, addressMode);
 	// }
-	std::string Sampler::GenerateUID(Type type, bool reflect)
+	std::string Sampler::GenerateUID(Type type, bool reflect, UINT slot)
 	{
 		using namespace std::string_literals;
-		return typeid(Sampler).name() + "#"s + std::to_string((int)type) + (reflect ? "R"s : "W"s);
+		return typeid(Sampler).name() + "#"s + std::to_string((int)type) + (reflect ? "R"s : "W"s) + std::to_string(slot);
 	}
 	std::string Sampler::GetUID() const
 	{

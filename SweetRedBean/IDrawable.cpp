@@ -16,9 +16,9 @@ IDrawable::IDrawable(Graphics& graphics, const Material& mat, const aiMesh& mesh
 	pIndices = mat.MakeIndexBindable(graphics, mesh);
 	pTopology = Bind::Topology::Create(graphics);
 
-	for (auto& t : mat.GetTechniques())
+	for (auto& technique : mat.GetTechniques())
 	{
-		AddTechnique(std::move(t));
+		AddTechnique(std::move(technique));
 	}
 }
 
@@ -53,7 +53,7 @@ void IDrawable::LinkTechniques(Rgph::RenderGraph& rg)
 	}
 }
 
-void IDrawable::AddTechnique(Technique technique) 
+void IDrawable::AddTechnique(Technique technique)
 {
 	technique.InitReferences(*this);
 	techniques.push_back(std::move(technique));

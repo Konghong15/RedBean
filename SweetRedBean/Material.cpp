@@ -7,6 +7,7 @@
 #include "TransformCbufScaling.h"
 #include "Stencil.h"
 #include "Texture.h"
+#include "Util.h"
 
 Material::Material(Graphics& graphics, const aiMaterial& material, const std::filesystem::path& path)
 	: mModelPath(path.string())
@@ -33,7 +34,7 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 
 				if (material.GetTexture(aiTextureType, 0, &texturePath) == AI_SUCCESS)
 				{
-					std::filesystem::path filePath = texturePath.C_Str();
+					std::filesystem::path filePath = Util::ToWide(texturePath.C_Str());
 
 					auto texture = Bind::Texture::Create(graphics, rootPath + filePath.filename().string(), bindIndex);
 					step.AddBindable(texture);
@@ -77,6 +78,12 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 				if (PSBuffer["useAlpha"] = createTexture(aiTextureType_OPACITY, 3, step))
 				{
 					step.AddBindable(Bind::Rasterizer::Create(graphics, true));
+					step.AddBindable(Bind::Blender::Create(graphics, false));
+				}
+				else
+				{
+					step.AddBindable(Bind::Rasterizer::Create(graphics, false));
+					step.AddBindable(Bind::Blender::Create(graphics, false));
 				}
 
 				PSBuffer["useMatalness"] = createTexture(aiTextureType_METALNESS, 4, step);
@@ -86,6 +93,7 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 				step.AddBindable(std::make_unique<Bind::CachingPixelConstantBufferEx>(graphics, std::move(PSBuffer), 1u));
 				step.AddBindable(std::make_shared<TransformCbuf>(graphics, 0u));
 			}
+
 			// 쉐이더 생성
 			{
 				std::string pixelShaderName = "../SweetRedBean/ModelPBR_PS.hlsl";
@@ -97,6 +105,12 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 				step.AddBindable(inputLayout);
 				step.AddBindable(vertexShader);
 				step.AddBindable(pixelShader);
+			}
+
+			// 샘플러 스테이트
+			{
+				step.AddBindable(Sampler::Create(graphics));
+				step.AddBindable(Sampler::Create(graphics, Sampler::Type::Bilinear, false, 1));
 			}
 
 			renderTech.AddStep(std::move(step));
@@ -127,6 +141,12 @@ Material::Material(Graphics& graphics, const aiMaterial& material, const std::fi
 				if (PSBuffer["useAlpha"] = createTexture(aiTextureType_OPACITY, 3, step))
 				{
 					step.AddBindable(Bind::Rasterizer::Create(graphics, true));
+					step.AddBindable(Bind::Blender::Create(graphics, true));
+				}
+				else
+				{
+					step.AddBindable(Bind::Rasterizer::Create(graphics, false));
+					step.AddBindable(Bind::Blender::Create(graphics, false));
 				}
 
 				step.AddBindable(std::make_shared<TransformCbuf>(graphics, 0u));

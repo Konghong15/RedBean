@@ -29,18 +29,20 @@ Model::Model(Graphics& grapics, const std::string& pathString, const float scale
 	std::vector<Material> materials;
 	materials.reserve(pScene->mNumMaterials);
 
-	for (size_t i = 0; i < pScene->mNumMaterials; i++)
+	for (size_t i = 0; i < pScene->mNumMaterials; ++i)
 	{
 		materials.emplace_back(grapics, *pScene->mMaterials[i], pathString);
 	}
 
 	// 매쉬 생성
-	for (size_t i = 0; i < pScene->mNumMeshes; i++)
+	for (size_t i = 0; i < pScene->mNumMeshes; ++i)
 	{
-		const auto& mesh = *pScene->mMeshes[i];
+		aiMesh& mesh = *pScene->mMeshes[i];
+		unsigned int materialIndex = mesh.mMaterialIndex;
+		Material& material = materials[mesh.mMaterialIndex];
 
-		// 메쉬는 재질과 1대1 대응이라 요렇게 생성 가능하다.
-		mMeshPtrs.push_back(std::make_unique<Mesh>(grapics, materials[mesh.mMaterialIndex], mesh, scale));
+		// 매핑된 매쉬로 랜더링
+		mMeshPtrs.push_back(std::make_unique<Mesh>(grapics, material, mesh, scale));
 	}
 
 	// 노드 생성
@@ -82,8 +84,8 @@ std::unique_ptr<Node> Model::ParseNode(int& nextId, const aiNode& node, float sc
 
 	for (size_t i = 0; i < node.mNumMeshes; i++)
 	{
-		const unsigned int meshIndex = node.mMeshes[i];
-		Mesh* meshPtr = mMeshPtrs[meshIndex].get();
+		const unsigned int MESH_INDEX = node.mMeshes[i];
+		Mesh* meshPtr = mMeshPtrs[MESH_INDEX].get();
 
 		curMeshPtrs.push_back(meshPtr);
 	}

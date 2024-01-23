@@ -38,13 +38,12 @@ namespace entryPoint
 		}
 
 	private:
-		common::Camera mCamera;
+		::Camera mCamera;
 
 		vector<unique_ptr<IDrawable>> mDrawables;
 
 		unique_ptr<Graphics> mSweetGrapic;
 		unique_ptr<Rgph::BlurOutlineRenderGraph> mRenderGraph;
-		unique_ptr<::PointLight> mLight;
 		unique_ptr<::Model> mModel;
 		ImguiManager mImguiManager;
 		unique_ptr<::FrameLight> mFrameLight;

@@ -33,6 +33,8 @@ public:
 	inline std::shared_ptr<Bind::RenderTarget> GetRenderTarget();
 	inline bool GetUseImgui() const;
 
+	auto GetDevice() { return mpDevice; }
+
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> mpDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mpContext;

@@ -75,8 +75,23 @@ const Surface::Color* Surface::GetBufferPtrConst() const
 Surface Surface::FromFile(const std::string& name)
 {
 	DirectX::ScratchImage scratch;
-	HRESULT hr = DirectX::LoadFromWICFile(Util::ToWide(name).c_str(), DirectX::WIC_FLAGS_IGNORE_SRGB, nullptr, scratch);
+	
+	std::wstring wideName = Util::ToWide(name).c_str();
 
+	HRESULT hr = DirectX::LoadFromWICFile(wideName.c_str(), DirectX::WIC_FLAGS_IGNORE_SRGB, nullptr, scratch);
+
+	if (FAILED(hr))
+	{
+		hr = LoadFromTGAFile(wideName.c_str(), nullptr, scratch);
+	}
+	if (FAILED(hr))
+	{
+		hr = LoadFromDDSFile(wideName.c_str(), DDS_FLAGS_NONE, nullptr, scratch);
+	}
+	if (FAILED(hr))
+	{
+		hr = LoadFromHDRFile(wideName.c_str(), nullptr, scratch);
+	}
 	assert(SUCCEEDED(hr));
 
 	if (scratch.GetImage(0, 0, 0)->format != format)

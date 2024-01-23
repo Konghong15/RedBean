@@ -5,7 +5,8 @@
 #include <random>
 
 #include "../SweetRedBean/BindableResourceManager.h"
-
+#include "../RedBean/Model.h"
+#include "../RedBean/ResourceManager.h"
 namespace entryPoint
 {
 	Sample::Sample(HINSTANCE hInstance, UINT width, UINT height, std::wstring name)
@@ -32,15 +33,15 @@ namespace entryPoint
 
 		mRenderGraph = std::make_unique<Rgph::BlurOutlineRenderGraph>(*mSweetGrapic);
 
-		mLight = std::make_unique<::PointLight>(*mSweetGrapic);
-		mModel = std::make_unique<::Model>(*mSweetGrapic, "../Resource/Models/dancing.fbx");
+		mModel = std::make_unique<::Model>(*mSweetGrapic, "../Resource/Models/pbrModel.fbx");
 		mFrameLight = std::make_unique<::FrameLight>(*mSweetGrapic);
 
-		mLight->LinkTechniques(*mRenderGraph);
 		mModel->LinkTechniques(*mRenderGraph);
 		mFrameLight->LinkTechnique(*mRenderGraph);
 
-		Bind::ResourceManager::Get();
+		renderSystem::ResourceManager::GetInstance()->Init(mSweetGrapic->GetDevice().Get());
+		renderSystem::ResourceManager::GetInstance()->CreateModelOrNull("coco", "../Resource/Models/pbrModel.fbx");
+			Bind::ResourceManager::Get();
 
 		return true;
 	}
@@ -89,7 +90,6 @@ namespace entryPoint
 		// 상수 버퍼 관리
 		{
 			mSweetGrapic->SetView(mCamera.GetView());
-			mLight->Bind(*mSweetGrapic, mCamera.GetView());
 			mFrameLight->Bind(*mSweetGrapic, mCamera.GetPosition());
 		}
 
@@ -103,8 +103,7 @@ namespace entryPoint
 		/*
 		임구이처리 프로브 보내서 다루기
 		*/
-
-		mLight->SpawnControlWindow();
+		mFrameLight->SpawnControlWindow();
 
 		mSweetGrapic->EndFrame();
 

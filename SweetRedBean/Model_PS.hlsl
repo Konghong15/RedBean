@@ -78,7 +78,7 @@ float4 main(VS_OUTPUT Input) : SV_TARGET
 		float4 spec = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
 		[unroll]
-		for (int i = 0; i < 1; ++i)
+		for (int i = 0; i < gLightCount; ++i)
 		{
 			float4 A, D, S;
 			ComputeDirectionLight(material, gDirLights[i], normal, toEye, A, D, S);

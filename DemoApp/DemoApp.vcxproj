@@ -31,6 +31,9 @@
     <ProjectReference Include="..\Processor\Processor.vcxproj">
       <Project>{dcab7c57-5b84-423c-9915-3a940c40c681}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\RedBean\RedBean.vcxproj">
+      <Project>{d8f80236-d702-489e-85f3-fc0ad9c514fc}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\SweetRedBean\SweetRedBean.vcxproj">
       <Project>{17d55db7-0321-4727-b5bf-1cabffea57e0}</Project>
     </ProjectReference>
